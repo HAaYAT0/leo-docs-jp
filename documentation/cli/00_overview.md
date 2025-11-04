@@ -1,64 +1,65 @@
 ---
 id: cli_overview
-title: The Leo Command Line Interface
-sidebar_label: Overview 
+title: Leo コマンドラインインターフェース
+sidebar_label: 概要
+slug: /cli_overview
 ---
 [general tags]: # (cli)
 
-The Leo CLI is a command line interface tool that comes equipped with the Leo compiler.
+Leo CLI は、Leo コンパイラと連携して動作するコマンドラインツール群です。
 
 :::tip
-You can print the list of commands by running `leo --help`
+`leo --help` を実行すると利用可能なコマンド一覧を確認できます。
 :::
 
-## Commands
+## コマンド一覧
 
-* [`account`](./01_account.md) - Create a new Aleo account, sign and verify messages.
-  * [`new`](./01_account.md#leo-account-new) - Generates a new Aleo account.
-  * [`import`](./01_account.md#leo-account-import) - Derive and Aleo account from a private key.
-  * [`sign`](./01_account.md#leo-account-sign) - Sign a message using your Aleo private key.
-  * [`verify`](./01_account.md#leo-account-verify) - Verify a message and signature from an Aleo address.
-* [`add`](./02_add.md) - Add a new onchain or local dependency to the current project.
-* [`build`](./03_build.md) - Compile the current project.
-* [`clean`](./04_clean.md) - Clean the build and output artifacts.
-* [`debug`](./05_debug.md) - Run the interactive debugger in the current package.
-* [`deploy`](./06_deploy.md) - Deploy a program to the Aleo network.
-* [`devnet`](./07_devnet.md) - Initialize a local devnet.
-* [`execute`](./08_execute.md) - Execute a program and produce a transaction containing a proof.
-* [`new`](./09_new.md) - Create a new Leo project in a new directory.
-* [`query`](./10_query.md) - Query live data and state from the Aleo network.
-  * [`block`](./10_query.md#leo-query-block) - Query block information.
-  * [`transaction`](./10_query.md#leo-query-transaction) - Query transaction information.
-  * [`program`](./10_query.md#leo-query-program) - Query program source code and live mapping values.
-  * [`stateroot`](./10_query.md#leo-query-stateroot) - Query the latest stateroot. 
-  * [`committee`](./10_query.md#leo-query-committee) - Query the current committee.
-  * [`mempool`](./10_query.md#leo-query-mempool) - Query transactions and transmissions from the memory pool.
-  * [`peers`](./10_query.md#leo-query-peers) - Query peer information.
-* [`remove`](./11_remove.md) - Remove a dependency from the current project.
-* [`run`](./12_run.md) - Run a program without producing a proof.
-* [`test`](./13_test.md) -  Run the test cases for a Leo project.
-* [`update`](./14_update.md) - Update to the latest version of Leo.
-* [`upgrade`](./15_upgrade.md) - Upgrade a deployed program on the Aleo network.
+* [`account`](./01_account.md) - Aleo アカウントの作成・署名・検証を行います。
+  * [`new`](./01_account.md#leo-account-new) - 新しい Aleo アカウントを生成します。
+  * [`import`](./01_account.md#leo-account-import) - 秘密鍵から Aleo アカウントを復元します。
+  * [`sign`](./01_account.md#leo-account-sign) - Aleo 秘密鍵でメッセージに署名します。
+  * [`verify`](./01_account.md#leo-account-verify) - Aleo アドレスの署名を検証します。
+* [`add`](./02_add.md) - プロジェクトにオンチェーンまたはローカル依存関係を追加します。
+* [`build`](./03_build.md) - 現在のプロジェクトをコンパイルします。
+* [`clean`](./04_clean.md) - ビルド成果物をクリーンアップします。
+* [`debug`](./05_debug.md) - 対話型デバッガーを起動します。
+* [`deploy`](./06_deploy.md) - プログラムを Aleo ネットワークへデプロイします。
+* [`devnet`](./07_devnet.md) - ローカル Devnet を初期化します。
+* [`execute`](./08_execute.md) - プログラムを実行し、証明付きトランザクションを生成します。
+* [`new`](./09_new.md) - 新しい Leo プロジェクトを作成します。
+* [`query`](./10_query.md) - Aleo ネットワーク上の最新データを取得します。
+  * [`block`](./10_query.md#leo-query-block) - ブロック情報を取得します。
+  * [`transaction`](./10_query.md#leo-query-transaction) - トランザクション情報を取得します。
+  * [`program`](./10_query.md#leo-query-program) - プログラムのソースとマッピングを取得します。
+  * [`stateroot`](./10_query.md#leo-query-stateroot) - 最新のステートルートを取得します。
+  * [`committee`](./10_query.md#leo-query-committee) - 現在のバリデータ委員会を取得します。
+  * [`mempool`](./10_query.md#leo-query-mempool) - メモリプール内のトランザクションと送信データを取得します。
+  * [`peers`](./10_query.md#leo-query-peers) - ピア情報を取得します。
+* [`remove`](./11_remove.md) - プロジェクトから依存関係を削除します。
+* [`run`](./12_run.md) - 証明を生成せずにプログラムを実行します。
+* [`test`](./13_test.md) - プロジェクトのテストケースを実行します。
+* [`update`](./14_update.md) - Leo を最新バージョンに更新します。
+* [`upgrade`](./15_upgrade.md) - Aleo ネットワーク上にデプロイ済みのプログラムをアップグレードします。
 
-## Universal Flags
-These flags are available to use alongside all commands in the Leo CLI.
+## 共通フラグ
+Leo CLI のすべてのコマンドで利用できる汎用フラグです。
 
 #### `-h`
 #### `--help`
-Prints available commands and flags.
+利用可能なコマンドとフラグの一覧を表示します。
 
 #### `-V`
 #### `--version`
-Prints the currently installed version of Leo.
+現在インストールされている Leo のバージョンを表示します。
 
 #### `-q`
-Suppresses the CLI output.
+CLI の出力を抑制します。
 
 #### `-d`
-Prints out additional information for debugging if possible.
+可能であればデバッグ用の追加情報を表示します。
 
 #### `--path <PATH>`
-Specifies the path to Leo program root folder.  Defaults to `./`.
+Leo プログラムのルートフォルダへのパスを指定します。デフォルトは `./` です。
 
 #### `--home <HOME>`  
-Specifies the path to the `.aleo` program registry.  This is where programs downloaded from the network will be cached.  Defaults to `~/.aleo/registry`.
+`.aleo` プログラムレジストリへのパスを指定します。ネットワークから取得したプログラムはここにキャッシュされます。デフォルトは `~/.aleo/registry` です。

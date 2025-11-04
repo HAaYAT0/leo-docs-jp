@@ -1,81 +1,80 @@
 ---
 id: cheatsheet
-title: Leo Syntax Cheatsheet
-sidebar: Cheatsheet
+title: Leo 構文チートシート
+sidebar: チートシート
 ---
 [general tags]: # (program, import, boolean, integer, field, group, scalar, address, signature, array, tuple, struct, operators, cryptographic_operators, assert, hash, commit, random, address, block, transition, async_transition, function, async_function, inline, mapping, conditionals, loops)
 
-## 1. File Import
+## 1. ファイルのインポート
 ```leo
 import foo.aleo;
 ```
 
-## 2. Programs
+## 2. プログラム
 ```leo
 program hello.aleo {
     // code
 }
 ```
 
-## 3. Primitive Data Types
+## 3. 基本データ型
 ```leo
-// Boolean value (true or false)
+// ブール値（true または false）
 let b: bool = false; 
 
-// Signed 32-bit integer (also available: i8, i16, i64, i128)
+// 符号付き 32 ビット整数（他に i8, i16, i64, i128 など）
 let i: i32 = -10i32; 
 
-// Unsigned 32-bit integer (also available: u8, u16, u64, u128)
+// 符号なし 32 ビット整数（他に u8, u16, u64, u128 など）
 let ui: u32 = 10u32; 
 
-// Field element (used in cryptographic computations)
+// フィールド要素（暗号計算で使用）
 let a: field = 1field; 
 
-// Group element (used in elliptic curve operations)
+// グループ要素（楕円曲線演算で使用）
 let g: group = 0group; 
 
-// Scalar element (used in elliptic curve arithmetic)
+// スカラー要素（楕円曲線演算で使用）
 let s: scalar = 1scalar; 
 
-// Aleo blockchain address
+// Aleo ブロックチェーンアドレス
 let receiver: address = aleo1ezamst4pjgj9zfxqq0fwfj8a4cjuqndmasgata3hggzqygggnyfq6kmyd4; 
 
-// Digital signature (used for authentication and verification)
+// デジタル署名（認証・検証に利用）
 let s: signature = sign1ftal5ngunk4lv9hfygl45z35vqu9cufqlecumke9jety3w2s6vqtjj4hmjulh899zqsxfxk9wm8q40w9zd9v63sqevkz8zaddugwwq35q8nghcp83tgntvyuqgk8yh0temt6gdqpleee0nwnccxfzes6pawcdwyk4f70n9ecmz6675kvrfsruehe27ppdsxrp2jnvcmy2wws6sw0egv;
 ```
 
-### Type Casting
+### 型キャスト
 ```leo
-// Casting between integer types
+// 整数型同士のキャスト
 let a: u8 = 255u8;
-let b: u16 = a as u16; // 255u8 to 255u16
-let c: u32 = b as u32; // 255u16 to 255u32
-let d: i32 = c as i32; // 255u32 to 255i32
+let b: u16 = a as u16; // 255u8 → 255u16
+let c: u32 = b as u32; // 255u16 → 255u32
+let d: i32 = c as i32; // 255u32 → 255i32
 
-// Casting between field and integers
+// field と整数のキャスト
 let f: field = 10field;
-let i: i32 = f as i32; // Convert field to i32
-let u: u64 = f as u64; // Convert field to u64
+let i: i32 = f as i32; // field を i32 へ
+let u: u64 = f as u64; // field を u64 へ
 
-// Casting between scalar and field
+// scalar と field のキャスト
 let s: scalar = 5scalar;
-let f_from_scalar: field = s as field; // Convert scalar to field
+let f_from_scalar: field = s as field; // scalar を field へ
 
-// Casting between group and field
+// group と field のキャスト
 let g: group = 1group;
-let f_from_group: field = g as field; // Convert group to field
+let f_from_group: field = g as field; // group を field へ
 
-// Address casting (only valid conversions)
+// アドレスのキャスト（可能な変換のみ）
 let addr: address = aleo1ezamst4pjgj9zfxqq0fwfj8a4cjuqndmasgata3hggzqygggnyfq6kmyd4;
-let addr_field: field = addr as field; // Convert address to field
+let addr_field: field = addr as field; // address を field へ
 ```
-The primitive types are: `address`, `bool`, `field`, `group`, `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`, `scalar`.
+プリミティブ型は `address`, `bool`, `field`, `group`, `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`, `scalar` です。  
+`signature` へのキャストはできません。  
+`address` から `field` へのキャストは可能ですが、その逆はできません。
 
-We can cast between all of these types except `signature`.
-
-You can cast an `address` to a `field` but not vice versa.
-## 4. Records
-Defining a `record`
+## 4. レコード
+レコードの定義
 ```leo
 record Token {
     owner: address,
@@ -83,7 +82,7 @@ record Token {
 }
 ```
 
-Creating a `record`
+レコードの生成
 ```leo
 let user: User = User {
     owner: aleo1ezamst4pjgj9zfxqq0fwfj8a4cjuqndmasgata3hggzqygggnyfq6kmyd4,
@@ -91,14 +90,14 @@ let user: User = User {
 };
 ```
 
-Accessing `record` fields
+レコードのフィールド参照
 ```leo
 let user_address: address = user.owner;
 let user_balance: u64 = user.balance;
 ```
 
-## 5. Structs
-Defining a `struct`
+## 5. 構造体
+構造体の定義
 ```leo
 struct Message {
     sender: address,
@@ -106,7 +105,7 @@ struct Message {
 };
 ```
 
-Creating an instance of a `struct`
+構造体の生成
 ```leo
 let msg: Message = Message {
     sender: aleo1ezamst4pjgj9zfxqq0fwfj8a4cjuqndmasgata3hggzqygggnyfq6kmyd4,
@@ -114,31 +113,30 @@ let msg: Message = Message {
 };
 ```
 
-Accessing `struct` fields
+構造体のフィールド参照
 ```leo
 let sender_address: address = msg.sender;
 let object_value: u64 = msg.object;
 ```
 
-## 6. Arrays
-Declaring `arrays`
+## 6. 配列
+配列の宣言
 ```leo
 let arrb: [bool; 2] = [true, false];
 let arr: [u8; 4] = [1u8, 2u8, 3u8, 4u8]; 
 ```
-**Arrays cannot be empty.**
+**配列は空にできません。**
 
-Accessing elements
+要素の取得
 ```leo
-let first: u8 = arr[0]; // Get the first element
-let second: u8 = arr[1]; // Get the second element
+let first: u8 = arr[0]; // 先頭要素
+let second: u8 = arr[1]; // 2 つ目の要素
 ```
 
-Modifying elements
+要素の変更  
+Leo では変数が不変のため、配列も宣言後に変更できません。
 
-Leo does not support mutable variables, so arrays are immutable after declaration.
-
-Looping Over Arrays
+配列の走査
 ```leo
 let numbers: [u32; 3] = [5u32, 10u32, 15u32];
 
@@ -149,58 +147,55 @@ for i: u8 in 0u8..3u8 {
 }
 ```
 
-## 7. Tuples
-Declaring tuples
+## 7. タプル
+タプルの宣言
 ```leo
 let t: (u8, bool, field) = (42u8, true, 100field);
 ```
-**Tuples cannot be empty or modified. Same with arrays.**
+**配列と同様、タプルも空にしたり変更したりできません。**
 
-Accessing tuple elements
+タプルのアクセス
 
-Use destructuring
+分割代入
 ```leo
 let (a, b, c) = t; 
 ```
 
-Index-based access
+インデックスによるアクセス
 ```leo
 let first: u8 = t.0;
 let second: bool = t.1;
 let third: field = t.2;
-
 ```
-## 8. Transitions
+
+## 8. トランジション
 ```leo
 transition mint_public(
     public receiver: address,
     public amount: u64,
-) -> Token { /* Your code here */ }
+) -> Token { /* ここに処理を記述 */ }
 ```
 
-## 9. Functions
-The rules for functions (in the traditional sense) are as follows:
+## 9. 各種関数
+Leo では次の 3 種類の関数があります。
+1. **transition**: `function` と `inline` を呼び出せます。
+2. **function**: `inline` だけを呼び出せます。
+3. **inline**: 他の `inline` のみ呼び出せます。
 
-There are three variants of functions:
-1. **transition**: Can only call functions and inlines.
-2. **functions**: Can only call inlines.
-3. **inlines**: Can only call inlines. 
+**直接・間接を問わず再帰呼び出しは不可です。**
 
-**Direct/indirect recursive calls are not allowed**
-
-### (Internal) Functions
-A `function` is used for **computations**. It **cannot** modify state and can only call `inline` functions.
+### 内部関数
+`function` は計算のための関数で、状態を変更できず、`inline` のみ呼び出せます。
 ```leo
 function compute(a: u64, b: u64) -> u64 {
     return a + b;
 }
 ```
-✅ Can call: `inline`
+✅ 呼び出せる: `inline`  
+❌ 呼び出せない: `function` / `transition`
 
-❌ Cannot call: `function` or `transition`
-
-### Inline Functions
-An `inline` function is used for **small operations**. It gets **inlined at compile time**, meaning it does not create a separate function call
+### インライン関数
+`inline` 関数は小さな処理向けで、コンパイル時に展開されます。
 ```leo
 inline foo(
     a: field,
@@ -209,28 +204,26 @@ inline foo(
     return a + b;
 }
 ```
-✅ Can call: `inline`
+✅ 呼び出せる: `inline`  
+❌ 呼び出せない: `function` / `transition`
 
-❌ Cannot call: `function` or `transition`
-
-### Transition Functions
-A `transition` function **modifies state** (e.g., transfers, updates records). It can call `function` and `inline` functions, but **cannot be called by a function or inline**.
+### トランジション関数
+`transition` は状態変更のための関数で、`function` と `inline` を呼び出せますが、他の `transition` から呼び出すことはできません。
 ```leo
 transition transfer(receiver: address, amount: u64) {
-    let balance: u64 = 1000u64; // Example balance
+    let balance: u64 = 1000u64; // 例としての残高
     let new_balance: u64 = subtract(balance, amount);
-    // Logic to send `amount` to `receiver` would go here
+    // 実際に送金するロジックをここに記述
 }
 
 function subtract(a: u64, b: u64) -> u64 {
     return a - b;
 }
 ```
-✅ Can call: `function`, `inline`
+✅ 呼び出せる: `function`, `inline`  
+❌ 呼び出せない: 他の `transition`
 
-❌ Cannot call: another `transition`
-
-## 10. For Loops
+## 10. for ループ
 ```leo
 let count: u32 = 0u32;
 
@@ -239,7 +232,7 @@ for i: u32 in 0u32..5u32 {
 }
 ```
 
-## 11. Mappings
+## 11. マッピング
 ```leo
 mapping balances: address => u64;
 
@@ -250,50 +243,49 @@ let set_bal: () = Mapping::set(balances, receiver, 100u64);
 let remove_bal: () = Mapping::remove(balances, receiver);
 ```
 
-## 12. Commands
+## 12. コマンド例
 ```leo
 transition matches(height: u32) -> Future {
     return check_height_matches(height);
 }
 async function check_height_matches(height: u32) {
-    assert_eq(height, block.height); // block.height returns latest block height
+    assert_eq(height, block.height); // 最新ブロック高を返す
 }
 
-let g: group = group::GEN; // the group generator
-let result: u32 = ChaCha::rand_u32(); // generate a random value `ChaCha::rand_<type>()`
-let owner: address = self.caller; // address of the program function caller
-let hash: field = BHP256::hash_to_field(1u32); // hash any type to any type
-let commit: group = Pedersen64::commit_to_group(1u64, 1scalar); // commit any type to a field, group, or address, using a scalar as blinding factor
+let g: group = group::GEN; // グループの生成元
+let result: u32 = ChaCha::rand_u32(); // ChaCha による乱数生成
+let owner: address = self.caller; // トランジション呼び出し元のアドレス
+let hash: field = BHP256::hash_to_field(1u32); // 任意の型を任意の型へハッシュ
+let commit: group = Pedersen64::commit_to_group(1u64, 1scalar); // Pedersen コミット
 
 let a: bool = true;
-assert(a); // assert the value of a is true
+assert(a); // `a` が true であることを確認
 
 let a: u8 = 1u8;
 let b: u8 = 2u8;
-assert_eq(a, a); // assert a and b are equal
-assert_neq(a, b); // assert a and b are not equal
+assert_eq(a, a); // a と a の等価性
+assert_neq(a, b); // a と b の非等価性
 ```
 
 
-## 13. Operators
+## 13. 演算子
 ```leo
-let sum: u64 = a + b; // arithmetic addition
-let diff: u64 = a - b; // arithmetic subtraction
-let prod: u64 = a * b; // arithmetic multiplication
-let quot: u64 = a / b; // arithmetic division
-let remainder: u64 = a % b; // arithmetic remainder
-let neg: u64 = -a; // negation
-let bitwise_and: u64 = a & b; // bitwise AND
-let bitwise_or: u64 = a | b; // bitwise OR
-let bitwise_xor: u64 = a ^ b; // bitwise XOR
-let bitwise_not: u64 = !a; // bitwise NOT
-let logical_and: bool = a && b; // logical AND
-let logical_or: bool = a || b; // logical OR
-let eq: bool = a == b; // equality
-let neq: bool = a != b; // non-Equality
-let lt: bool = a < b; // less than
-let lte: bool = a <= b; // less than or equal
-let gt: bool = a > b; // greater than
-let gte: bool = a >= b; // greater than or equal
+let sum: u64 = a + b; // 加算
+let diff: u64 = a - b; // 減算
+let prod: u64 = a * b; // 乗算
+let quot: u64 = a / b; // 除算
+let remainder: u64 = a % b; // 剰余
+let neg: u64 = -a; // 符号反転
+let bitwise_and: u64 = a & b; // ビット AND
+let bitwise_or: u64 = a | b; // ビット OR
+let bitwise_xor: u64 = a ^ b; // ビット XOR
+let bitwise_not: u64 = !a; // ビット NOT
+let logical_and: bool = a && b; // 論理 AND
+let logical_or: bool = a || b; // 論理 OR
+let eq: bool = a == b; // 等価比較
+let neq: bool = a != b; // 非等価比較
+let lt: bool = a < b; // より小さい
+let lte: bool = a <= b; // 以下
+let gt: bool = a > b; // より大きい
+let gte: bool = a >= b; // 以上
 ```
-

@@ -7,12 +7,11 @@ sidebar_label: New
 
 # `leo new`
 
-To create a new project, run:
+新しいプロジェクトを作成するには次を実行します。
 ```bash
 leo new <NAME>
 ```
 
-Valid project names are snake_case: lowercase letters and numbers separated by underscores.
-This command will create a new directory with the given project name.
+プロジェクト名は `snake_case`（小文字と数字をアンダースコアで区切った形式）である必要があります。このコマンドは指定した名前のディレクトリを作成し、その中に初期構成を生成します。
 
-See [Project Layout](./../language/01_layout.md) for more details .
+詳細は [Project Layout](./../language/01_layout.md) を参照してください。

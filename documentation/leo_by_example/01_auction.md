@@ -6,58 +6,58 @@ title: A Private Auction using Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/auction)**
 
-## Summary
+## 概要
 
-A first-price sealed-bid auction (or blind auction) is a type of auction in which each participant submits a bid without knowing the bids of the other participants.
-The bidder with the highest bid wins the auction.
+第一価格密封入札（ブラインドオークション）は、各参加者が他の入札価格を知らないまま入札額を提出し、最も高い入札者が落札する形式のオークションです。
 
-In this model, there are two kinds of parties: the auctioneer and the bidders.
-- **Bidder**: A participant in the auction.
-- **Auctioneer**: The party responsible for conducting the auction.
+このモデルでは、関係者はオークション主催者と入札者の 2 種類に分かれます。
+- **入札者**: オークションに参加して入札する主体。
+- **オークション主催者**: オークション全体の進行を担う主体。
 
-We make following assumptions about the auction:
-- The auctioneer is honest. That is, the auctioneer will resolve **all** bids in the order they are received. The auctioneer will not tamper with the bids.
-- There is no limit to the number of bids.
-- The auctioneer knows the identity of all bidders, but bidders do not necessarily know the identity of other bidders.
+今回のオークションについて、次の前提を置きます。
+- 主催者は誠実であり、受け取った順番通りに **すべて** の入札を処理し、不正に改ざんしない。
+- 入札件数に制限はない。
+- 主催者は全入札者の正体を把握しているが、入札者同士は互いの正体を知る必要はない。
 
-Under this model, we require that:
-- Bidders do not learn any information about the value of other bids.
+このモデルの下で満たしたい要件は次のとおりです。
+- 各入札者は、他の入札額に関する情報を一切得られないこと。
 
-## Auction Flow
+## オークションの流れ
 
-The auction is conducted in a series of stages.
-- **Bidding**: In the bidding stage, bidders submit bids to the auctioneer. They do so by invoking the `place_bid` function.
-- **Resolution**:  In the resolution stage, the auctioneer resolves the bids in the order they were received. The auctioneer does so by invoking the `resolve` function. The resolution process produces a single winning bid.
-- **Finishing**: In this stage, the auctioneer finishes the auction by invoking the `finish` function. This function returns the winning bid to the bidder, which the bidder can then use to claim the item.
+オークションは複数の段階で進行します。
+- **入札**: 入札フェーズでは、入札者が `place_bid` 関数を呼び出して主催者に入札を提出します。
+- **決済**: 決済フェーズでは、主催者が受け取った順番通りに入札を処理します。`resolve` 関数を呼び出し、最終的に勝者となる 1 件の入札レコードを決定します。
+- **終了**: 最後に主催者が `finish` 関数を呼び出してオークションを終了させます。この関数は勝者の入札レコードを入札者に返し、落札物の受け取りに使用できるようにします。
 
-## Language Features and Concepts
-- `record` declarations
+## 登場する言語機能・概念
+- `record` 宣言
 - `assert_eq`
-- record ownership
+- レコードの所有権
 
-## How to Run
+## 実行方法
 
-Follow the [Leo Installation Instructions](https://docs.leo-lang.org/getting_started/installation).
+[Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を用意してください。
 
-This auction program can be run using the following bash script. Locally, it will execute Leo program functions to conduct, bid, and close a three party auction.
+このオークションプログラムは次の bash スクリプトで実行できます。ローカル環境で実行すると、3 人の入札者を想定した一連の入札と決済の流れを Leo プログラムで再現します。
 
 ```bash
 cd leo/examples/auction
 ./run.sh
 ```
 
-The `.env` file contains a private key and address. This is the account that will be used to sign transactions and is checked for record ownership. When executing programs as different parties, be sure to set the `private_key` field in `.env` to the appropriate value. You can check out how we've set things up in `./run.sh` for a full example of how to run the program as different parties.
+`.env` ファイルには秘密鍵とアドレスが定義されています。これはトランザクションの署名やレコード所有権の検証に利用されるアカウントです。別の主体としてプログラムを実行する際は、`.env` の `private_key` を該当の秘密鍵に差し替えてください。`./run.sh` では主体を切り替えて実行する例を記述しているので、あわせて確認すると流れが掴みやすくなります。
 
-## Walkthrough
+## チュートリアルの流れ
 
-* [Step 0: Initializing the Auction](#step0)
-* [Step 1: The First Bid](#step1)
-* [Step 2: The Second Bid](#step2)
-* [Step 3: Select the Winner](#step3)
+* [ステップ 0: オークションの初期化](#step0)
+* [ステップ 1: 1 人目の入札](#step1)
+* [ステップ 2: 2 人目の入札](#step2)
+* [ステップ 3: 勝者の決定](#step3)
+* [ステップ 4: オークションの終了](#step4)
 
-## <a id="step0"></a> Step 0: Initializing the Auction
+## <a id="step0"></a> ステップ 0: オークションの初期化
 
-The three parties we'll be emulating are as follows:
+ここでは次の 3 つの主体をエミュレートします。
 
 ```markdown
 Bidder 1 Private Key:  
@@ -76,11 +76,11 @@ Auctioneer Address:
 aleo1fxs9s0w97lmkwlcmgn0z3nuxufdee5yck9wqrs0umevp7qs0sg9q5xxxzh
 ```
 
-## <a id="step1"></a> Step 1: The First Bid
+## <a id="step1"></a> ステップ 1: 1 人目の入札
 
-Have the first bidder place a bid of 10. 
+1 人目の入札者が 10 を入札するシナリオです。
 
-Swap in the private key and address of the first bidder to `.env`.
+`.env` を 1 人目の入札者の秘密鍵とアドレスに差し替えます。
 
 ```bash
 echo "
@@ -90,12 +90,12 @@ ENDPOINT=https://localhost:3030
 " > .env
 ``` 
 
-Call the `place_bid` program function with bidder 1 and `10u64` arguments.
+`place_bid` プログラム関数を 1 人目の入札者と `10u64` を引数にして呼び出します。
 
 ```bash
 leo run place_bid aleo1yzlta2q5h8t0fqe0v6dyh9mtv4aggd53fgzr068jvplqhvqsnvzq7pj2ke 10u64
 ```
-Output:
+出力:
 ```bash
  • {
   owner: aleo1yzlta2q5h8t0fqe0v6dyh9mtv4aggd53fgzr068jvplqhvqsnvzq7pj2ke.private,
@@ -105,11 +105,11 @@ Output:
   _nonce: 4668394794828730542675887906815309351994017139223602571716627453741502624516group.public
 }
 ```
-## <a id="step2"></a> Step 2: The Second Bid
+## <a id="step2"></a> ステップ 2: 2 人目の入札
 
-Have the second bidder place a bid of 90.
+続いて 2 人目の入札者が 90 を入札します。
 
-Swap in the private key of the second bidder to `.env`.
+`.env` を 2 人目の入札者の秘密鍵に置き換えます。
 
 ```bash
 echo "
@@ -119,12 +119,12 @@ ENDPOINT=https://localhost:3030
 " > .env
 ```
 
-Call the `place_bid` program function with bidder 2 and `90u64` arguments.
+`place_bid` プログラム関数を 2 人目の入札者と `90u64` を引数にして呼び出します。
 
 ```bash
 leo run place_bid aleo1esqchvevwn7n5p84e735w4dtwt2hdtu4dpguwgwy94tsxm2p7qpqmlrta4 90u64
 ```
-Output:
+出力:
 ```bash
  • {
   owner: aleo1esqchvevwn7n5p84e735w4dtwt2hdtu4dpguwgwy94tsxm2p7qpqmlrta4.private,
@@ -134,11 +134,11 @@ Output:
   _nonce: 5952811863753971450641238938606857357746712138665944763541786901326522216736group.public
 }
 ```
-## <a id="step3"></a> Step 3: Select the Winner
+## <a id="step3"></a> ステップ 3: 勝者の決定
 
-Have the auctioneer select the winning bid.
+主催者が勝者を決定します。
 
-Swap in the private key of the auctioneer to `.env`.
+`.env` を主催者の秘密鍵に差し替えます。
 
 ```bash
 echo "
@@ -148,7 +148,7 @@ ENDPOINT=https://localhost:3030
 " > .env
 ```
 
-Provide the two `Bid` records as input to the `resolve` transition function.
+2 件の `Bid` レコードを `resolve` トランジション関数の入力として与えます。
 
 ```bash 
 leo run resolve "{
@@ -166,9 +166,9 @@ leo run resolve "{
 }"
 ```
 
-## <a id="step4"></a> Step 4: Finish the Auction
+## <a id="step4"></a> ステップ 4: オークションの終了
 
-Call the `finish` transition function with the winning `Bid` record.
+勝者の `Bid` レコードを渡して `finish` トランジション関数を呼び出します。
 
 ```bash 
 leo run finish "{
@@ -180,4 +180,4 @@ leo run finish "{
 }"
 ```
 
-Congratulations! You've run a private auction. We recommend going to [provable.tools](https://provable.tools) to generate new accounts and trying the same commands with those addresses.
+お疲れさまでした。これでプライベートオークションの一連の流れを実行できました。[provable.tools](https://provable.tools) を利用して新しいアカウントを生成し、別アドレスでも同じコマンドを試してみるのもおすすめです。

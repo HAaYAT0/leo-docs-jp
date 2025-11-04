@@ -1,71 +1,65 @@
 ---
 id: upgradability 
-title: Upgrading Programs
-sidebar_label: Upgrading Programs
+title: プログラムをアップグレードする
+sidebar_label: プログラムのアップグレード
 ---
 [general tags]: # (guides, upgrade, program, transaction, constructor)
 
-# A Developer's Guide to Upgradability in Leo
+# Leo におけるアップグレード開発ガイド
 
-This guide provides a practical overview of Aleo's program upgradability framework, tailored for developers using the Leo language. You'll learn how to configure your program, implement common upgrade patterns, and follow best practices for writing secure, maintainable applications.
-For more details on the underlying protocol, refer to the [Aleo docs](https://developer.aleo.org/guides/program_upgradability/).
+このガイドでは、Aleo のプログラムアップグレード機構を Leo 開発者向けに実践的に解説します。プログラムの設定方法や代表的なパターン、セキュアで保守しやすいアプリケーションを構築するためのベストプラクティスを紹介します。プロトコルの詳細は [Aleo Docs](https://developer.aleo.org/guides/program_upgradability/) を参照してください。
 
-## Getting Started: The Upgrade Policy
+## アップグレードポリシーの基本
 
-Your program's upgrade policy is defined by an annotation on a constructor (see below) in the Leo program. 
-The Leo compiler reads the annotation to understand your intent and generates the appropriate underlying code.
+Leo プログラムでは、`constructor` に付与するアノテーションでアップグレード方針を定義します。Leo コンパイラはこのアノテーションを読み取り、意図に沿った基盤コードを生成します。
 
-There are four primary upgrade modes:
+主なモードは次の 4 種類です。
 
-| Mode         | Description                                                                                       |
-|:-------------|:--------------------------------------------------------------------------------------------------|
-| `@noupgrade` | The program is not upgradable.                                                                    |
-| `@admin`     | Upgrades are controlled by a single, hardcoded admin address.                                     |
-| `@checksum`  | Upgrades are governed by an on-chain checksum, often managed by a separate program (e.g., a DAO). |
-| `@custom`    | You write the entire upgrade logic from scratch in the `constructor`.                             |
+| モード         | 説明                                                                                                   |
+|:---------------|:-------------------------------------------------------------------------------------------------------|
+| `@noupgrade`   | アップグレードを禁止します。                                                                           |
+| `@admin`       | ハードコードした 1 つの管理者アドレスによってアップグレードを制御します。                             |
+| `@checksum`    | 別プログラム（DAO など）が管理するオンチェーンチェックサムを参照してアップグレードを制御します。     |
+| `@custom`      | `constructor` 内のロジックをすべて手書きし、独自ポリシーを実装します。                                 |
 
-## Core Mechanics
+## コアの仕組み
 
-Upgradability revolves around a special `constructor` function and on-chain program metadata.
+アップグレードは特別な `constructor` 関数とオンチェーンのプログラムメタデータを中心に機能します。
 
-### The `constructor`
+### `constructor` について
 
-The `constructor` is a special function that runs on-chain during every deployment and upgrade. Think of it as the gatekeeper for your program.
-There are two key properties of the `constructor` related to upgradability:
+`constructor` は各デプロイとアップグレード時にオンチェーンで実行される特別な関数で、プログラムの門番に相当します。重要な性質は次の 2 つです。
 
-* **Foundational:** All programs must be deployed with a `constructor`.  If the `constructor` logic fails (e.g., a failed `assert`), the entire deployment or upgrade transaction is rejected.
-* **Immutable:** The logic inside the `constructor` is set in stone at the first deployment. It can never be changed by a future upgrade. Any bugs introduced here are permanent, so audit your constructor carefully.
+- **必須であること**: すべてのプログラムは `constructor` を定義してデプロイする必要があります。`constructor` 内のロジック（`assert` など）が失敗すると、デプロイ／アップグレードのトランザクション全体が拒否されます。
+- **不変であること**: 最初のデプロイ時に設定した `constructor` のロジックは将来のアップグレードでも変更できません。ここでバグを仕込むと永久に修正できないため、慎重に監査しましょう。
 
-### Program Metadata Operands
+### プログラムメタデータオペランド
 
-Within a `constructor`, you can access on-chain metadata about the program using the `self` keyword.
+`constructor` 内では `self` キーワードを使ってプログラムに紐づくオンチェーンメタデータへアクセスできます。
 
-| Operand | Leo Type   | Description                                                                                                                                  |
-| :--- |:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------|
-| `self.edition` | `u16`      | The program's version number. Starts at `0` and is incremented by `1` for each upgrade. The edition is tracked automatically on the network. |
-| `self.program_owner` | `address`  | The address that submitted the deployment transaction.                                                                                       |
-| `self.checksum` | `[u8, 32]` | The program's checksum, which is a unique identifier for the program's code.                                                                 |
+| オペランド           | Leo 型     | 説明                                                                                                     |
+| :------------------- |:-----------|:---------------------------------------------------------------------------------------------------------|
+| `self.edition`       | `u16`      | プログラムのバージョン番号。初期値は `0` で、アップグレードごとに自動的に `1` ずつ増加します。          |
+| `self.program_owner` | `address`  | デプロイ（またはアップグレード）トランザクションを送信したアドレス。                                      |
+| `self.checksum`      | `[u8, 32]` | プログラムコードのチェックサム。ユニークな識別子として扱われます。                                       |
 
-You may also refer to other program's metadata by qualifying the operand with the program name, like `Program::edition(credits.aleo)`, `Program::program_owner(foo.aleo)`.
-You will need to import the program in your Leo file to use this syntax.
+他プログラムのメタデータにアクセスする場合は `Program::edition(credits.aleo)` のようにプログラム名を指定します（事前にインポートが必要です）。
 
-Note. Programs deployed before the upgradability feature (i.e. using Leo version < v3.1.0) do not have a `program_owner`. Attempting to access it will result in a runtime error.
+注意: アップグレード機能導入前（Leo v3.1.0 より前）にデプロイされたプログラムには `program_owner` が存在しないため、アクセスするとランタイムエラーになります。
 
 ---
 
-## Upgrade Patterns in Leo
+## Leo で使えるアップグレードパターン
 
-Below are some common upgrade patterns in Leo. 
+ここでは代表的なパターンを紹介します。動作するサンプルは [公式サンプル集](https://github.com/ProvableHQ/leo-examples/tree/main/upgrades) にも用意されています。
 
-You may also refer to the working Leo [examples](https://github.com/ProvableHQ/leo-examples/tree/main/upgrades).
+### パターン 1: 非アップグレード
 
-### Pattern 1: Non-Upgradable 
-
-**Goal:** Explicitly prevent all future upgrades. 
+**目的:** すべての将来のアップグレードを明示的に禁止します。
 
 **`main.leo`**
 
-The Leo compiler automatically generates a constructor that locks the program to its initial version.
+コンパイラが初期バージョンを固定するコンストラクタを自動生成します。
 
 ```leo
 // The 'noupgrade_example' program.
@@ -84,15 +78,15 @@ program noupgrade_example.aleo {
 }
 ```
 
-The corresponding AVM code is:
+生成される AVM コード:
 ```
 constructor:
     assert.eq edition 0u16
 ```
 
-### Pattern 2: Admin-Driven Upgrade
+### パターン 2: 管理者によるアップグレード
 
-**Goal:** Restrict upgrades to a single, hardcoded admin address.
+**目的:** ハードコードした 1 つの管理者アドレスだけがアップグレードを実行できるようにします。
 
 **`main.leo`**
 
@@ -113,20 +107,19 @@ program admin_example.aleo {
 }
 ```
 
-The corresponding AVM code is:
+生成される AVM コード:
 ```
 constructor:
     assert.eq program_owner aleo1rhgdu77hgyqd3xjj8ucu3jj9r2krwz6mnzyd80gncr5fxcwlh5rsvzp9px;
 ```
 
+### パターン 3: チェックサムによるアップグレード（投票例）
 
-### Pattern 3: Checksum-Driven (Vote Example)
-
-**Goal:** Delegate upgrade authority to a separate governance program that manages a list of approved code checksums.
+**目的:** 承認済みチェックサムを管理する別プログラム（ガバナンスコントラクト）にアップグレード権限を委任します。
 
 **`main.leo`**
 
-The compiler uses the `mapping` and `key` fields to generate a constructor that looks up the approved checksum from the `basic_voting.aleo` program.
+`mapping` と `key` を指定すると、`basic_voting.aleo` のマッピングを参照するコンストラクタが生成されます。
 
 ```leo
 // The 'vote_example' program.
@@ -144,7 +137,7 @@ program vote_example.aleo {
 }
 ```
 
-The corresponding AVM code is:
+生成される AVM コード:
 ```
 constructor:
     branch.eq edition 0u16 to end;
@@ -153,14 +146,13 @@ constructor:
     position end;
 ```
 
-### Pattern 4: Custom Logic (Time-lock Example)
+### パターン 4: カスタムロジック（タイムロック例）
 
-**Goal:** Enforce a time delay before an upgrade is allowed. No pre-defined mode is available for this so we'll have to write our own upgrade policy
-
+**目的:** アップグレードを許可する前に一定のブロック高を要求するなど、独自のタイムロジックを導入します。
 
 **`main.leo`**
 
-With the `@custom` constructor, you are responsible for writing the entire constructor logic yourself.
+`@custom` を使う場合、コンストラクタのロジックはすべて自分で実装します。
 
 ```leo
 // The 'timelock_example' program.
@@ -180,7 +172,7 @@ program timelock_example.aleo {
 }
 ```
 
-The corresponding AVM code is:
+生成される AVM コード:
 ```
 constructor:
     gt edition 0u16 into r0;
@@ -192,52 +184,46 @@ constructor:
     position end_otherwise_0_1;
 ```
 
-
-
 -----
 
-## The Rules: What You Can and Cannot Change
+## ルール: 変更できるもの・できないもの
 
-The protocol enforces strict rules to ensure that upgrades don't break dependent applications or corrupt existing state.
+プロトコルは、依存アプリケーションとの互換性やオンチェーン状態の整合性が崩れないよう、厳格なルールを設けています。
 
-An upgrade **can**:
+アップグレードで **可能な** こと:
 
-* Change the internal logic of existing `transition` and `async functions` blocks.
-* Add new `struct`s, `record`s, `mapping`s, `transition`s, and `function`s.
+- 既存の `transition` や `async function` の内部ロジックを変更する。
+- 新しい `struct`、`record`、`mapping`、`transition`、`function` を追加する。
 
-An upgrade **cannot**:
+アップグレードで **禁止されている** こと:
 
-* Change the input or output signatures of any existing `transition`, `function`, `async transition`, or `async function`.
-* Change the logic within a non-inline `function`.
-* Modify or delete any existing `struct`, `record`, or `mapping`.
-* Delete any existing program component.
+- 既存の `transition`／`function`／`async transition`／`async function` の入出力シグネチャを変更する。
+- 非インライン `function` のロジックを変更する。
+- 既存の `struct`／`record`／`mapping` を変更または削除する。
+- 既存のプログラム要素を削除する。
 
-| Program Component | Delete | Modify | Add |
-|:------------------| :---: | :---: | :---: |
+| プログラム要素     | 削除 | 変更 | 追加 |
+|:------------------|:---:|:---:|:---:|
 | `import`          | ❌ | ❌ | ✅ |
 | `struct`          | ❌ | ❌ | ✅ |
 | `record`          | ❌ | ❌ | ✅ |
 | `mapping`         | ❌ | ❌ | ✅ |
 | `function`        | ❌ | ❌ | ✅ |
-| `transition`      | ❌ | ✅ (logic) | ✅ |
-| `async function`  | ❌ | ✅ (logic) | ✅ |
+| `transition`      | ❌ | ✅（ロジックのみ） | ✅ |
+| `async function`  | ❌ | ✅（ロジックのみ） | ✅ |
 | `constructor`     | ❌ | ❌ | ❌ |
 
 -----
 
-## Security Checklist
+## セキュリティチェックリスト
 
-Program mutability introduces new risks. Keep these points in mind:
+プログラムをアップグレード可能にすると、新たなリスクも生まれます。以下の点に留意しましょう。
 
-- **Audit the `constructor` intensely.** Its logic is permanent and cannot be fixed after deployment.
-- **Prefer multi-sig or DAO governance over a single admin.** A single point of failure is risky.
-- **Implement time-locks for major upgrades.** Giving users a window to react builds trust.
-- **Plan for "ossification".** Provide a way to make your program immutable (e.g., by transferring admin rights to a burn address) to give users long-term certainty.
+- **`constructor` を徹底的に監査する。** ロジックは永続であり、デプロイ後に修正できません。
+- **単独管理者よりマルチシグや DAO を優先する。** 単一障害点を避けることで安全性が高まります。
+- **大型アップグレードにはタイムロックを導入する。** ユーザーが変更に備えられる期間を設けると信頼につながります。
+- **将来的な固定化（ossification）も計画する。** 管理権を焼却アドレスに譲渡するなど、最終的に不変化できる仕組みを用意しましょう。
 
-## Legacy Programs
+## 旧バージョンのプログラム
 
-If you have a program that was deployed before the upgradability feature was enabled (or any program deployed without a `constructor`):
-
-**It is permanently non-upgradable.**
-
-There is **no migration path** to make a legacy program upgradable. If you need to add new features, you must deploy an entirely new program and have your users migrate to it.
+アップグレード機能導入前（`constructor` を持たない）にデプロイされたプログラムは、**永久にアップグレードできません**。後からアップグレード可能にする方法は存在しません。新機能を追加したい場合は新しいプログラムをデプロイし、ユーザーに移行してもらう必要があります。

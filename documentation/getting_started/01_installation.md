@@ -1,7 +1,8 @@
 ---
 id: installation
-title: Installation
-sidebar: Installation
+title: インストール
+sidebar: インストール
+slug: /installation
 toc_min_heading_level: 5
 toc_max_heading_level: 5
 ---
@@ -10,9 +11,9 @@ toc_max_heading_level: 5
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-There are a number of ways to install Leo, depending on your platform and preferences. Take your pick!
+利用しているプラットフォームや好みに応じて、Leo をインストールする方法はいくつかあります。使いやすい手段を選んでください。
 
-If you'd like to try Leo without installing it locally on your machine, check out the [Leo Playground](./02_ide.md#leo-playground).
+ローカル環境へインストールせずに試したい場合は、[Leo Playground](./02_ide.md#leo-playground) をご覧ください。
 
 <Tabs defaultValue="cargo"
 values={[
@@ -22,59 +23,59 @@ values={[
 ]}>
 <TabItem value="cargo">
 
-## Install Cargo
-The easiest way to install Cargo is to install the latest stable release of [Rust](https://www.rust-lang.org/tools/install).
-## Install Leo
+## Cargo でインストール
+最も簡単な方法は、[Rust](https://www.rust-lang.org/tools/install) の最新安定版をインストールして Cargo を利用することです。
+
+## Leo をインストール
 ```bash
 cargo install leo-lang
 ```
-This will generate the executable at `~/.cargo/bin/leo`.
+インストールが完了すると、`~/.cargo/bin/leo` に実行ファイルが生成されます。
 </TabItem>
 <TabItem value="prebuilt">
 
-## MacOS (Apple Silicon):
-  1. **[Download Leo for Apple Silicon (MacOS)](https://github.com/ProvableHQ/leo/releases/latest/download/leo.zip)**
-  2. Extract the `.zip` file
-  3. Open a terminal land navigate to the extracted directory.
-  4. Run `chmod +x leo` to make the file executable
-  5. Move `leo` to `/usr/local/bin` to use it system wide.
+## macOS（Apple Silicon）
+  1. **[Apple Silicon 向けの Leo (macOS)](https://github.com/ProvableHQ/leo/releases/latest/download/leo.zip)** をダウンロード
+  2. ダウンロードした `.zip` ファイルを展開
+  3. ターミナルを開き、展開したディレクトリに移動
+  4. `chmod +x leo` を実行して実行可能にする
+  5. `leo` を `/usr/local/bin` に移動するとシステム全体で利用できます
 
           mv leo /usr/local/bin
 
-  6. Run `leo --version` to confirm installation
+  6. `leo --version` を実行してインストールを確認
 
-## Other Platforms:
-  - **[Browse all Leo releases](https://github.com/ProvableHQ/leo/releases)**
+## その他のプラットフォーム
+  - **[Leo の全リリース一覧](https://github.com/ProvableHQ/leo/releases)** を参照してください
 
 </TabItem>
 <TabItem value="source">
 
-## Install Rust
-Install the latest stable release of **[Rust](https://www.rust-lang.org/tools/install)**.  You can verify the installation by running:
+## Rust のインストール
+**[Rust](https://www.rust-lang.org/tools/install)** の最新安定版をインストールします。インストール後、次のコマンドで確認できます。
 ```bash
 cargo --version
 ```
 
-## Install Git
-Install the latest version of **[Git](https://git-scm.com/downloads)**.  You can verify the installation by running:
+## Git のインストール
+**[Git](https://git-scm.com/downloads)** の最新バージョンをインストールします。インストール後、次のコマンドで確認できます。
 ```bash
 git --version
 ```
 
-## Build Leo from Source Code
+## ソースコードから Leo をビルド
 ```bash
-# Download the source code 
+# ソースコードを取得
 git clone https://github.com/ProvableHQ/leo
 cd leo
-# Build and install
+# ビルドしてインストール
 cargo install --path .
 ```
-This will generate the executable at `~/.cargo/bin/leo`.
+インストールが完了すると、`~/.cargo/bin/leo` に実行ファイルが生成されます。
 
-#### To use Leo, run:
+#### Leo を使う
 ```bash
 leo
 ```
 </TabItem>
 </Tabs>
-

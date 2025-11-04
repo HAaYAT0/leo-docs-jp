@@ -9,20 +9,19 @@ toc_max_heading_level: 2
 
 # `leo remove`
 
-To remove a dependency from your project, run the following command:
+プロジェクトから依存関係を削除するには次を実行します。
 
 ```bash
 leo remove <NAME>
 ```
-where `<NAME>` is the name of the imported program.
+`<NAME>` は削除したいプログラム名です。
 
-See the **[Dependency Management](./../guides/02_dependencies.md)** guide for more details.
+詳細は **[Dependency Management](./../guides/02_dependencies.md)** を参照してください。
 
 ### Flags:
 
 #### `--all`
-Removes all dependencies (or dev dependencies, if used with --dev).
+すべての依存関係を削除します（`--dev` と併用すると開発用依存関係のみ削除）。
 
 #### `-dev`
-Removes dev dependencies.
-
+開発用依存関係を削除します。

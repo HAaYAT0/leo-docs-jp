@@ -1,11 +1,10 @@
 ---
 id: query 
-title: Querying Network Metadata and State
-sidebar_label: Querying the Network
+title: ネットワークのメタデータと状態を取得する
+sidebar_label: ネットワークのクエリ
 ---
 [general tags]: # (guides, query)
 
 <!--TODO:-->
 
-Coming soon!
-
+近日公開予定です！

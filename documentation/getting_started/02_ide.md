@@ -1,69 +1,69 @@
 ---
 id: ide
-title: Your Development Environment 
-sidebar_label: Dev Env
+title: 開発環境を整える
+sidebar_label: 開発環境
 ---
 [general tags]: # (playground, ide, plugin)
 
-Developers can choose from a wide variety of development environments. 
+開発者はニーズに合わせてさまざまな開発環境を選択できます。
 
 ## Leo Playground
 
-[Leo Playground](https://play.leo-lang.org) is a web-based IDE that is designed to allow developers to develop, deploy, and execute programs all in the browser! It comes with an editor, Github integrations, and a number of utilities to manage programs and interface with the network. 
+[Leo Playground](https://play.leo-lang.org) はブラウザだけで開発・デプロイ・実行までこなせる Web ベースの IDE です。エディタや GitHub 連携に加えて、プログラム管理やネットワーク連携に役立つユーティリティが揃っています。
 
 ![Leo Playground](./../img/leo-playground.png)
 
 :::note
-Developers may find the generating transactions is slower in the browser. This is because the underlying algorithms for generating proofs are computationally expensive. We're actively working on making this better!
+ブラウザ上ではトランザクション生成がやや遅く感じられるかもしれません。これは証明生成アルゴリズムが計算負荷の高い処理であるためです。引き続き改善に取り組んでいます。
 :::
 
-## Plugins
+## プラグイン
 
 <!--TODO: Condense this.--->
 
-The Leo team also maintains plugin for a number of different edits. If you do not see your favorite editor on this list, please reach out on [GitHub](https://github.com/ProvableHQ/leo/issues/new).
+Leo チームは複数のエディタ向けに公式プラグインを提供しています。ここに記載のないエディタをお使いの場合は、[GitHub](https://github.com/ProvableHQ/leo/issues/new) でリクエストしてください。
 
 
 ### VS Code
 
 [//]: # (![]&#40;./images/vscode.png&#41;)
-Download the editor here: https://code.visualstudio.com/download.
+エディタ本体のダウンロード: https://code.visualstudio.com/download
 
-#### Install
+#### インストール
 
-1. Install [Leo for VSCode](https://marketplace.visualstudio.com/items?itemName=aleohq.leo-extension) from VSCode marketplace.
-2. The correct extension ID is `aleohq.leo-extension`, and the description should state "the official VSCode extension for Leo".
+1. VSCode Marketplace から [Leo for VSCode](https://marketplace.visualstudio.com/items?itemName=aleohq.leo-extension) をインストールします。
+2. 正しい拡張機能 ID は `aleohq.leo-extension` で、説明欄に「the official VSCode extension for Leo」と記載されています。
 
-#### Usage
+#### 使い方
 
-1. Open `VSCode`.
-2. Go to Settings > Extensions or use the left side panel Extensions button to enable the Leo plugin.
+1. `VSCode` を開きます。
+2. Settings > Extensions もしくは左側パネルの Extensions ボタンから Leo プラグインを有効化します。
 
 
 ### Sublime Text
 
 [//]: # (![]&#40;./images/sublime.png&#41;  )
-Download the editor here: https://www.sublimetext.com/download.
-Aleo instructions support for Sublime's LSP plugin is provided through a language-server.
+エディタ本体のダウンロード: https://www.sublimetext.com/download  
+Sublime の LSP プラグイン経由で Aleo 命令のサポートを提供しています。
 
-#### Install
+#### インストール
 
-1. Install [LSP](https://packagecontrol.io/packages/LSP) and [LSP-leo](https://packagecontrol.io/packages/LSP-leo) from Package Control.
-2. Restart Sublime.
+1. Package Control から [LSP](https://packagecontrol.io/packages/LSP) と [LSP-leo](https://packagecontrol.io/packages/LSP-leo) をインストールします。
+2. Sublime を再起動します。
 
-#### Usage
+#### 使い方
 
-Follow these steps to toggle the `Leo` syntax highlighting, hover, and tokens.
+以下の手順で `Leo` のシンタックスハイライトやホバー、トークン表示を切り替えます。
 
-1. Open `Sublime Text`.
-2. From Settings > Select Color Scheme... > LSP-leo
+1. `Sublime Text` を開きます。
+2. Settings > Select Color Scheme... > LSP-leo を選択します。
 
 
-### Intellij
+### IntelliJ
 
 [//]: # (![]&#40;./images/intellij.png&#41;)
-Download the editor here: https://www.jetbrains.com/idea/download/.
+エディタ本体のダウンロード: https://www.jetbrains.com/idea/download/
 
-#### Install
+#### インストール
 
-1. Install and enable the Leo [plugin](https://plugins.jetbrains.com/plugin/19979-leo) in your IDE.
+1. IDE 上で [Leo プラグイン](https://plugins.jetbrains.com/plugin/19979-leo) をインストールし、有効化します。

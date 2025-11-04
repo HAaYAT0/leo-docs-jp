@@ -9,55 +9,50 @@ toc_max_heading_level: 2
 
 # `leo add`
 
-The `leo add` command is used to add a new on-chain or local dependency to the current Leo project.
+`leo add` コマンドは、現在の Leo プロジェクトにオンチェーンまたはローカルの依存関係を追加します。
 
-
-To add a local dependency to your project, run the following command:
+ローカルの依存関係を追加する場合:
 ```bash
 leo add --local <LOCAL> <NAME>
 ```
-where `<NAME>` is the name of the imported program, and `<LOCAL>` is the path to the local project.
+`<NAME>` には追加するプログラム名、`<LOCAL>` にはローカルプロジェクトへのパスを指定します。
 
 &nbsp;
 
-To add a program already deployed onchain as a dependency to your project, run the following command:
+既にオンチェーンにデプロイされているプログラムを依存関係として追加する場合:
 ```bash
 leo add --network <NAME>
 ```
-where `<NAME>` is the name of the imported program.
+`<NAME>` は取り込むプログラム名を指定します。
 
 ### Flags:
 #### `--local <LOCAL> `
 #### `-l <LOCAL>`
-Specifies that the dependency to be added is a local program located at path `<LOCAL>`.  This can either be the root directory for a Leo project, or a path directly to an already compiled `.aleo` file.
+追加する依存関係がローカルに存在するプログラムであることを示します。`<LOCAL>` は Leo プロジェクトのルートディレクトリ、またはコンパイル済み `.aleo` ファイルへのパスを指定できます。
 
 
 #### `--network`
 #### `-n `
-Specifies that the dependency to be added is a remote program currently deployed onchain. The network that it will be pulled from will be the same as the one specified in by the `NETWORK` variable in `.env`
-
+オンチェーンにデプロイ済みのリモートプログラムを依存関係として取得します。どのネットワークから取得するかは `.env` の `NETWORK` 変数で定義された値に従います。
 
 
 #### `--edition <EDITION> `
 #### `-e <EDITION>`
-Specifies the expected edition of the program being imported. Only passing this flag will assume that the program is being imported from the network. 
+取得するプログラムのエディションを指定します。このフラグのみを指定した場合、ネットワークからの取得が前提となります。
 
 :::warning
-Do not use this feature unless you know what you are doing!
+用途を理解している場合のみ使用してください。
 :::
 
 
-
 #### `--dev`
-Specifies that the imported program is a development dependency and should not be used in production
-
+追加するプログラムを開発用依存関係として扱います。本番環境では利用しない前提です。
 
 
 #### `-c`
 #### `--clear`
-Clears all previous dependencies.
+既存の依存関係をすべて削除します。
 
 :::warning
-This feature is currently bugged and is non-functional.
+この機能には既知の不具合があり、現在は正常に動作しません。
 :::
-

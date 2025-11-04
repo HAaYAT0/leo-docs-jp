@@ -1,19 +1,19 @@
 ---
 id: deploy
-title: Deploying Your Programs 
-sidebar_label: Deploying
+title: プログラムをデプロイする
+sidebar_label: デプロイ
 ---
 [general tags]: # (guides, deploy, deployment, program)
 
-The `leo deploy` command is used for deploying Leo program to a local devnet, Testnet, or Mainnet.
-The `leo upgrade` command is used for upgrading an existing Leo program on the network.
+`leo deploy` コマンドは、Leo プログラムをローカル Devnet・Testnet・Mainnet にデプロイする際に使用します。  
+ネットワーク上の既存プログラムをアップグレードするには `leo upgrade` コマンドを使用します。
 
-## Getting Started
-From the root of the Leo program directory, run the following command:
+## はじめに
+Leo プログラムのルートディレクトリで次を実行します。
 ```bash
 leo deploy --help
 ```
-This will display the help message with all available options for the `leo deploy` command.
+`leo deploy` で利用できるオプションがすべて表示されます。
 ```bash
 Deploy a program
 
@@ -87,12 +87,10 @@ Options:
 ```
 
 
-## A Quick Example
-When you run `leo new`, it creates a new Leo project with default files and directories, including a `.env` file.
-The defaults in the `.env` file are set to deploy on a testnet devnet using a local node API endpoint.
-The defaults are set to deploy on a local devnet with the `testnet` configuration using a local node API endpoint.
+## クイックスタート
+`leo new` を実行すると、`.env` を含む標準的なファイル／ディレクトリが生成されます。`.env` の既定値は、ローカルノードの API エンドポイントを使って Testnet 用 Devnet にデプロイする設定になっています。
 
-To test the deployment, run a devnet via `leo devnet` (you'll need to configure it appropriately and run it in a separate terminal) and then run:
+デプロイ手順を試すには、別のターミナルで `leo devnet` を実行して Devnet を起動し（事前に必要な設定を済ませておいてください）、次のコマンドを実行します。
 ```bash
 > leo deploy  --devnet --broadcast
        Leo
@@ -198,42 +196,43 @@ Once it is deployed, it CANNOT be changed.
     (use this to check for rejected transactions)
 
 🔄 Searching up to 12 blocks to confirm transaction (this may take several seconds)...
+```
+
+```text
 Explored 2 blocks.
 Transaction accepted.
 ✅ Deployment confirmed!
 ```
 
-Leo will:
-- Compile the program and generate the necessary AVM instructions.
-- Tell you the program's checksum, which is a unique identifier for the program's code.
-- Display a deployment summary, including the total number of variables and constraints.
-- Ask for confirmation before proceeding with the deployment.
-- Broadcast the deployment transaction to the specified network.
-- Wait for the transaction to be confirmed and display the transaction ID.
+`leo deploy` を実行すると、以下の処理が行われます。
+- プログラムをコンパイルし、必要な AVM 命令を生成します。
+- プログラムのチェックサム（一意の識別子）を表示します。
+- 変数や制約数などを含むデプロイ概要を表示します。
+- デプロイを進める前に確認を求めます。
+- 指定したネットワークにトランザクションをブロードキャストします。
+- トランザクションが確定するまで待機し、トランザクション ID を表示します。
 
-## Upgrading a Program
+## プログラムをアップグレードする
 
-If your program is already deployed, you can upgrade it using the `leo upgrade` command.
-The upgrade will only work if your program is upgradable, meaning it has a constructor that allows for upgrades.
-See the [Upgradability Guide](../guides/10_program_upgradability.md) for more details on how to make your program upgradable.
+すでにデプロイ済みのプログラムを更新したい場合は、`leo upgrade` コマンドを使用します。  
+アップグレードが成功するのは、コンストラクタでアップグレードを許可している（アップグレード可能な）プログラムだけです。  
+アップグレード可能にする方法については [Upgradability ガイド](../guides/10_program_upgradability.md) を参照してください。
 
 
-## Options and Environment Variables
-The target network, the Private Key, and a node API endpoint need to be specified for a deployment or upgrade.
-They can be set in one of the following ways, in order of precedence:
-1. CLI options,
-2. environment variables, or
-3. 3 `.env` file:
+## オプションと環境変数
+デプロイやアップグレードでは、ターゲットネットワーク・秘密鍵・ノード API エンドポイントを指定する必要があります。指定方法は優先順位の高い順に次のとおりです。
+1. CLI のオプション
+2. 環境変数
+3. `.env` ファイル
 
-The options are selected in that order of precedence. 
-For example, if the `--network` option is specified, it will override the value in the `.env` file.
-A `.env` file should be formatted as follows:
+より優先度の高い指定がある場合、下位の設定は上書きされます。  
+たとえば `--network` オプションが指定されていれば、`.env` の値より優先されます。
+
+`.env` ファイルは次の形式で記述します。
 ```bash
 NETWORK=testnet
 PRIVATE_KEY=APrivateKey1z...GPWH
 ENDPOINT=https://api.explorer.provable.com/v1
 ```
 
-If you are deploying to a local devnet, use the `--devnet` flag.
-
-
+ローカル Devnet にデプロイする場合は `--devnet` フラグを利用してください。

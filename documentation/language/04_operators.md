@@ -5,65 +5,65 @@ sidebar_label: Operators and Expressions
 ---
 [general tags]: # (operators, cryptographic_operators, assert, hash, commit, random, address, block)
 
-## Operators
+## 演算子 {#operators}
 
-Operators in Leo compute a value based off of one or more expressions.
-Leo defaults to checked arithmetic, which means that it will throw an error if an overflow or division by zero is detected.
+Leo の演算子は 1 つ以上の式に基づいて値を計算します。
+Leo では既定で検査付き算術が採用されており、オーバーフローやゼロ除算が検出されるとエラーが発生します。
 
-For instance, addition adds `first` with `second`, storing the outcome in `destination`.
-For integer types, a constraint is added to check for overflow.
-For cases where wrapping semantics are needed for integer types, see the wrapped variants of the operators.
+たとえば加算は `first` に `second` を加え、結果を `destination` に格納します。
+整数型ではオーバーフローを検査するための制約が追加されます。
+整数型で桁あふれを許容する挙動が必要な場合は、演算子のラップ付きバリアントを参照してください。
 
 ```leo
 let a: u8 = 1u8 + 1u8;
-// a is equal to 2
+// a は 2 と等しい
 
 a += 1u8;
-// a is now equal to 3
+// a は 3 になる
 
 a = a.add(1u8);
-// a is now equal to 4
+// a は 4 になる
 ```
 
-See the [Operator Reference](./04_operators.md) for a complete list of operators.
+演算子の完全な一覧については [Operator Reference](./04_operators.md) を参照してください。
 
-### Operator Precedence
+### 演算子の優先順位 {#operator-precedence}
 
-Operators will prioritize evaluation according to:
+演算子は次の優先順位に従って評価されます。
 
-|                                   Operator                                    | Associativity |
+|                                   演算子                                    | 結合規則 |
 | :---------------------------------------------------------------------------: | :-----------: |
 |                                `!` `-`(unary)                                 |               |
-|                                     `**`                                      | right to left |
-|                                    `*` `/`                                    | left to right |
-|                                `+` `-`(binary)                                | left to right |
-|                                   `<<` `>>`                                   | left to right |
-|                                      `&`                                      | left to right |
-|                              <code>&#124;</code>                              | left to right |
-|                                      `^`                                      | left to right |
+|                                     `**`                                      | 右から左 |
+|                                    `*` `/`                                    | 左から右 |
+|                                `+` `-`(binary)                                | 左から右 |
+|                                   `<<` `>>`                                   | 左から右 |
+|                                      `&`                                      | 左から右 |
+|                              <code>&#124;</code>                              | 左から右 |
+|                                      `^`                                      | 左から右 |
 |                               `<` `>` `<=` `>=`                               |               |
-|                                   `==` `!=`                                   | left to right |
-|                                     `&&`                                      | left to right |
-|                           <code>&#124;&#124;</code>                           | left to right |
+|                                   `==` `!=`                                   | 左から右 |
+|                                     `&&`                                      | 左から右 |
+|                           <code>&#124;&#124;</code>                           | 左から右 |
 | `=` `+=` `-=` `*=` `/=` `%=` `**=` `<<=` `>>=` `&=` <code>&#124;=</code> `^=` |               |
 
-### Parentheses
+### 括弧 {#parentheses}
 
-To prioritize a different evaluation, use parentheses `()` around the expression.
+評価の優先順位を変更したい場合は、式を括弧 `()` で囲みます。
 
 ```leo
 let result = (a + 1u8) * 2u8;
 ```
 
-`(a + 1u8)` will be evaluated before multiplying by two `* 2u8`.
+`(a + 1u8)` が先に評価され、その後で `* 2u8` が実行されます。
 
-## Context-dependent Expressions
+## 文脈依存式 {#context-dependent-expressions}
 
-Leo supports several expressions that can be used to reference information about the Aleo blockchain and the current transaction.
+Leo には、Aleo ブロックチェーンおよび現在のトランザクションに関する情報を参照できる式が用意されています。
 
 ### self.address
 
-Returns the address of this program.
+このプログラムのアドレスを返します。
 
 ```leo showLineNumbers
 program test.aleo {
@@ -75,7 +75,7 @@ program test.aleo {
 
 ### self.caller
 
-Returns the address of the account/program that invoked the current `transition`.
+現在の `transition` を呼び出したアカウントまたはプログラムのアドレスを返します。
 
 ```leo showLineNumbers
 program test.aleo {
@@ -87,7 +87,7 @@ program test.aleo {
 
 ### self.signer
 
-Returns the address of the account that invoked that top-level `transition`. This is the account that signed the transaction.
+最上位の `transition` を呼び出したアカウントのアドレス、つまりトランザクションに署名したアカウントのアドレスを返します。
 
 ```leo showLineNumbers
 program test.aleo {
@@ -99,10 +99,10 @@ program test.aleo {
 
 ### block.height
 
-Returns the height of the current block.
+現在のブロックの高さを返します。
 
 :::info
-`block.height` is only allowed in an [async function](#async-function).
+`block.height` は [async function](#async-function) 内でのみ使用できます。
 :::
 
 ```leo showLineNumbers
@@ -117,15 +117,15 @@ program test.aleo {
 }
 ```
 
-## Core Functions
+## コア関数 {#core-functions}
 
-Core functions are functions that are built into the Leo language.
-They are used to check assertions and perform cryptographic operations such as hashing, commitment, and random number generation.
+コア関数は Leo 言語に組み込まれている関数です。
+検証や、ハッシュ・コミットメント・乱数生成などの暗号操作に利用されます。
 
-### Assert and AssertEq
+### Assert と AssertEq {#assert-and-asserteq}
 
-`assert` and `assert_eq` are used to verify that a condition is true.
-If the condition is false, the program will fail.
+`assert` と `assert_eq` は条件が真であることを確認するための関数です。
+条件が偽の場合、プログラムは失敗します。
 
 ```leo showLineNumbers
 program test.aleo {
@@ -136,11 +136,11 @@ program test.aleo {
 }
 ```
 
-### Hash
+### Hash {#hash}
 
-Leo supports the following hashing algorithms: `BHP256`, `BHP512`, `BHP768`, `BHP1024`, `Pedersen64`, `Pedersen128`, `Poseidon2`, `Poseidon4`, `Poseidon8`, `Keccak256`, `Keccak384`, `Keccak512`, `SHA3_256`, `SHA3_384`, `SHA3_512`.  
-The output type of a hash function is specified in the function name. e.g. `hash_to_group` will return a `group` type.
-Hash functions take any type as an argument.
+Leo がサポートするハッシュアルゴリズムは `BHP256`, `BHP512`, `BHP768`, `BHP1024`, `Pedersen64`, `Pedersen128`, `Poseidon2`, `Poseidon4`, `Poseidon8`, `Keccak256`, `Keccak384`, `Keccak512`, `SHA3_256`, `SHA3_384`, `SHA3_512` です。  
+ハッシュ関数の出力型は関数名で指定されます。たとえば `hash_to_group` は `group` 型を返します。
+ハッシュ関数は任意の型を引数に取ることができます。
 
 ```leo showLineNumbers
 let a: scalar = BHP256::hash_to_scalar(1u8);
@@ -148,28 +148,28 @@ let b: address = Pedersen64::hash_to_address(1u128);
 let c: group = Poseidon2::hash_to_group(1field);
 ```
 
-[See all hash functions](./04_operators.md#table-of-cryptographic-operators)
+[すべてのハッシュ関数を参照](./04_operators.md#table-of-cryptographic-operators)
 
-### Commit
+### Commit {#commit}
 
-Leo supports the following commitment algorithms: `BHP256`, `BHP512`, `BHP768`, `BHP1024`, `Pedersen64`, `Pedersen128`  
-The output type of a commitment function is specified in the function name. e.g. `commit_to_group` will return a `group` type.  
-The first argument can be any type. The second argument must be a `field` type and is used as a blinding factor.
+Leo がサポートするコミットメントアルゴリズムは `BHP256`, `BHP512`, `BHP768`, `BHP1024`, `Pedersen64`, `Pedersen128` です。  
+コミットメント関数の出力型は関数名で指定されます。たとえば `commit_to_group` は `group` 型を返します。  
+第 1 引数は任意の型を指定でき、第 2 引数はブラインディングファクターとして使われる `field` 型でなければなりません。
 
 ```leo showLineNumbers
 let a: group = BHP256::commit_to_group(1u8, 2field);
 let b: address = Pedersen64::commit_to_address(1u128, 2field);
 ```
 
-[See all commitment functions](./04_operators.md#table-of-cryptographic-operators)
+[すべてのコミットメント関数を参照](./04_operators.md#table-of-cryptographic-operators)
 
-### Random
+### Random {#random}
 
-Leo supports the `ChaCha` random number generation algorithm.  
-The output type of a random function is specified in the function name. e.g. `rand_group` will return a `group` type.
+Leo は乱数生成アルゴリズムとして `ChaCha` をサポートしています。  
+乱数生成関数の出力型は関数名で指定されます。たとえば `rand_group` は `group` 型を返します。
 
 :::info
-Random functions are only allowed in an [async function](#async-function).
+乱数生成関数は [async function](#async-function) 内でのみ使用できます。
 :::
 
 ```leo showLineNumbers
@@ -177,93 +177,90 @@ let a: group = ChaCha::rand_group();
 let b: u32 = ChaCha::rand_u32();
 ```
 
-[See all random functions](./04_operators.md#table-of-cryptographic-operators)
+[すべての乱数生成関数を参照](./04_operators.md#table-of-cryptographic-operators)
 
+Leo でサポートされている標準演算子と暗号演算子を以下に示します。
+Leo の演算子は Aleo Virtual Machine (AVM) で実行可能な [Aleo instruction opcode](https://developer.aleo.org/guides/aleo/opcodes) にコンパイルされます。
 
-
-
-The following lists show the standard and cryptographic operators supported by Leo.
-The Leo operators compile down to [Aleo instructions opcodes](https://developer.aleo.org/guides/aleo/opcodes) executable by the Aleo Virtual Machine (AVM).
-
-## Table of Standard Operators
-| Name                        | Description                         |
+## 標準演算子の一覧 {#table-of-standard-operators}
+| 名前                        | 説明                         |
 |-----------------------------|:------------------------------------|
-| [abs](#abs)                 | Absolute value                      |
-| [abs_wrapped](#abs_wrapped) | Wrapping absolute value             |
-| [add](#add)                 | Addition                            |
-| [add_wrapped](#add_wrapped) | Wrapping addition                   |
-| [and](#and)                 | Conjunction                         |
-| [assert](#assert)           | Assert boolean true                 |
-| [assert_eq](#assert_eq)     | Assert equality                     |
-| [assert_neq](#assert_neq)   | Assert non-equality                 |
-| [block.height](#block.height)| Fetch the latest block height      |
-| [div](#div)                 | Division                            |
-| [div_wrapped](#div_wrapped) | Wrapping division operation         |
-| [double](#double)           | Double                              |
-| [group::GEN](#groupgen)     | group generator                     |
-| [gt](#gt)                   | Greater than comparison             |
-| [gte](#gte)                 | Greater than or equal to comparison |
-| [inv](#inv)                 | Multiplicative inverse              |
-| [eq](#eq)                   | Equality comparison                 |
-| [neq](#neq)                 | Non-equality comparison             |
-| [lt](#lt)                   | Less than comparison                |
-| [lte](#lte)                 | Less than or equal to comparison    |
-| [mod](#mod)                 | Modulo                              |
-| [mul](#mul)                 | Multiplication                      |
-| [mul_wrapped](#mul_wrapped) | Wrapping multiplication             |
-| [nand](#nand)               | Negated conjunction                 |
-| [neg](#neg)                 | Additive inverse                    |
-| [nor](#nor)                 | Negated disjunction                 |
-| [not](#not)                 | Logical negation                    |
-| [or](#or)                   | (Inclusive) disjunction             |
-| [pow](#pow)                 | Exponentiation                      |
-| [pow_wrapped](#pow_wrapped) | Wrapping exponentiation             |
-| [rem](#rem)                 | Remainder                           |
-| [rem_wrapped](#rem_wrapped) | Wrapping remainder                  |
-| [shl](#shl)                 | Shift left                          |
-| [shl_wrapped](#shl_wrapped) | Wrapping shift left                 |
-| [shr](#shr)                 | Shift right                         |
-| [shr_wrapped](#shr_wrapped) | Wrapping shift right                |
-| [square_root](#square_root) | Square root                         |
-| [square](#square)           | Square                              |
-| [sub](#sub)                 | Subtraction                         |
-| [sub_wrapped](#sub_wrapped) | Wrapping subtraction                |
-| [to_x_coordinate](#to_x_coordinate) | Extract x-coordinate of a group element              |
-| [to_y_coordinate](#to_y_coordinate) | Extract y-coordinate of a group element              |
-| [sub_wrapped](#sub_wrapped) | Wrapping subtraction                |
-| [ternary](#ternary)         | Ternary select                      |
-| [xor](#xor)                 | Exclusive conjunction               |
+| [abs](#abs)                 | 絶対値                      |
+| [abs_wrapped](#abs_wrapped) | ラップ付き絶対値             |
+| [add](#add)                 | 加算                            |
+| [add_wrapped](#add_wrapped) | ラップ付き加算                   |
+| [and](#and)                 | 論理積                         |
+| [assert](#assert)           | 真であることの検証                 |
+| [assert_eq](#assert_eq)     | 等価であることの検証                     |
+| [assert_neq](#assert_neq)   | 非等価であることの検証                 |
+| [block.height](#block.height)| 最新ブロック高の取得      |
+| [div](#div)                 | 除算                            |
+| [div_wrapped](#div_wrapped) | ラップ付き除算         |
+| [double](#double)           | 2 倍                              |
+| [group::GEN](#groupgen)     | group の生成元                     |
+| [gt](#gt)                   | より大きい比較             |
+| [gte](#gte)                 | 以上の比較 |
+| [inv](#inv)                 | 乗法逆元              |
+| [eq](#eq)                   | 等価比較                 |
+| [neq](#neq)                 | 非等価比較             |
+| [lt](#lt)                   | より小さい比較                |
+| [lte](#lte)                 | 以下の比較    |
+| [mod](#mod)                 | 剰余                              |
+| [mul](#mul)                 | 乗算                      |
+| [mul_wrapped](#mul_wrapped) | ラップ付き乗算             |
+| [nand](#nand)               | 否定された論理積                 |
+| [neg](#neg)                 | 加法逆元                    |
+| [nor](#nor)                 | 否定された論理和                 |
+| [not](#not)                 | 否定                    |
+| [or](#or)                   | （包含的）論理和             |
+| [pow](#pow)                 | 累乗                      |
+| [pow_wrapped](#pow_wrapped) | ラップ付き累乗             |
+| [rem](#rem)                 | 剰余                           |
+| [rem_wrapped](#rem_wrapped) | ラップ付き剰余                  |
+| [shl](#shl)                 | 左シフト                          |
+| [shl_wrapped](#shl_wrapped) | ラップ付き左シフト                 |
+| [shr](#shr)                 | 右シフト                         |
+| [shr_wrapped](#shr_wrapped) | ラップ付き右シフト                 |
+| [square_root](#square_root) | 平方根                         |
+| [square](#square)           | 平方                              |
+| [sub](#sub)                 | 減算                         |
+| [sub_wrapped](#sub_wrapped) | ラップ付き減算                |
+| [to_x_coordinate](#to_x_coordinate) | グループ要素の x 座標を取得              |
+| [to_y_coordinate](#to_y_coordinate) | グループ要素の y 座標を取得              |
+| [sub_wrapped](#sub_wrapped) | ラップ付き減算                |
+| [ternary](#ternary)         | 三項演算                      |
+| [xor](#xor)                 | 排他的論理和               |
 
-## Table of Cryptographic Operators
-| Name                                                                    | Description                       |
+## 暗号演算子の一覧 {#table-of-cryptographic-operators}
+| 名前                                                                    | 説明                       |
 |-------------------------------------------------------------------------|:----------------------------------|
-| [ChaCha::rand_destination](#chacharand_destination)                     | ChaCha RNG                        |
-| [BHP256::commit_to_destination](#bhp256commit_to_destination)           | 256-bit input BHP commitment      |
-| [BHP512::commit_to_destination](#bhp512commit_to_destination)           | 512-bit input BHP commitment      |
-| [BHP768::commit_to_destination](#bhp768commit_to_destination)           | 768-bit input BHP commitment      |
-| [BHP1024::commit_to_destination](#bhp1024commit_to_destination)         | 1024-bit input BHP commitment     |
-| [Pedersen64::commit_to_destination](#pedersen64commit_to_destination)   | 64-bit input Pedersen commitment  |
-| [Pedersen128::commit_to_destination](#pedersen128commit_to_destination) | 128-bit input Pedersen commitment |
-| [BHP256::hash_to_destination](#bhp256hash_to_destination)               | 256-bit input BHP hash            |
-| [BHP512::hash_to_destination](#bhp512hash_to_destination)               | 512-bit input BHP hash            |
-| [BHP768::hash_to_destination](#bhp768hash_to_destination)               | 768-bit input BHP hash            |
-| [BHP1024::hash_to_destination](#bhp1024hash_to_destination)             | 1024-bit input BHP hash           |
-| [Keccak256::hash_to_destination](#keccak256hash_to_destination)         | 256-bit input Keccak hash         |
-| [Keccak384::hash_to_destination](#keccak384hash_to_destination)         | 384-bit input Keccak hash         |
-| [Keccak512::Hash_to_destination](#keccak512hash_to_destination)         | 512-bit input Keccak hash         |
-| [Pedersen64::hash_to_destination](#pedersen64hash_to_destination)       | 64-bit input Pedersen hash        |
-| [Pedersen128::hash_to_destination](#pedersen128hash_to_destination)     | 128-bit input Pedersen hash       |
-| [Poseidon2::hash_to_destination](#poseidon2hash_to_destination)         | Poseidon hash with input rate 2   |
-| [Poseidon4::hash_to_destination](#poseidon4hash_to_destination)         | Poseidon hash with input rate 4   |
-| [Poseidon8::hash_to_destination](#poseidon8hash_to_destination)         | Poseidon hash with input rate 8   |
-| [SHA3_256::hash_to_destination](#sha3_256hash_to_destination)           | 256-bit input SHA3 hash           |
-| [SHA3_384::hash_to_destination](#sha3_384hash_to_destination)           | 384-bit input SHA3 hash           |
-| [SHA3_512::hash_to_destination](#sha3_512hash_to_destination)           | 512-bit input SHA3 hash           |
-| [signature::verify](#signatureverify)                                   | Verify a signature                |
+| [ChaCha::rand_destination](#chacharand_destination)                     | ChaCha による疑似乱数生成                        |
+| [BHP256::commit_to_destination](#bhp256commit_to_destination)           | 256 ビット入力の BHP コミットメント      |
+| [BHP512::commit_to_destination](#bhp512commit_to_destination)           | 512 ビット入力の BHP コミットメント      |
+| [BHP768::commit_to_destination](#bhp768commit_to_destination)           | 768 ビット入力の BHP コミットメント      |
+| [BHP1024::commit_to_destination](#bhp1024commit_to_destination)         | 1024 ビット入力の BHP コミットメント     |
+| [Pedersen64::commit_to_destination](#pedersen64commit_to_destination)   | 64 ビット入力の Pedersen コミットメント  |
+| [Pedersen128::commit_to_destination](#pedersen128commit_to_destination) | 128 ビット入力の Pedersen コミットメント |
+| [BHP256::hash_to_destination](#bhp256hash_to_destination)               | 256 ビット入力の BHP ハッシュ            |
+| [BHP512::hash_to_destination](#bhp512hash_to_destination)               | 512 ビット入力の BHP ハッシュ            |
+| [BHP768::hash_to_destination](#bhp768hash_to_destination)               | 768 ビット入力の BHP ハッシュ            |
+| [BHP1024::hash_to_destination](#bhp1024hash_to_destination)             | 1024 ビット入力の BHP ハッシュ           |
+| [Keccak256::hash_to_destination](#keccak256hash_to_destination)         | 256 ビット入力の Keccak ハッシュ         |
+| [Keccak384::hash_to_destination](#keccak384hash_to_destination)         | 384 ビット入力の Keccak ハッシュ         |
+| [Keccak512::Hash_to_destination](#keccak512hash_to_destination)         | 512 ビット入力の Keccak ハッシュ         |
+| [Pedersen64::hash_to_destination](#pedersen64hash_to_destination)       | 64 ビット入力の Pedersen ハッシュ        |
+| [Pedersen128::hash_to_destination](#pedersen128hash_to_destination)     | 128 ビット入力の Pedersen ハッシュ       |
+| [Poseidon2::hash_to_destination](#poseidon2hash_to_destination)         | 入力レート 2 の Poseidon ハッシュ   |
+| [Poseidon4::hash_to_destination](#poseidon4hash_to_destination)         | 入力レート 4 の Poseidon ハッシュ   |
+| [Poseidon8::hash_to_destination](#poseidon8hash_to_destination)         | 入力レート 8 の Poseidon ハッシュ   |
+| [SHA3_256::hash_to_destination](#sha3_256hash_to_destination)           | 256 ビット入力の SHA3 ハッシュ           |
+| [SHA3_384::hash_to_destination](#sha3_384hash_to_destination)           | 384 ビット入力の SHA3 ハッシュ           |
+| [SHA3_512::hash_to_destination](#sha3_512hash_to_destination)           | 512 ビット入力の SHA3 ハッシュ           |
+| [signature::verify](#signatureverify)                                   | 署名を検証                |
 
-## Specification
+## 仕様 {#specification}
 
-The following is the specification for each operator in the Leo compiler.
+以下は Leo コンパイラにおける各演算子の仕様です。
 
 ### `abs`
 
@@ -272,15 +269,15 @@ let a: i8 = -1i8;
 let b: i8 = a.abs(); // 1i8
 ```
 
-#### Description
+#### 説明
 
-Computes the absolute value of the input, checking for overflow, storing the result in the destination.
+入力の絶対値を計算し、オーバーフローを検査したうえで結果を出力先に格納します。
 
-Note that execution will halt if the operation overflows. For cases where wrapping semantics are needed, see the [abs_wrapped](#abs_wrapped) instruction. This overflow happens when the input is the minimum value of a signed integer type. For example, `abs -128i8` would result in overflow, since `128` cannot be represented as an `i8`.
+この演算がオーバーフローすると実行は停止します。整数型でラップ付きの挙動が必要な場合は [abs_wrapped](#abs_wrapped) 命令を利用してください。最小値をとる符号付き整数型に対して絶対値を取るとオーバーフローが発生します。たとえば `abs -128i8` は `i8` では `128` を表現できないためオーバーフローになります。
 
-#### Supported Types
+#### 対応している型
 
-| Input  | Destination |
+| 入力  | 出力先 |
 |--------|:------------|
 | `i8`   | `i8`        |
 | `i16`  | `i16`       |
@@ -288,7 +285,7 @@ Note that execution will halt if the operation overflows. For cases where wrappi
 | `i64`  | `i64`       |
 | `i128` | `i128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `abs_wrapped`
@@ -298,13 +295,13 @@ let a: i8 = -128i8;
 let b: i8 = a.abs_wrapped(); // -128i8
 ```
 
-#### Description
+#### 説明
 
-Compute the absolute value of the input, wrapping around at the boundary of the type, and storing the result in the destination.
+入力の絶対値を計算し、型の範囲でラップさせた結果を出力先に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input  | Destination |
+| 入力  | 出力先 |
 |--------|:------------|
 | `i8`   | `i8`        |
 | `i16`  | `i16`       |
@@ -312,7 +309,7 @@ Compute the absolute value of the input, wrapping around at the boundary of the 
 | `i64`  | `i64`       |
 | `i128` | `i128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `add`
@@ -323,15 +320,15 @@ let b: u8 = a + 1u8; // 2u8
 let c: u8 = b.add(1u8); // 3u8
 ```
 
-#### Description
+#### 説明
 
-Adds `first` with `second`, storing the result in `destination`.
+`first` に `second` を加算し、結果を `destination` に格納します。
 
-Note that execution will halt if the operation overflows. For cases where wrapping semantics are needed for integer types, see the [add_wrapped](#add_wrapped) instruction.
+この演算がオーバーフローすると実行は停止します。整数型でラップ付きの挙動が必要な場合は [add_wrapped](#add_wrapped) 命令を利用してください。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `field`     |
 | `group`  | `group`  | `group`     |
@@ -347,7 +344,7 @@ Note that execution will halt if the operation overflows. For cases where wrappi
 | `u128`   | `u128`   | `u128`      |
 | `scalar` | `scalar` | `scalar`    |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `add_wrapped`
@@ -357,13 +354,13 @@ let a: u8 = 255u8;
 let b: u8 = a.add_wrapped(1u8); // 0u8
 ```
 
-#### Description
+#### 説明
 
-Adds `first` with `second`, wrapping around at the boundary of the type, and storing the result in `destination`.
+`first` に `second` を加え、型の範囲を越える場合はラップさせた結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First  | Second | Destination |
+| 第 1 引数  | 第 2 引数 | 出力先 |
 |--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
@@ -376,7 +373,7 @@ Adds `first` with `second`, wrapping around at the boundary of the type, and sto
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `and`
@@ -386,15 +383,13 @@ let a: i8 = 1i8 & 1i8; // 1i8
 let b: i8 = 1i8.and(2i8); // 0i8
 ```
 
+#### 説明
 
-#### Description
+整数（ビット演算）またはブール値の `first` と `second` に対して AND 演算を行い、結果を `destination` に格納します。
 
-Performs an AND operation on integer (bitwise) or boolean `first` and `second`,
-storing the result in `destination`.
+#### 対応している型
 
-#### Supported Types
-
-| First     | Second   | Destination |
+| 第 1 引数     | 第 2 引数   | 出力先 |
 |-----------|----------|:------------|
 | `bool`    | `bool`   | `bool`      |
 | `i8`      | `i8`     | `i8`        |
@@ -408,7 +403,7 @@ storing the result in `destination`.
 | `u64`     | `u64`    | `u64`       |
 | `u128`    | `u128`   | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `assert`
@@ -417,21 +412,21 @@ storing the result in `destination`.
 let a: bool = true;
 let b: bool = false;
 
-assert(a); // will not halt
-assert(b); // program halts
+assert(a); // 正常に続行
+assert(b); // プログラムが停止
 ```
 
-#### Description
+#### 説明
 
-Checks whether the expression evaluates to a `true` boolean value, halting if evaluates to `false`.
+式が `true` を返すか確認し、`false` の場合は実行を停止します。
 
-#### Supported Types
+#### 対応している型
 
-| Expression |
+| 式 |
 |------------|
 | `bool`  |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `assert_eq`
@@ -440,38 +435,35 @@ Checks whether the expression evaluates to a `true` boolean value, halting if ev
 let a: u8 = 1u8;
 let b: u8 = 2u8;
 
-assert_eq(a, a); // will not halt
-assert_eq(a, b); // program halts
+assert_eq(a, a); // 正常に続行
+assert_eq(a, b); // プログラムが停止
 ```
 
-#### Description
+#### 説明
 
-Checks whether `first` and `second` are equal, halting if they are not equal.
+`first` と `second` が等しいことを検証し、等しくない場合は実行を停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First       | Second      |
-|-------------|-------------|
-| `address`   | `address`   |
-| `bool`   | `bool`   |
-| `field`     | `field`     |
-| `group`     | `group`     |
-| `i8`        | `i8`        |
-| `i16`       | `i16`       |
-| `i32`       | `i32`       |
-| `i64`       | `i64`       |
-| `i128`      | `i128`      |
-| `u8`        | `u8`        |
-| `u16`       | `u16`       |
-| `u32`       | `u32`       |
-| `u64`       | `u64`       |
-| `u128`      | `u128`      |
-| `scalar`    | `scalar`    |
-| `Signature` | `Signature` |
-| `struct`    | `struct`    |
-| `Record`    | `Record`    |
+| 第 1 引数 | 第 2 引数 |
+|-----------|-----------|
+| `address` | `address` |
+| `bool`    | `bool`    |
+| `field`   | `field`   |
+| `group`   | `group`   |
+| `i8`      | `i8`      |
+| `i16`     | `i16`     |
+| `i32`     | `i32`     |
+| `i64`     | `i64`     |
+| `i128`    | `i128`    |
+| `u8`      | `u8`      |
+| `u16`     | `u16`     |
+| `u32`     | `u32`     |
+| `u64`     | `u64`     |
+| `u128`    | `u128`    |
+| `scalar`  | `scalar`  |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `assert_neq`
@@ -480,38 +472,35 @@ Checks whether `first` and `second` are equal, halting if they are not equal.
 let a: u8 = 1u8;
 let b: u8 = 2u8;
 
-assert_neq(a, b); // will not halt
-assert_neq(a, a); // program halts
+assert_neq(a, b); // 正常に続行
+assert_neq(a, a); // プログラムが停止
 ```
 
-#### Description
+#### 説明
 
-Checks whether `first` and `second` are not equal, halting if they are equal.
+`first` と `second` が等しくないことを検証し、等しい場合は実行を停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First       | Second      |
-|-------------|-------------|
-| `address`   | `address`   |
-| `bool`   | `bool`   |
-| `field`     | `field`     |
-| `group`     | `group`     |
-| `i8`        | `i8`        |
-| `i16`       | `i16`       |
-| `i32`       | `i32`       |
-| `i64`       | `i64`       |
-| `i128`      | `i128`      |
-| `u8`        | `u8`        |
-| `u16`       | `u16`       |
-| `u32`       | `u32`       |
-| `u64`       | `u64`       |
-| `u128`      | `u128`      |
-| `scalar`    | `scalar`    |
-| `Signature` | `Signature` |
-| `struct`    | `struct`    |
-| `Record`    | `Record`    |
+| 第 1 引数 | 第 2 引数 |
+|-----------|-----------|
+| `address` | `address` |
+| `bool`    | `bool`    |
+| `field`   | `field`   |
+| `group`   | `group`   |
+| `i8`      | `i8`      |
+| `i16`     | `i16`     |
+| `i32`     | `i32`     |
+| `i64`     | `i64`     |
+| `i128`    | `i128`    |
+| `u8`      | `u8`      |
+| `u16`     | `u16`     |
+| `u32`     | `u32`     |
+| `u64`     | `u64`     |
+| `u128`    | `u128`    |
+| `scalar`  | `scalar`  |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `block.height`
@@ -526,17 +515,15 @@ async function check_block_height(height: u32) {
 }
 ```
 
-#### Description
+#### 説明
 
-The `block.height` operator is used to fetch the latest block height in a Leo program. It represents the number of 
-blocks in the chain. In the above example, `block.height` is used in an async function to fetch the latest block 
-height in a program.
+`block.height` 演算子は Leo プログラム内で最新のブロック高を取得するために使用します。これはチェーン内のブロック数を表します。上記の例では、`block.height` を async 関数内で利用し、プログラム内で最新のブロック高を取得しています。
 
-#### Note:
-* The `block.height` operator can only be used in an async function. Using it outside an async function will result in a compilation error.
-* The `block.height` operator doesn't take any parameters.
+#### 注意
+* `block.height` 演算子は async 関数内でのみ使用できます。async 関数の外で用いるとコンパイルエラーになります。
+* `block.height` 演算子には引数はありません。
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `div`
@@ -546,26 +533,27 @@ let a: u8 = 4u8;
 let b: u8 = a / 2u8; // 2u8
 let c: u8 = b.div(2u8); // 1u8
 ```
-#### Description
 
-Performs division of the first operand by the second, storing the result in the destination. The operation halts if division by zero is attempted.
+#### 説明
 
-For integer types, this operation performs truncated division. Truncated division rounds towards zero, regardless of the sign of the operands. This means it cuts off any digits after the decimal, leaving the whole number whose absolute value is less than or equal to the result.
+第 1 オペランドを第 2 オペランドで除算し、結果を出力先に格納します。ゼロ除算が行われると実行は停止します。
 
-For example:
+整数型の場合、この演算は切り捨て除算を行います。切り捨て除算ではオペランドの符号に関係なく 0 に向かって丸められます。すなわち、小数部を切り捨て、絶対値が結果以下の最大の整数を返します。
 
-- `7 / 3` yields `2`, not `2.3333`.
-- `-7 / 3` yields `-2`, not `-2.3333`.
+例:
 
-The operation halts if there is an underflow. Underflow occurs when dividing the minimum value of a signed integer type by -1. For example, `-128i8 / -1i8` would result in underflow, since 128 cannot be represented as an `i8`.
+- `7 / 3` は `2` を返し、`2.3333` にはなりません。
+- `-7 / 3` は `-2` を返し、`-2.3333` にはなりません。
 
-For field types, division `a / b` is well-defined for any field values `a` and `b` except when `b = 0field`.
+また、符号付き整数型の最小値を `-1` で割るとアンダーフローが発生するため、実行は停止します。たとえば `-128i8 / -1i8` は `i8` で `128` を表現できないためアンダーフローになります。
 
-For cases where wrapping semantics are needed for integer types, see the [div_wrapped](#div_wrapped) instruction.
+`field` 型では、`b = 0field` の場合を除き、除算 `a / b` は常に定義されています。
 
-#### Supported Types
+整数型でラップ付きの挙動が必要な場合は [div_wrapped](#div_wrapped) 命令を利用してください。
 
-| First   | Second  | Destination |
+#### 対応している型
+
+| 第 1 引数   | 第 2 引数  | 出力先 |
 |---------|---------|:------------|
 | `field` | `field` | `field`     |
 | `i8`    | `i8`    | `i8`        |
@@ -579,7 +567,7 @@ For cases where wrapping semantics are needed for integer types, see the [div_wr
 | `u64`   | `u64`   | `u64`       |
 | `u128`  | `u128`  | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `div_wrapped`
@@ -589,13 +577,13 @@ let a: i8 = -128i8;
 let b: i8 = a.div_wrapped(-1i8); // -128i8
 ```
 
-#### Description
+#### 説明
 
-Divides `first` by `second`, wrapping around at the boundary of the type, and storing the result in `destination`. Halts if `second` is zero.
+`first` を `second` で除算し、型の範囲でラップさせた結果を `destination` に格納します。`second` がゼロの場合は実行が停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First  | Second | Destination |
+| 第 1 引数  | 第 2 引数 | 出力先 |
 |--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
@@ -608,7 +596,7 @@ Divides `first` by `second`, wrapping around at the boundary of the type, and st
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `double`
@@ -618,19 +606,43 @@ let a: group = 2group;
 let b: group = a.double();
 ```
 
-#### Description
+#### 説明
 
-Adds the input to itself, storing the result in `destination`.
+入力に自身を加算し、その結果を `destination` に格納します。
 
+#### 対応している型
 
-#### Supported Types
-
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `field` | `field`     |
 | `group` | `group`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
+***
+
+### `group::GEN`
+
+```leo
+let a: group = group::GEN;
+```
+
+#### 説明
+
+`group` 型が表す代数的グループの生成元を返します。
+
+Leo のコンパイルは楕円曲線を基盤としており、その点はグループを形成します。また、その曲線上の特定の点が部分群を生成し、その要素が `group` 型を構成します。
+
+これは関数ではなく定数であり、入力は取らず出力のみを返します。
+
+関連定数として `GEN` が定義されており、対応する型は `group` です。
+
+#### 対応している型
+
+| 出力先 |
+|-------------|
+| `group`     |
+
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `gt`
@@ -640,13 +652,13 @@ let a: bool = 2u8 > 1u8; // true
 let b: bool = 1u8.gt(1u8); // false
 ```
 
-#### Description
+#### 説明
 
-Checks if `first` is greater than `second`, storing the result in `destination`.
+`first` が `second` より大きいか確認し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `bool`   |
 | `i8`     | `i8`     | `bool`   |
@@ -661,7 +673,7 @@ Checks if `first` is greater than `second`, storing the result in `destination`.
 | `u128`   | `u128`   | `bool`   |
 | `scalar` | `scalar` | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `gte`
@@ -671,13 +683,13 @@ let a: bool = 2u8 >= 1u8; // true
 let b: bool = 1u8.gte(1u8); // true
 ```
 
-#### Description
+#### 説明
 
-Checks if `first` is greater than or equal to `second`, storing the result in `destination`.
+`first` が `second` 以上か確認し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `bool`   |
 | `i8`     | `i8`     | `bool`   |
@@ -692,7 +704,7 @@ Checks if `first` is greater than or equal to `second`, storing the result in `d
 | `u128`   | `u128`   | `bool`   |
 | `scalar` | `scalar` | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `inv`
@@ -701,17 +713,17 @@ Checks if `first` is greater than or equal to `second`, storing the result in `d
 let a: field = 1field.inv();
 ```
 
-#### Description
+#### 説明
 
-Computes the multiplicative inverse of the input, storing the result in `destination`.
+入力の乗法逆元を計算し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `field` | `field`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `eq`
@@ -721,16 +733,16 @@ let a: bool = 1u8 == 1u8; // true
 let b: bool = 1u8.eq(2u8); // false
 ```
 
-#### Description
+#### 説明
 
-Compares `first` and `second` for equality, storing the result in `destination`.
+`first` と `second` が等しいか比較し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First       | Second      | Destination |
+| 第 1 引数       | 第 2 引数      | 出力先 |
 |-------------|-------------|-------------|
 | `address`   | `address`   | `bool`   |
-| `bool`   | `bool`   | `bool`   |
+| `bool`      | `bool`      | `bool`   |
 | `field`     | `field`     | `bool`   |
 | `group`     | `group`     | `bool`   |
 | `i8`        | `i8`        | `bool`   |
@@ -748,7 +760,7 @@ Compares `first` and `second` for equality, storing the result in `destination`.
 | `struct`    | `struct`    | `bool`   |
 | `Record`    | `Record`    | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `neq`
@@ -758,16 +770,16 @@ let a: bool = 1u8 != 1u8; // false
 let b: bool = 1u8.neq(2u8); // true
 ```
 
-#### Description
+#### 説明
 
-Compares `first` and `second` for non-equality, storing the result in `destination`.
+`first` と `second` が等しくないか比較し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First       | Second      | Destination |
+| 第 1 引数       | 第 2 引数      | 出力先 |
 |-------------|-------------|-------------|
 | `address`   | `address`   | `bool`   |
-| `bool`   | `bool`   | `bool`   |
+| `bool`      | `bool`      | `bool`   |
 | `field`     | `field`     | `bool`   |
 | `group`     | `group`     | `bool`   |
 | `i8`        | `i8`        | `bool`   |
@@ -785,7 +797,7 @@ Compares `first` and `second` for non-equality, storing the result in `destinati
 | `struct`    | `struct`    | `bool`   |
 | `Record`    | `Record`    | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `lt`
@@ -795,13 +807,13 @@ let a: bool = 1u8 < 2u8; // true
 let b: bool = 1u8.lt(1u8); // false
 ```
 
-#### Description
+#### 説明
 
-Checks if `first` is less than `second`, storing the result in `destination`.
+`first` が `second` より小さいか確認し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `bool`   |
 | `i8`     | `i8`     | `bool`   |
@@ -816,7 +828,7 @@ Checks if `first` is less than `second`, storing the result in `destination`.
 | `u128`   | `u128`   | `bool`   |
 | `scalar` | `scalar` | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `lte`
@@ -826,13 +838,13 @@ let a: bool = 1u8 <= 2u8; // true
 let b: bool = 1u8.lte(1u8); // true
 ```
 
-#### Description
+#### 説明
 
-Checks if `first` is less than or equal to `second`, storing the result in `destination`.
+`first` が `second` 以下か確認し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `bool`   |
 | `i8`     | `i8`     | `bool`   |
@@ -847,56 +859,58 @@ Checks if `first` is less than or equal to `second`, storing the result in `dest
 | `u128`   | `u128`   | `bool`   |
 | `scalar` | `scalar` | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `mod`
 
 ```leo
-let a: u8 = 3u8.mod(2u8); // 1u8
+let a: u8 = 5u8 % 2u8; // 1u8
+let b: u8 = 5u8.mod(2u8); // 1u8
 ```
 
-#### Description
+#### 説明
 
-Takes the modulo of `first` with respect to `second`, storing the result in `destination`. Halts if `second` is zero.
+`first` を `second` で割った剰余を計算し、結果を `destination` に格納します。`second` がゼロの場合は実行を停止します。
 
-The semantics of this operation are consistent with the mathematical definition of modulo operation.
+#### 対応している型
 
-`mod` ensures the remainder has the same sign as the `second` operand. This differs from [`rem`](#rem), which follows truncated division and takes the sign of the `first` operand.
+| 第 1 引数   | 第 2 引数  | 出力先 |
+|---------|---------|:------------|
+| `field` | `field` | `field`     |
+| `i8`    | `i8`    | `i8`        |
+| `i16`   | `i16`   | `i16`       |
+| `i32`   | `i32`   | `i32`       |
+| `i64`   | `i64`   | `i64`       |
+| `i128`  | `i128`  | `i128`      |
+| `u8`    | `u8`    | `u8`        |
+| `u16`   | `u16`   | `u16`       |
+| `u32`   | `u32`   | `u32`       |
+| `u64`   | `u64`   | `u64`       |
+| `u128`  | `u128`  | `u128`      |
 
-#### Supported Types
-
-| First  | Second | Destination |
-|--------|--------|-------------|
-| `u8`   | `u8`   | `u8`        |
-| `u16`  | `u16`  | `u16`       |
-| `u32`  | `u32`  | `u32`       |
-| `u64`  | `u64`  | `u64`       |
-| `u128` | `u128` | `u128`      |
-
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `mul`
 
 ```leo
-let a: u8 = 2u8 * 2u8; // 4u8
-let b: u8 = a.mul(2u8); // 8u8
+let a: u8 = 1u8 * 2u8; // 2u8
+let b: u8 = a.mul(2u8); // 4u8
 ```
 
-#### Description
+#### 説明
 
-Multiplies `first` with `second`, storing the result in `destination`.
+`first` と `second` を乗算し、結果を `destination` に格納します。
 
-Note that execution will halt if the operation overflows/underflows. For cases where wrapping semantics are needed for integer types, see the [mul_wrapped](#mul_wrapped) instruction.
+この演算でオーバーフローが発生すると実行は停止します。整数型でラップ付きの挙動が必要な場合は [mul_wrapped](#mul_wrapped) 命令を利用してください。
 
-#### Supported Types
+#### 対応している型
 
-| First    | Second   | Destination |
+| 第 1 引数    | 第 2 引数   | 出力先 |
 |----------|----------|-------------|
 | `field`  | `field`  | `field`     |
-| `group`  | `scalar` | `group`     |
-| `scalar` | `group`  | `group`     |
+| `group`  | `group`  | `group`     |
 | `i8`     | `i8`     | `i8`        |
 | `i16`    | `i16`    | `i16`       |
 | `i32`    | `i32`    | `i32`       |
@@ -907,24 +921,26 @@ Note that execution will halt if the operation overflows/underflows. For cases w
 | `u32`    | `u32`    | `u32`       |
 | `u64`    | `u64`    | `u64`       |
 | `u128`   | `u128`   | `u128`      |
+| `scalar` | `scalar` | `scalar`    |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `mul_wrapped`
 
 ```leo
-let a: u8 = 128u8.mul_wrapped(2u8); // 0u8
+let a: u8 = 255u8;
+let b: u8 = a.mul_wrapped(2u8); // 254u8
 ```
 
-#### Description
+#### 説明
 
-Multiplies `first` with `second`, wrapping around at the boundary of the type, and storing the result in `destination`.
+`first` と `second` を乗算し、型の範囲を越える場合はラップさせた結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First  | Second | Destination |
-|--------|--------|-------------|
+| 第 1 引数  | 第 2 引数 | 出力先 |
+|--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
 | `i32`  | `i32`  | `i32`       |
@@ -936,91 +952,110 @@ Multiplies `first` with `second`, wrapping around at the boundary of the type, a
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `nand`
 
 ```leo
-let a: bool = true.nand(false); // true
+let a: bool = true nand true; // false
+let b: bool = true.nand(false); // true
 ```
 
-#### Description
+#### 説明
 
-Calculates the negated conjunction of `first` and `second`, storing the result in `destination`. 
-The result is false if and only if both first and second are true.
+ブール値または整数の `first` と `second` に対して NAND 演算を行い、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second    | Destination |
-|-----------|-----------|-------------|
-| `bool` | `bool` | `bool`   |
+| 第 1 引数     | 第 2 引数   | 出力先 |
+|-----------|----------|:------------|
+| `bool`    | `bool`   | `bool`      |
+| `i8`      | `i8`     | `i8`        |
+| `i16`     | `i16`    | `i16`       |
+| `i32`     | `i32`    | `i32`       |
+| `i64`     | `i64`    | `i64`       |
+| `i128`    | `i128`   | `i128`      |
+| `u8`      | `u8`     | `u8`        |
+| `u16`     | `u16`    | `u16`       |
+| `u32`     | `u32`    | `u32`       |
+| `u64`     | `u64`    | `u64`       |
+| `u128`    | `u128`   | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `neg`
 
 ```leo
-let a: i8 = -1i8.neg(); // 1i8
+let a: i8 = -1i8;
+let b: i8 = a.neg(); // 1i8
 ```
 
-#### Description
+#### 説明
 
-Negates the first operand, storing the result in the destination.
+入力の加法逆元を計算し、結果を `destination` に格納します。
 
-For signed integer types, the operation halts if the minimum value is negated. For example, `-128i8.neg()` halts since `128` cannot be represented as an `i8`.
+#### 対応している型
 
+| 入力  | 出力先 |
+|--------|-------------|
+| `i8`   | `i8`        |
+| `i16`  | `i16`       |
+| `i32`  | `i32`       |
+| `i64`  | `i64`       |
+| `i128` | `i128`      |
+| `field`| `field`     |
 
-#### Supported Types
-
-| Input   | Destination |
-|---------|-------------|
-| `field` | `field`     |
-| `group` | `group`     |
-| `i8`    | `i8`        |
-| `i16`   | `i16`       |
-| `i32`   | `i32`       |
-| `i64`   | `i64`       |
-| `i128`  | `i128`      |
-
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `nor`
 
 ```leo
-let a: bool = false.nor(false); // true
+let a: bool = true nor false; // false
+let b: bool = false.nor(false); // true
 ```
 
-#### Description
+#### 説明
 
-Calculates the negated (inclusive) disjunction of `first` and `second`, storing the result in `destination`. The result is `true` if and only if both `first` and `second` are `false`.
+ブール値または整数の `first` と `second` に対して NOR 演算を行い、結果を `destination` に格納します。
 
-#### Supported Type
+#### 対応している型
 
-| First     | Second    | Destination |
-|-----------|-----------|-------------|
-| `bool` | `bool` | `bool`   |
+| 第 1 引数     | 第 2 引数   | 出力先 |
+|-----------|----------|:------------|
+| `bool`    | `bool`   | `bool`      |
+| `i8`      | `i8`     | `i8`        |
+| `i16`     | `i16`    | `i16`       |
+| `i32`     | `i32`    | `i32`       |
+| `i64`     | `i64`    | `i64`       |
+| `i128`    | `i128`   | `i128`      |
+| `u8`      | `u8`     | `u8`        |
+| `u16`     | `u16`    | `u16`       |
+| `u32`     | `u32`    | `u32`       |
+| `u64`     | `u64`    | `u64`       |
+| `u128`    | `u128`   | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `not`
 
 ```leo
-let a: bool = true.not(); // false
+let a: bool = true;
+let b: bool = a.not(); // false
 ```
 
-#### Description
+#### 説明
 
-Perform a NOT operation on an integer (bitwise) or boolean input, storing the result in `destination`.
+ブール値または整数のビットを反転し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input     | Destination |
-|-----------|-------------|
-| `bool` | `bool`   |
+| 入力     | 出力先 |
+|-----------|:------------|
+| `bool`    | `bool`      |
 | `i8`      | `i8`        |
 | `i16`     | `i16`       |
 | `i32`     | `i32`       |
@@ -1032,37 +1067,37 @@ Perform a NOT operation on an integer (bitwise) or boolean input, storing the re
 | `u64`     | `u64`       |
 | `u128`    | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
-### or
+### `or`
 
 ```leo
-let a: bool = true || false; // true
-let b: bool = false.or(false); // false
+let a: bool = true or false; // true
+let b: bool = true.or(false); // true
 ```
 
-#### Description
+#### 説明
 
-Performs an inclusive OR operation on integer (bitwise) or boolean `first` and `second`, storing the result in `destination`.
+ブール値または整数の `first` と `second` に対して OR 演算を行い、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second    | Destination |
-|-----------|-----------|-------------|
-| `bool` | `bool` | `bool`   |
-| `i8`      | `i8`      | `i8`        |
-| `i16`     | `i16`     | `i16`       |
-| `i32`     | `i32`     | `i32`       |
-| `i64`     | `i64`     | `i64`       |
-| `i128`    | `i128`    | `i128`      |
-| `u8`      | `u8`      | `u8`        |
-| `u16`     | `u16`     | `u16`       |
-| `u32`     | `u32`     | `u32`       |
-| `u64`     | `u64`     | `u64`       |
-| `u128`    | `u128`    | `u128`      |
+| 第 1 引数     | 第 2 引数   | 出力先 |
+|-----------|----------|:------------|
+| `bool`    | `bool`   | `bool`      |
+| `i8`      | `i8`     | `i8`        |
+| `i16`     | `i16`    | `i16`       |
+| `i32`     | `i32`    | `i32`       |
+| `i64`     | `i64`    | `i64`       |
+| `i128`    | `i128`   | `i128`      |
+| `u8`      | `u8`     | `u8`        |
+| `u16`     | `u16`    | `u16`       |
+| `u32`     | `u32`    | `u32`       |
+| `u64`     | `u64`    | `u64`       |
+| `u128`    | `u128`   | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `pow`
@@ -1072,91 +1107,47 @@ let a: u8 = 2u8 ** 2u8; // 4u8
 let b: u8 = a.pow(2u8); // 16u8
 ```
 
-#### Description
+#### 説明
 
-Raises `first` to the power of `second`, storing the result in `destination`.
+`first` を `second` 乗し、結果を `destination` に格納します。
 
-Note that execution will halt if the operation overflows/underflows. For cases where wrapping semantics are needed for integer types, see the [pow_wrapped](#pow_wrapped) instruction.
+整数型でオーバーフローが発生すると実行が停止します。整数型でラップ付きの挙動が必要な場合は [pow_wrapped](#pow_wrapped) 命令を利用してください。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
+| 第 1 引数    | 第 2 引数   | 出力先 |
+|----------|----------|-------------|
+| `field`  | `field`  | `field`     |
+| `i8`     | `i8`     | `i8`        |
+| `i16`    | `i16`    | `i16`       |
+| `i32`    | `i32`    | `i32`       |
+| `i64`    | `i64`    | `i64`       |
+| `i128`   | `i128`   | `i128`      |
+| `u8`     | `u8`     | `u8`        |
+| `u16`    | `u16`    | `u16`       |
+| `u32`    | `u32`    | `u32`       |
+| `u64`    | `u64`    | `u64`       |
+| `u128`   | `u128`   | `u128`      |
+| `scalar` | `scalar` | `scalar`    |
 
-| First   | Second      | Destination |
-|---------|-------------|-------------|
-| `field` | `field`     | `field`     |
-| `i8`    | `Magnitude` | `i8`        |
-| `i16`   | `Magnitude` | `i16`       |
-| `i32`   | `Magnitude` | `i32`       |
-| `i64`   | `Magnitude` | `i64`       |
-| `i128`  | `Magnitude` | `i128`      |
-| `u8`    | `Magnitude` | `u8`        |
-| `u16`   | `Magnitude` | `u16`       |
-| `u32`   | `Magnitude` | `u32`       |
-| `u64`   | `Magnitude` | `u64`       |
-| `u128`  | `Magnitude` | `u128`      |
-
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `pow_wrapped`
 
 ```leo
-let a: u8 = 16u8.pow_wrapped(2u8); // 0u8
+let a: u8 = 2u8;
+let b: u8 = a.pow_wrapped(8u8); // 0u8
 ```
 
-#### Description
+#### 説明
 
-Raises `first` to the power of `second`, wrapping around at the boundary of the type, storing the result in `destination`.
+`first` を `second` 乗し、型の範囲を越える場合はラップさせた結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
-
-| First  | Second      | Destination |
-|--------|-------------|-------------|
-| `i8`   | `Magnitude` | `i8`        |
-| `i16`  | `Magnitude` | `i16`       |
-| `i32`  | `Magnitude` | `i32`       |
-| `i64`  | `Magnitude` | `i64`       |
-| `i128` | `Magnitude` | `i128`      |
-| `u8`   | `Magnitude` | `u8`        |
-| `u16`  | `Magnitude` | `u16`       |
-| `u32`  | `Magnitude` | `u32`       |
-| `u64`  | `Magnitude` | `u64`       |
-| `u128` | `Magnitude` | `u128`      |
-
-[Back to Top](#table-of-standard-operators)
-***
-
-
-### `rem`
-
-```leo
-let a: u8 = 3u8 % 2u8; // 1u8
-let b: u8 = 4u8.rem(2u8); // 0u8
-```
-
-#### Description
-
-Computes the remainder of the division of the `first` operand by the `second`, storing the result in `destination` following truncated division rules:
-
-a and b refers to first and second respectively
-
-`a % b = a - (a / b) * b`
-
-Here, `a` and `b` refer to the `first` and `second` operands, respectively
-
-Note that execution will halt if the operation underflows or divides by zero. This underflow happens when the associated division operation, [div](#div), underflows.
-
-For cases where wrapping semantics are needed for integer types, see the [rem_wrapped](#rem_wrapped) instruction.
-
-`rem` follows truncated division, meaning the remainder has the same sign as `a`. This differs from [mod](#mod), where the remainder matches the sign of `b`.
-
-#### Supported Types
-
-| First  | Second | Destination |
-|--------|--------|-------------|
+| 第 1 引数  | 第 2 引数 | 出力先 |
+|--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
 | `i32`  | `i32`  | `i32`       |
@@ -1168,26 +1159,58 @@ For cases where wrapping semantics are needed for integer types, see the [rem_wr
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
+***
+
+### `rem`
+
+```leo
+let a: i8 = 5i8 % 2i8; // 1i8
+let b: i8 = a.rem(2i8); // 1i8
+```
+
+#### 説明
+
+`first` を `second` で割った余りを計算し、結果を `destination` に格納します。`second` がゼロの場合は実行を停止します。剰余は `first` の符号と同じ符号を持ちます。
+
+整数型でラップ付きの挙動が必要な場合は [rem_wrapped](#rem_wrapped) 命令を利用してください。
+
+#### 対応している型
+
+| 第 1 引数    | 第 2 引数   | 出力先 |
+|----------|----------|-------------|
+| `i8`     | `i8`     | `i8`        |
+| `i16`    | `i16`    | `i16`       |
+| `i32`    | `i32`    | `i32`       |
+| `i64`    | `i64`    | `i64`       |
+| `i128`   | `i128`   | `i128`      |
+| `u8`     | `u8`     | `u8`        |
+| `u16`    | `u16`    | `u16`       |
+| `u32`    | `u32`    | `u32`       |
+| `u64`    | `u64`    | `u64`       |
+| `u128`   | `u128`   | `u128`      |
+
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `rem_wrapped`
 
 ```leo
 let a: i8 = -128i8;
-let b: i8 = a.rem_wrapped(-1i8); // 0i8
+let b: i8 = a.rem_wrapped(3i8); // -1i8
 ```
 
-#### Description
-Computes the remainder of the division of the `first` operand by the `second` following truncated division rules, storing the result in `destination`. Halts on division by zero.
-Unlike [`rem`](#rem), `rem_wrapped` is always defined and does not halt, even when [`div`](#div) would wrap around.
+#### 説明
 
-Notably, `rem_wrapped` does not introduce wrapping itself but ensures the operation remains defined where `rem` would be undefined.
+`first` を `second` で割った余りを切り捨て除算の規則に従って計算し、結果を `destination` に格納します。`second` がゼロの場合は実行を停止します。
+[`rem`](#rem) とは異なり、`rem_wrapped` は常に定義されており、[`div`](#div) がラップを引き起こす場面でも停止しません。
 
-#### Supported Types
+`rem_wrapped` 自体が新たにラップを導入するわけではなく、`rem` が未定義となるケースでも演算を完了できるようにします。
 
-| First  | Second | Destination |
-|--------|--------|-------------|
+#### 対応している型
+
+| 第 1 引数  | 第 2 引数 | 出力先 |
+|--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
 | `i32`  | `i32`  | `i32`       |
@@ -1199,7 +1222,7 @@ Notably, `rem_wrapped` does not introduce wrapping itself but ensures the operat
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `signature::verify`
@@ -1212,19 +1235,19 @@ transition verify_field(s: signature, a: address, v: field) {
 }
 ```
 
-#### Description
+#### 説明
 
-Verifies that the signature `first` was signed by the address `second` with respect to the field `third`, storing the result in `destination`. This verification follows the [Schnorr signature scheme](https://en.wikipedia.org/wiki/Schnorr_signature), which is a digital signature algorithm where the signer generates a random nonce, commits to it, computes a challenge using a hash function, and produces a signature by combining the nonce, challenge, and private key. The verifier checks the validity by reconstructing the challenge and ensuring consistency with the public key and message.
+署名 `first` がアドレス `second` によってフィールド `third` を対象に署名されたものであるか検証し、結果を `destination` に格納します。この検証は [Schnorr 署名スキーム](https://en.wikipedia.org/wiki/Schnorr_signature) に従います。これは、署名者がランダムなノンスを生成してコミットし、ハッシュ関数でチャレンジを計算し、ノンス・チャレンジ・秘密鍵を組み合わせて署名を生成するデジタル署名方式です。検証者はチャレンジを再計算して公開鍵とメッセージとの整合性を確認することで署名の正当性を確かめます。
 
-#### Supported Types
+#### 対応している型
 
-A `Message` is any literal or `struct` type.
+`Message` は任意のリテラル型または `struct` 型です。
 
-| First       | Second    | Third     | Destination |
+| 第 1 引数       | 第 2 引数    | 第 3 引数     | 出力先 |
 |-------------|-----------|-----------|-------------|
 | `signature` | `address` | `Message` | `bool`   |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `shl`
@@ -1234,15 +1257,15 @@ let a: u8 = 1u8 << 1u8; // 2u8
 let b: u8 = a.shl(1u8); // 4u8
 ```
 
-#### Description
+#### 説明
 
-Shifts `first` left by `second` bits, storing the result in `destination`. The operation halts if the shift distance exceeds the bit size of `first`, or if the shifted result does not fit within the type of `first`.
+`first` を `second` ビット左にシフトし、結果を `destination` に格納します。シフト量が `first` のビット幅を超える場合、またはシフト後の値が `first` の型に収まらない場合は実行が停止します。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
+`Magnitude` には `u8`, `u16`, `u32` のいずれかを指定できます。
 
-| First  | Second      | Destination |
+| 第 1 引数  | 第 2 引数      | 出力先 |
 |--------|-------------|-------------|
 | `i8`   | `Magnitude` | `i8`        |
 | `i16`  | `Magnitude` | `i16`       |
@@ -1255,7 +1278,7 @@ Shifts `first` left by `second` bits, storing the result in `destination`. The o
 | `u64`  | `Magnitude` | `u64`       |
 | `u128` | `Magnitude` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `shl_wrapped`
@@ -1265,17 +1288,17 @@ let a: u8 = 128u8.shl_wrapped(1u8); // 0u8
 let b: i8 = 64i8.shl_wrapped(2u8); // -128i8
 ```
 
-#### Description
+#### 説明
 
-Shifts `first` left by `second` bits, wrapping around at the boundary of the type, storing the result in `destination`. The shift distance is masked to the bit width of `first`, ensuring that shifting by n is equivalent to shifting by `n % bit_size`. 
+`first` を `second` ビット左にシフトし、型の範囲に合わせてラップさせた結果を `destination` に格納します。シフト量は `first` のビット幅でマスクされるため、`n` ビットのシフトは `n % bit_size` ビットのシフトと同値です。
 
-If bits are shifted beyond the type's range, they are discarded, which may cause sign changes for signed integers.
+ビットが型の範囲外に押し出された場合、それらは切り捨てられ、符号付き整数では符号が変わることがあります。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
+`Magnitude` には `u8`, `u16`, `u32` のいずれかを指定できます。
 
-| First  | Second      | Destination |
+| 第 1 引数  | 第 2 引数      | 出力先 |
 |--------|-------------|-------------|
 | `i8`   | `Magnitude` | `i8`        |
 | `i16`  | `Magnitude` | `i16`       |
@@ -1288,7 +1311,7 @@ If bits are shifted beyond the type's range, they are discarded, which may cause
 | `u64`  | `Magnitude` | `u64`       |
 | `u128` | `Magnitude` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `shr`
@@ -1298,15 +1321,15 @@ let a: u8 = 4u8 >> 1u8; // 2u8
 let b: u8 = a.shr(1u8); // 1u8
 ```
 
-#### Description
+#### 説明
 
-Shifts `first` right by `second` bits, storing the result in `destination`. The operation halts if the shift distance exceeds the bit size of `first`.
+`first` を `second` ビット右にシフトし、結果を `destination` に格納します。シフト量が `first` のビット幅を超える場合は実行が停止します。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
+`Magnitude` には `u8`, `u16`, `u32` のいずれかを指定できます。
 
-| First  | Second      | Destination |
+| 第 1 引数  | 第 2 引数      | 出力先 |
 |--------|-------------|-------------|
 | `i8`   | `Magnitude` | `i8`        |
 | `i16`  | `Magnitude` | `i16`       |
@@ -1319,7 +1342,7 @@ Shifts `first` right by `second` bits, storing the result in `destination`. The 
 | `u64`  | `Magnitude` | `u64`       |
 | `u128` | `Magnitude` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `shr_wrapped`
@@ -1328,15 +1351,15 @@ Shifts `first` right by `second` bits, storing the result in `destination`. The 
 let a: u8 = 128u8.shr_wrapped(7u8); // 1u8
 ```
 
-#### Description
+#### 説明
 
-Shifts `first` right by `second` bits, wrapping around at the boundary of the type, storing the result in `destination`.  The shift distance is masked to the bit width of `first`, ensuring that shifting by `n` is equivalent to shifting by `n % bit_size`.
+`first` を `second` ビット右にシフトし、型の範囲に合わせてラップさせた結果を `destination` に格納します。シフト量は `first` のビット幅でマスクされるため、`n` ビットのシフトは `n % bit_size` ビットのシフトと同値です。
 
-#### Supported Types
+#### 対応している型
 
-`Magnitude` can be a `u8`, `u16`, or `u32`.
+`Magnitude` には `u8`, `u16`, `u32` のいずれかを指定できます。
 
-| First  | Second      | Destination |
+| 第 1 引数  | 第 2 引数      | 出力先 |
 |--------|-------------|-------------|
 | `i8`   | `Magnitude` | `i8`        |
 | `i16`  | `Magnitude` | `i16`       |
@@ -1349,93 +1372,96 @@ Shifts `first` right by `second` bits, wrapping around at the boundary of the ty
 | `u64`  | `Magnitude` | `u64`       |
 | `u128` | `Magnitude` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `square`
 
 ```leo
-let a: field = 1field.square(); // 1field
+let a: field = 2field.square(); // 4field
 ```
 
-#### Description
+#### 説明
 
-Squares the input, storing the result in `destination`.
+入力を自乗し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `field` | `field`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `square_root`
 
 ```leo
-let a: field = 1field.square_root(); // 1field
+let a: field = 4field.square_root(); // 2field
 ```
 
-#### Description
+#### 説明
 
-Computes the square root of the input, storing the result in `destination`. If the input is a quadratic residue, the function returns the `smaller` of the two possible roots based on modular ordering. If the input is not a quadratic residue, execution halts.
+入力の平方根を計算し、結果を `destination` に格納します。平方根が存在しない場合は実行が停止します。
 
-#### Supported Types
+#### 対応している型
 
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `field` | `field`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `sub`
 
 ```leo
-let a: u8 = 2u8 - 1u8; // 1u8
-let b: u8 = a.sub(1u8); // 0u8
+let a: u8 = 3u8 - 1u8; // 2u8
+let b: u8 = a.sub(1u8); // 1u8
 ```
 
-#### Description
+#### 説明
 
-Computes `first - second`, storing the result in `destination`. The operation halts if the result is negative in an unsigned type or if it exceeds the minimum representable value in a signed type.
+`first` から `second` を減算し、結果を `destination` に格納します。
 
-#### Supported Types
+この演算でオーバーフローが発生すると実行は停止します。整数型でラップ付きの挙動が必要な場合は [sub_wrapped](#sub_wrapped) 命令を利用してください。
 
-| First   | Second  | Destination |
-|---------|---------|-------------|
-| `field` | `field` | `field`     |
-| `group` | `group` | `group`     |
-| `i8`    | `i8`    | `i8`        |
-| `i16`   | `i16`   | `i16`       |
-| `i32`   | `i32`   | `i32`       |
-| `i64`   | `i64`   | `i64`       |
-| `i128`  | `i128`  | `i128`      |
-| `u8`    | `u8`    | `u8`        |
-| `u16`   | `u16`   | `u16`       |
-| `u32`   | `u32`   | `u32`       |
-| `u64`   | `u64`   | `u64`       |
-| `u128`  | `u128`  | `u128`      |
+#### 対応している型
 
-[Back to Top](#table-of-standard-operators)
+| 第 1 引数    | 第 2 引数   | 出力先 |
+|----------|----------|-------------|
+| `field`  | `field`  | `field`     |
+| `group`  | `group`  | `group`     |
+| `i8`     | `i8`     | `i8`        |
+| `i16`    | `i16`    | `i16`       |
+| `i32`    | `i32`    | `i32`       |
+| `i64`    | `i64`    | `i64`       |
+| `i128`   | `i128`   | `i128`      |
+| `u8`     | `u8`     | `u8`        |
+| `u16`    | `u16`    | `u16`       |
+| `u32`    | `u32`    | `u32`       |
+| `u64`    | `u64`    | `u64`       |
+| `u128`   | `u128`   | `u128`      |
+| `scalar` | `scalar` | `scalar`    |
+
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `sub_wrapped`
 
 ```leo
-let a: u8 = 0u8.sub_wrapped(1u8); // 255u8
+let a: u8 = 0u8;
+let b: u8 = a.sub_wrapped(1u8); // 255u8
 ```
 
-#### Description
+#### 説明
 
-Computes `first - second`, wrapping around at the boundary of the type, and storing the result in `destination`.
+`first` から `second` を減算し、型の範囲を越える場合はラップさせた結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First  | Second | Destination |
-|--------|--------|-------------|
+| 第 1 引数  | 第 2 引数 | 出力先 |
+|--------|--------|:------------|
 | `i8`   | `i8`   | `i8`        |
 | `i16`  | `i16`  | `i16`       |
 | `i32`  | `i32`  | `i32`       |
@@ -1447,134 +1473,97 @@ Computes `first - second`, wrapping around at the boundary of the type, and stor
 | `u64`  | `u64`  | `u64`       |
 | `u128` | `u128` | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `ternary`
 
 ```leo
-let a: u8 = true ? 1u8 : 2u8; // 1u8
+let a: u8 = ternary(true, 1u8, 2u8); // 1u8
+let b: u8 = ternary(false, 1u8, 2u8); // 2u8
 ```
 
-#### Description
+#### 説明
 
-Selects `first`, if `condition` is true, otherwise selects `second`, storing the result in `destination`.
+`condition` が `true` の場合は `first` を、`false` の場合は `second` を選択し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Condition | First       | Second      | Destination |
-|-----------|-------------|-------------|-------------|
-| `bool` | `bool`   | `bool`   | `bool`   |
-| `bool` | `field`     | `field`     | `field`     |
-| `bool` | `group`     | `group`     | `group`     |
-| `bool` | `i8`        | `i8`        | `i8`        |
-| `bool` | `i16`       | `i16`       | `i16`       |
-| `bool` | `i32`       | `i32`       | `i32`       |
-| `bool` | `i64`       | `i64`       | `i64`       |
-| `bool` | `i128`      | `i128`      | `i128`      |
-| `bool` | `u8`        | `u8`        | `u8`        |
-| `bool` | `u16`       | `u16`       | `u16`       |
-| `bool` | `u32`       | `u32`       | `u32`       |
-| `bool` | `u64`       | `u64`       | `u64`       |
-| `bool` | `u128`      | `u128`      | `u128`      |
-| `bool` | `scalar`    | `scalar`    | `scalar`    |
-| `bool` | `Signature` | `Signature` | `Signature` |
+| 条件   | 第 1 引数 | 第 2 引数 | 出力先 |
+|--------|-----------|-----------|-------------|
+| `bool` | `T`       | `T`       | `T`         |
 
-[Back to Top](#table-of-standard-operators)
+`T` は任意の型を表します。
+
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `to_x_coordinate`
 
 ```leo
-let x: field = 0group.to_x_coordinate(); // 0field
+let a: field = (2group).to_x_coordinate();
 ```
 
-#### Description
-Extracts the x-coordinate of the group element as a field element.
+#### 説明
 
+グループ要素の x 座標を抽出し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `group` | `field`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `to_y_coordinate`
 
 ```leo
-let y: field = 0group.to_y_coordinate(); // 1field
+let a: field = (2group).to_y_coordinate();
 ```
 
-#### Description
-Extracts the y-coordinate of the group element as a field element.
+#### 説明
 
+グループ要素の y 座標を抽出し、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| Input   | Destination |
+| 入力   | 出力先 |
 |---------|-------------|
 | `group` | `field`     |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `xor`
 
 ```leo
-let a: bool = true.xor(false); // true
+let a: bool = true xor false; // true
+let b: bool = true.xor(true); // false
 ```
 
-#### Description
+#### 説明
 
-Performs a XOR operation on integer (bitwise) or boolean `first` and `second`, storing the result in `destination`.
+ブール値または整数の `first` と `second` に対して XOR 演算を行い、結果を `destination` に格納します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second    | Destination |
-|-----------|-----------|-------------|
-| `bool` | `bool` | `bool`   |
-| `i8`      | `i8`      | `i8`        |
-| `i16`     | `i16`     | `i16`       |
-| `i32`     | `i32`     | `i32`       |
-| `i64`     | `i64`     | `i64`       |
-| `i128`    | `i128`    | `i128`      |
-| `u8`      | `u8`      | `u8`        |
-| `u16`     | `u16`     | `u16`       |
-| `u32`     | `u32`     | `u32`       |
-| `u64`     | `u64`     | `u64`       |
-| `u128`    | `u128`    | `u128`      |
+| 第 1 引数     | 第 2 引数   | 出力先 |
+|-----------|----------|:------------|
+| `bool`    | `bool`   | `bool`      |
+| `i8`      | `i8`     | `i8`        |
+| `i16`     | `i16`    | `i16`       |
+| `i32`     | `i32`    | `i32`       |
+| `i64`     | `i64`    | `i64`       |
+| `i128`    | `i128`   | `i128`      |
+| `u8`      | `u8`     | `u8`        |
+| `u16`     | `u16`    | `u16`       |
+| `u32`     | `u32`    | `u32`       |
+| `u64`     | `u64`    | `u64`       |
+| `u128`    | `u128`   | `u128`      |
 
-[Back to Top](#table-of-standard-operators)
-***
-
-### `group::GEN`
-
-```leo
-let g: group = group::GEN; // the group generator
-```
-
-#### Description
-
-Returns the generator of the algebraic group that the `group` type consists of.
-
-The compilation of Leo is based on an elliptic curve, whose points form a group,
-and on a specified point on that curve, which generates a subgroup, whose elements form the type `group`.
-
-This is a constant, not a function. Thus, it takes no inputs, and just returns an output.
-
-It is an associated constant, whose name is `GEN` and whose associated type is `group`.
-
-#### Supported Types
-
-| Destination |
-|-------------|
-| `group`     |
-
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `ChaCha::rand_DESTINATION`
@@ -1597,17 +1586,17 @@ let result: u128 = ChaCha::rand_u128();
 let result: scalar = ChaCha::rand_scalar();
 ```
 
-#### Description
+#### 説明
 
-Returns a random value with the destination type.
-**This operation can only be used in an async function.**
+出力先で指定した型の乱数を返します。  
+**この操作は async 関数内でのみ使用できます。**
 
-#### Supported Types
+#### 対応している型
 
-| Destination |
+| 出力先 |
 |-------------|
 | `address`   |
-| `bool`   |
+| `bool`      |
 | `field`     |
 | `group`     |
 | `i8`        |
@@ -1622,6 +1611,8 @@ Returns a random value with the destination type.
 | `u128`      |
 | `scalar`    |
 
+[トップに戻る](#table-of-standard-operators)
+***
 
 ### `BHP256::commit_to_DESTINATION`
 
@@ -1632,18 +1623,18 @@ let b: field = BHP256::commit_to_field(2i64, salt);
 let c: group = BHP256::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen commitment on inputs of 256-bit chunks in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment can be an `address`, `field` or, `group` value.
+`first` を 256 ビットチャンクごとに処理し、`second` で与えられた乱数を用いて Bowe-Hopwood-Pedersen コミットメントを計算し、結果を `destination` に格納します。乱数は常に `scalar` 型である必要があり、生成されるコミットメントは `address`、`field`、または `group` のいずれかになります。
 
-The instruction will halt if the given input is smaller than 129 bits.
+入力が 129 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
 | `address` | `scalar` | `address`, `field`, `group` |
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `field`   | `scalar` | `address`, `field`, `group` |
 | `group`   | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
@@ -1659,7 +1650,7 @@ The instruction will halt if the given input is smaller than 129 bits.
 | `scalar`  | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP512::commit_to_DESTINATION`
@@ -1671,18 +1662,18 @@ let b: field = BHP512::commit_to_field(2i64, salt);
 let c: group = BHP512::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen commitment on inputs of 512-bit chunks in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment will always be a `group` value.
+`first` を 512 ビットチャンクごとに処理し、`second` で与えられた乱数を用いて Bowe-Hopwood-Pedersen コミットメントを計算し、結果を `destination` に格納します。乱数は常に `scalar` 型である必要があり、生成されるコミットメントは常に `group` 型になります。
 
-The instruction will halt if the given input is smaller than 171 bits.
+入力が 171 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
 | `address` | `scalar` | `address`, `field`, `group` |
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `field`   | `scalar` | `address`, `field`, `group` |
 | `group`   | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
@@ -1698,7 +1689,7 @@ The instruction will halt if the given input is smaller than 171 bits.
 | `scalar`  | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP768::commit_to_DESTINATION`
@@ -1710,18 +1701,18 @@ let b: field = BHP768::commit_to_field(2i64, salt);
 let c: group = BHP768::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen commitment on inputs of 768-bit chunks in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment will always be a `group` value.
+`first` を 768 ビットチャンクごとに処理し、`second` で与えられた乱数を用いて Bowe-Hopwood-Pedersen コミットメントを計算し、結果を `destination` に格納します。乱数は常に `scalar` 型でなければならず、生成されるコミットメントは常に `group` 型になります。
 
-The instruction will halt if the given input is smaller than 129 bits.
+入力が 129 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
 | `address` | `scalar` | `address`, `field`, `group` |
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `field`   | `scalar` | `address`, `field`, `group` |
 | `group`   | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
@@ -1737,7 +1728,7 @@ The instruction will halt if the given input is smaller than 129 bits.
 | `scalar`  | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP1024::commit_to_DESTINATION`
@@ -1749,18 +1740,18 @@ let b: field = BHP1024::commit_to_field(2i64, salt);
 let c: group = BHP1024::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen commitment on inputs of 1024-bit chunks in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment will always be a `group` value.
+`first` を 1024 ビットチャンクごとに処理し、`second` で与えられた乱数を用いて Bowe-Hopwood-Pedersen コミットメントを計算し、結果を `destination` に格納します。乱数は常に `scalar` 型でなければならず、生成されるコミットメントは常に `group` 型になります。
 
-The instruction will halt if the given input is smaller than 171 bits.
+入力が 171 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
 | `address` | `scalar` | `address`, `field`, `group` |
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `field`   | `scalar` | `address`, `field`, `group` |
 | `group`   | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
@@ -1776,7 +1767,7 @@ The instruction will halt if the given input is smaller than 171 bits.
 | `scalar`  | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Pedersen64::commit_to_DESTINATION`
@@ -1788,17 +1779,17 @@ let b: field = Pedersen64::commit_to_field(2i64, salt);
 let c: group = Pedersen64::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Pedersen commitment up to a 64-bit input in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment will always be a `group` value.
+`first` の最大 64 ビットまでの入力に対して Pedersen コミットメントを計算し、`second` で与えられた乱数とともに `destination` に格納します。乱数は常に `scalar` 型でなければならず、生成されるコミットメントは常に `group` 型になります。
 
-The instruction will halt if the given `struct` value exceeds the 64-bit limit.
+`struct` の値が 64 ビットの上限を超える場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
 | `i16`     | `scalar` | `address`, `field`, `group` |
 | `i32`     | `scalar` | `address`, `field`, `group` |
@@ -1807,7 +1798,7 @@ The instruction will halt if the given `struct` value exceeds the 64-bit limit.
 | `u32`     | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Pedersen128::commit_to_DESTINATION`
@@ -1819,18 +1810,17 @@ let b: field = Pedersen128::commit_to_field(2i64, salt);
 let c: group = Pedersen128::commit_to_group(1field, salt);
 ```
 
-#### Description
+#### 説明
 
-Computes a Pedersen commitment up to a 128-bit input in `first`, and some randomness in `second`, storing the commitment in `destination`. Randomness should always be a `scalar` value, and the produced commitment will always be a `group` value.
+`first` の最大 128 ビットまでの入力に対して Pedersen コミットメントを計算し、`second` で与えられた乱数とともに `destination` に格納します。乱数は常に `scalar` 型でなければならず、生成されるコミットメントは常に `group` 型になります。
 
-The instruction will halt if the given `struct` value exceeds the 128-bit limit.
+`struct` の値が 128 ビットの上限を超える場合、この命令は停止します。
 
+#### 対応している型
 
-#### Supported Types
-
-| First     | Second   | Destination                 |
+| 第 1 引数     | 第 2 引数   | 出力先                 |
 |-----------|----------|:----------------------------|
-| `bool` | `scalar` | `address`, `field`, `group` |
+| `bool`    | `scalar` | `address`, `field`, `group` |
 | `i8`      | `scalar` | `address`, `field`, `group` |
 | `i16`     | `scalar` | `address`, `field`, `group` |
 | `i32`     | `scalar` | `address`, `field`, `group` |
@@ -1841,9 +1831,8 @@ The instruction will halt if the given `struct` value exceeds the 128-bit limit.
 | `u64`     | `scalar` | `address`, `field`, `group` |
 | `struct`  | `scalar` | `address`, `field`, `group` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `BHP256::hash_to_DESTINATION`
 
@@ -1864,18 +1853,18 @@ let result: u64 = BHP256::hash_to_u64(1field);
 let result: u128 = BHP256::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen hash on inputs of 256-bit chunks in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` を 256 ビットチャンクごとに処理して Bowe-Hopwood-Pedersen ハッシュを計算し、結果を `destination` に格納します。生成されたハッシュは、関数名の `hash_to_DESTINATION` が示すとおり `address` または算術型（`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`, `i64`, `i128`, `field`, `group`, `scalar`）のいずれかになります。
 
-The instruction will halt if the given input is smaller than 129 bits.
+入力が 129 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -1891,7 +1880,7 @@ The instruction will halt if the given input is smaller than 129 bits.
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP512::hash_to_DESTINATION`
@@ -1913,18 +1902,18 @@ let result: u64 = BHP512::hash_to_u64(1field);
 let result: u128 = BHP512::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen hash on inputs of 512-bit chunks in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` を 512 ビットチャンクごとに処理して Bowe-Hopwood-Pedersen ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-The instruction will halt if the given input is smaller than 171 bits.
+入力が 171 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -1940,7 +1929,7 @@ The instruction will halt if the given input is smaller than 171 bits.
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP768::hash_to_DESTINATION`
@@ -1962,18 +1951,18 @@ let result: u64 = BHP768::hash_to_u64(1field);
 let result: u128 = BHP768::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen hash on inputs of 768-bit chunks in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` を 768 ビットチャンクごとに処理して Bowe-Hopwood-Pedersen ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-The instruction will halt if the given input is smaller than 129 bits.
+入力が 129 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -1989,7 +1978,7 @@ The instruction will halt if the given input is smaller than 129 bits.
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `BHP1024::hash_to_DESTINATION`
@@ -2011,18 +2000,18 @@ let result: u64 = BHP1024::hash_to_u64(1field);
 let result: u128 = BHP1024::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Bowe-Hopwood-Pedersen hash on inputs of 1024-bit chunks in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` を 1024 ビットチャンクごとに処理して Bowe-Hopwood-Pedersen ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-The instruction will halt if the given input is smaller than 171 bits.
+入力が 171 ビット未満の場合、この命令は停止します。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2038,7 +2027,7 @@ The instruction will halt if the given input is smaller than 171 bits.
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Keccak256::hash_to_DESTINATION`
@@ -2060,17 +2049,16 @@ let result: u64 = Keccak256::hash_to_u64(1field);
 let result: u128 = Keccak256::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Keccak256 hash on inputs of 256-bit chunks in `first`, storing the hash in `destination`.
-The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して Keccak256 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2086,7 +2074,7 @@ The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Keccak384::hash_to_DESTINATION`
@@ -2108,14 +2096,13 @@ let result: u64 = Keccak384::hash_to_u64(1field);
 let result: u128 = Keccak384::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Keccak384 hash on inputs of 384-bit chunks in `first`, storing the hash in `destination`.
-The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して Keccak384 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2134,7 +2121,7 @@ The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Keccak512::hash_to_DESTINATION`
@@ -2156,17 +2143,16 @@ let result: u64 = Keccak512::hash_to_u64(1field);
 let result: u128 = Keccak512::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Keccak512 hash on inputs of 512-bit chunks in `first`, storing the hash in `destination`.
-The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して Keccak512 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2182,7 +2168,7 @@ The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Pedersen64::hash_to_DESTINATION`
@@ -2204,26 +2190,32 @@ let result: u64 = Pedersen64::hash_to_u64(1field);
 let result: u128 = Pedersen64::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Pedersen hash up to a 64-bit input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して Pedersen64 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-The instruction will halt if the given `struct` value exceeds the 64-bit limit.
+#### 対応している型
 
-#### Supported Types
-
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i16`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i32`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `i64`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `i128`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u16`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u32`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `u64`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `u128`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `Pedersen128::hash_to_DESTINATION`
@@ -2245,30 +2237,33 @@ let result: u64 = Pedersen128::hash_to_u64(1field);
 let result: u128 = Pedersen128::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Computes a Pedersen hash up to a 128-bit input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して Pedersen128 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-The instruction will halt if the given `struct` value exceeds the 64-bit limit.
+#### 対応している型
 
-#### Supported Types
-
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i16`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i32`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i64`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `i128`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u16`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u32`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `u64`     | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `u128`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `Poseidon2::hash_to_DESTINATION`
 
@@ -2289,16 +2284,16 @@ let result: u64 = Poseidon2::hash_to_u64(1field);
 let result: u128 = Poseidon2::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a Poseidon hash with an input rate of 2, from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して入力レート 2 の Poseidon ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2314,9 +2309,8 @@ Calculates a Poseidon hash with an input rate of 2, from an input in `first`, st
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `Poseidon4::hash_to_DESTINATION`
 
@@ -2337,16 +2331,16 @@ let result: u64 = Poseidon4::hash_to_u64(1field);
 let result: u128 = Poseidon4::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a Poseidon hash with an input rate of 4, from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して入力レート 4 の Poseidon ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2362,9 +2356,8 @@ Calculates a Poseidon hash with an input rate of 4, from an input in `first`, st
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
-
 
 ### `Poseidon8::hash_to_DESTINATION`
 
@@ -2385,16 +2378,16 @@ let result: u64 = Poseidon8::hash_to_u64(1field);
 let result: u128 = Poseidon8::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a Poseidon hash with an input rate of 8, from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して入力レート 8 の Poseidon ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2410,7 +2403,7 @@ Calculates a Poseidon hash with an input rate of 8, from an input in `first`, st
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `SHA3_256::hash_to_DESTINATION`
@@ -2432,16 +2425,16 @@ let result: u64 = SHA3_256::hash_to_u64(1field);
 let result: u128 = SHA3_256::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a SHA3_256 hash from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して SHA3_256 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2457,7 +2450,7 @@ Calculates a SHA3_256 hash from an input in `first`, storing the hash in `destin
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `SHA3_384::hash_to_DESTINATION`
@@ -2479,16 +2472,16 @@ let result: u64 = SHA3_384::hash_to_u64(1field);
 let result: u128 = SHA3_384::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a SHA3_384 hash from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して SHA3_384 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2504,7 +2497,7 @@ Calculates a SHA3_384 hash from an input in `first`, storing the hash in `destin
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***
 
 ### `SHA3_512::hash_to_DESTINATION`
@@ -2526,16 +2519,16 @@ let result: u64 = SHA3_512::hash_to_u64(1field);
 let result: u128 = SHA3_512::hash_to_u128(1field);
 ```
 
-#### Description
+#### 説明
 
-Calculates a SHA3_512 hash from an input in `first`, storing the hash in `destination`. The produced hash will always be an arithmetic (`u8`, `u16`, `u32`, `u64`, `u128`, `i8`, `i16`, `i32`,`i64`,`i128`, `field`, `group`, or `scalar`) or `address` value, as specified via `hash_to_DESTINATION` at the end of the function.
+`first` に対して SHA3_512 ハッシュを計算し、結果を `destination` に格納します。生成されるハッシュは `hash_to_DESTINATION` が示すとおり、`address` または算術型のいずれかです。
 
-#### Supported Types
+#### 対応している型
 
-| First     | Destination                                                                                               |
+| 第 1 引数     | 出力先                                                                                               |
 |-----------|:----------------------------------------------------------------------------------------------------------|
 | `address` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
-| `bool` | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
+| `bool`    | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `field`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `group`   | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `i8`      | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
@@ -2551,5 +2544,5 @@ Calculates a SHA3_512 hash from an input in `first`, storing the hash in `destin
 | `scalar`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 | `struct`  | `address`, `field`, `group`, `scalar`, `i8`, `i16`, `i32`,`i64`,`i128`, `u8`, `u16`, `u32`, `u64`, `u128` |
 
-[Back to Top](#table-of-standard-operators)
+[トップに戻る](#table-of-standard-operators)
 ***

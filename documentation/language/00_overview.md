@@ -1,24 +1,23 @@
 ---
 id: overview
-title: The Leo Language Reference
-sidebar_label: Overview
+title: Leo 言語リファレンス
+sidebar_label: 概要
+slug: /overview
 ---
 [general tags]: # (syntax)
 
-### Statically Typed
+### 静的型付け
 
-Leo is a **statically typed language**, which means we must know the type of each variable before executing a circuit.
+Leo は **静的型付け言語** です。つまり、回路を実行する前に各変数の型が分かっていなければなりません。
 
-Leo does not support `undefined` or `null` values.  When creating a new variable, its type must be either:
+Leo では `undefined` や `null` といった値は利用できません。新しい変数を宣言するときは、型を次のいずれかの方法で決定する必要があります。
 
-- **Explicitly stated** using a type annotation, or  
-- **Automatically inferred** by the compiler.  
+- 型注釈を用いて**明示的に指定する**
+- コンパイラによる**自動推論に任せる**
 
 
 <!-- The exception to this rule is when a new variable inherits its type from a previous variable. -->
 
-### Pass by Value
+### 値渡し
 
-Expressions in Leo are always **passed by value**, which means their values are always copied when they are used as
-function inputs or in right sides of assignments.
-
+Leo の式は常に **値渡し** で扱われます。関数の引数や代入式の右辺で利用される際、値は必ずコピーされます。

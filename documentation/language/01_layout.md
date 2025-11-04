@@ -1,13 +1,13 @@
 ---
 id: layout 
-title: Layout of a Leo Project
-sidebar_label: Project Layout
+title: Leo プロジェクトの構成
+sidebar_label: プロジェクト構成
 ---
 [general tags]: # (project, project_layout, manifest, module)
 
-## The Manifest
+## マニフェスト
 
-**program.json** is the Leo manifest file that configures our package.
+**program.json** はパッケージを設定するための Leo のマニフェストファイルです。
 ```json title="program.json"
 {
   "program": "hello.aleo",
@@ -19,26 +19,26 @@ sidebar_label: Project Layout
 }
 ```
 
-The program ID in `program` is the official name that other developers will be able to look up after you have published your program.
+`program` フィールドに記載されたプログラム ID が、デプロイ後に他の開発者が参照できる正式名称になります。
 ```json
     "program": "hello.aleo",
 ```
 
-Dependencies will be added to the field of the same name, as they are added. The dependencies are also pegged in the **leo.lock** file.
+依存関係は追加されるたびに同名のフィールドへ追記されます。依存情報は **leo.lock** にも固定されます。
 
-## The Code
+## コード
 
-The `src/` directory is where all of your Leo code will live.  The main entry point of your project is a file in this directory.appropriately named `main.leo`.  Calls to many of the Leo CLI commands will require you to have this file within your project in order to succeed properly.
-
-
-### Modules 
-
-In addition to your main file, Leo also supports a module system as of v3.2.0.
-
-Leaf modules (i.e. modules without submodules) must be defined in a single file (ex. `foo.leo`).  Modules with submodules must be defined by an optional top-level `.leo` file and a subdirectory directory containing the submodules:
+`src/` ディレクトリに Leo のソースコードを配置します。プロジェクトのエントリーポイントは同ディレクトリ内の `main.leo` です。多くの CLI コマンドはこのファイルが存在することを前提としているため、必ず用意してください。
 
 
-Take the following project as an example:
+### モジュール 
+
+v3.2.0 以降の Leo では、メインファイルに加えてモジュールシステムも利用できます。
+
+末端モジュール（サブモジュールを持たないモジュール）は、`foo.leo` のように 1 ファイルで定義します。サブモジュールを持つモジュールは、任意のトップレベル `.leo` ファイルと、サブモジュールを格納したサブディレクトリで構成します。
+
+
+例として次の構成を考えてみましょう。
 ```
 src
 ├── common.leo
@@ -48,7 +48,7 @@ src
     └── inner.leo
 ```
 
-Given the structure above, the following modules are defined:
+このディレクトリ構成では、以下のモジュールが定義されます。
 
 | Filename | Type | Module Name | Access Location & Pattern |
 | -------- | ---- | ----------- | ------------------------- |
@@ -56,11 +56,11 @@ Given the structure above, the following modules are defined:
 | `outer.leo` | Module | `outer` | `main.leo` : `outer::<item>` |
 | `outer/inner.leo` | Submodule | `outer::inner` |`main.leo` : `outer::inner::<item>` <br></br> `outer.leo` : `inner::<item>`|
 :::info
-Only relative paths are implemented so far. That means that items in `outer.leo` cannot be accessed from items in `inner.leo`, for example. This is limiting for now but will no longer be an issue when we add absolute paths.
+現時点では相対パスのみが利用可能です。たとえば `inner.leo` から `outer.leo` 内の要素を参照することはできません。将来的に絶対パスが導入されれば、この制約は解消される予定です。
 :::
 
 
-A module file may only contain `struct`, `const`, and `inline` definitions:
+モジュールファイルに記述できるのは `struct`、`const`、`inline` 定義のみです。
 
 ```leo
 const X: u32 = 2u32;
@@ -77,13 +77,13 @@ inline increment(x: field) -> field {
 
 <!-- 
 
-## The Tests
+## テスト
 
 TODO
 
-## The Build and Outputs
+## ビルドと出力
 
-Only generated when the project is compiled.  Removed when `leo clean` is called. 
+プロジェクトをコンパイルしたときに生成され、`leo clean` で削除されます。
 
 TODO
 

@@ -1,32 +1,31 @@
 ---
 id: overview 
-title: Overview
-sidebar_label: Overview
+title: ガイド概要
+sidebar_label: 概要
 ---
 [general tags]: # (guides)
 
-There's a lot to learn about Leo! To help tame the complexity, we've put together some explainers that you may find helpful.
+Leo について学ぶべきことはたくさんあります。複雑さを整理するために、役立つ解説記事をまとめました。
 
-## Basic:
-- [**The Asynchronous Programming Model**](./01_async.md) - Learn the fundamentals of the offchain/onchain computation model of Aleo.
+## 基礎編
+- [**非同期プログラミングモデル**](./01_async.md) — Aleo におけるオフチェーン／オンチェーン計算モデルの基礎を学びます。
 
-- [**Dependency Management**](./02_dependencies.md) - Learn how to efficiently manage your dependencies.
+- [**依存関係の管理**](./02_dependencies.md) — 依存パッケージを効率的に扱う方法を解説します。
 
-- [**Deploy Your Programs**](./03_deploying.md) - Learn how to deploy your programs to different networks.
+- [**プログラムをデプロイする**](./03_deploying.md) — 異なるネットワークへプログラムをデプロイする手順を学びます。
 
-- [**Executing Your Programs**](./04_executing.md) - Learn how to execute functions on deployed programs.
+- [**プログラムを実行する**](./04_executing.md) — デプロイ済みプログラムの関数を実行する方法を説明します。
 
-- [**Signing and Verifying**](./05_signing.md) - Learn how to sign and verify data.
+- [**署名と検証**](./05_signing.md) — データの署名・検証方法を学びます。
 
-- [**Querying the Network**](./06_query.md) - Learn how to query different metadata from the network.
+- [**ネットワークをクエリする**](./06_query.md) — ネットワークから各種メタデータを取得する方法を紹介します。
 
 
-## Advanced
-- [**Running a Devnet**](./07_devnet.md) - Learn how to spin up a local development network.
+## 応用編
+- [**Devnet を動かす**](./07_devnet.md) — ローカル開発ネットワークを立ち上げる手順を学びます。
 
-- [**Testing, Testing, 123**](./08_testing.md) - Learn how to take advantage of the various tools for Leo testing.
+- [**Testing, Testing, 123**](./08_testing.md) — Leo 向けテストツールの活用方法を解説します。
 
-- [**Debuggin' Out**](./09_debugging.md) - Learn how to use Leo's interactive debugger.
+- [**Debuggin' Out**](./09_debugging.md) — Leo の対話型デバッガーの使い方を説明します。
 
-- [**Upgrading Programs**](./10_program_upgradability.md) - Coming soon!
-
+- [**プログラムのアップグレード**](./10_program_upgradability.md) — 近日公開予定です！

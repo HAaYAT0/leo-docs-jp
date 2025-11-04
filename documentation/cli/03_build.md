@@ -9,12 +9,12 @@ toc_max_heading_level: 2
 
 # `leo build`
 
-To compile your program into Aleo instructions and verify that it builds properly, run:
+プログラムを Aleo 命令へコンパイルし、ビルドが正しく行えるか確認するには次を実行します。
 ```bash
 leo build
 ```
  
-On invoking the build command, Leo automatically creates a `build/⁠` and `output/`⁠ folder in the project directory. The compiled `.aleo` file is contained in the `build` directory. The `output` directory is used to stored intermediate artifacts from compilation. 
+`leo build` を実行すると、プロジェクトディレクトリ内に `build/` と `output/` フォルダが自動生成されます。コンパイル済みの `.aleo` ファイルは `build` ディレクトリに、コンパイル過程の中間成果物は `output` ディレクトリに保存されます。
 
 ```bash title="console output:"
   Leo     2 statements before dead code elimination.
@@ -58,4 +58,3 @@ On invoking the build command, Leo automatically creates a `build/⁠` and `outp
 --consensus-heights <CONSENSUS_HEIGHTS>
     Optional consensus heights to use. This should only be set if you are using a custom devnet.
 ```
-

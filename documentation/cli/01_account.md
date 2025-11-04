@@ -9,19 +9,19 @@ toc_max_heading_level: 2
 
 # `leo account`
 
-The `leo account` command is used to create and manage Aleo accounts, as well as sign and verify messages
+`leo account` コマンドは、Aleo アカウントの作成や管理、メッセージの署名・検証を行うために使用します。
 
 :::warning
-We urge you to exercise caution when managing your private keys. `leo account` cannot be used to recover lost keys.
+秘密鍵の取り扱いには細心の注意を払いましょう。`leo account` では失われた鍵を復元できません。
 :::
 
 
 # Subcommands
-* [`new`](#leo-account-new) - Generates a new Aleo account.
-* [`import`](#leo-account-import) - Derive and Aleo account from a private key.
-* [`sign`](#leo-account-sign) - Sign a message using your Aleo private key.
-* [`verify`](#leo-account-verify) - Verify a message and signature from an Aleo address.
-* [`decrypt`](#leo-account-decrypt) - Decrypt record ciphertexts using your Aleo private key or view key.
+* [`new`](#leo-account-new) - 新しい Aleo アカウントを生成します。
+* [`import`](#leo-account-import) - 秘密鍵から Aleo アカウント情報を導出します。
+* [`sign`](#leo-account-sign) - Aleo 秘密鍵でメッセージに署名します。
+* [`verify`](#leo-account-verify) - Aleo アドレスが生成した署名を検証します。
+* [`decrypt`](#leo-account-decrypt) - Aleo の秘密鍵またはビューキーでレコードの暗号文を復号します。
 
 &nbsp;
 
@@ -32,10 +32,9 @@ We urge you to exercise caution when managing your private keys. `leo account` c
 
 [Back to Top](#subcommands)
 
-Use this command to generate a private key, view key, and address for a new Aleo account.
+新しい Aleo アカウントの秘密鍵・ビューキー・アドレスを生成します。
 
-
-The output should look like this:
+出力は次のようになります。
 ```bash title="console output:"
   Private Key  APrivateKey1zkp...
      View Key  AViewKey1...
@@ -46,18 +45,16 @@ The output should look like this:
 ### Flags:
 #### `--seed <SEED>`
 #### `-s <SEED>`
-Specifies a particular numeric value to use as the seed for the random number generator (RNG)
-
+乱数生成器 (RNG) に使用するシード値を数値で指定します。
 
 
 #### `--write `
 #### `-w`
-Writes the generated private key to a `.env` file in the current working directory (`./`)
-
+生成した秘密鍵をカレントディレクトリ (`./`) の `.env` ファイルに書き込みます。
 
 
 #### `--discreet`
-Print sensitive information (such as private key) discreetly to an alternate screen
+秘密鍵などの機密情報を別画面に表示し、第三者から見えにくくします。
 
 
 &nbsp;
@@ -65,29 +62,25 @@ Print sensitive information (such as private key) discreetly to an alternate scr
 ---
 
 
-
 ## `leo account import`
 
 [Back to Top](#subcommands)
 
-Use this command to derive the view key and address for an Aleo account from a private key.
+既存の Aleo 秘密鍵からビューキーとアドレスを導出します。
 
-
-To import an existing Aleo account, run the following command:
 ```bash
 leo account import <PRIVATE_KEY>
 ```
-where `<PRIVATE_KEY>` is your private key.
+`<PRIVATE_KEY>` には所有している秘密鍵を指定してください。
 
 ### Flags:
 #### `--write `
 #### `-w`
-Writes the generated private key to a `.env` file in the current working directory (`./`)
-
+復元した秘密鍵をカレントディレクトリ (`./`) の `.env` ファイルに書き込みます。
 
 
 #### `--discreet`
-Print sensitive information (such as private key) discreetly to an alternate screen
+機密情報を別画面に表示し、第三者から見えにくくします。
 
 &nbsp;
 
@@ -97,9 +90,9 @@ Print sensitive information (such as private key) discreetly to an alternate scr
 
 [Back to Top](#subcommands)
 
-Use this command to sign a message using your Aleo private key.
+Aleo の秘密鍵でメッセージに署名します。
 
-Assuming either the current working directory is a Leo project or the `$PRIVATE_KEY` environment variable has been set, you can sign a message using the following command:
+カレントディレクトリが Leo プロジェクトで `.env` に秘密鍵がある、もしくは `$PRIVATE_KEY` 環境変数を設定している場合は、次のコマンドで署名できます。
 ```bash
 leo account sign --message <MESSAGE>
 ```
@@ -109,24 +102,25 @@ leo account sign --message <MESSAGE>
 #### `-m <MESSAGE>`
 
 :::info
-This flag is required!
+必須のフラグです。
 :::
 
-Specifies the message to be signed.
+署名対象のメッセージを指定します。
 
 ---
 
 #### `--private-key <PRIVATE_KEY>`
-Explicity specifies the private key to sign the message with.  Overrides any private key in `.env` file or `$PRIVATE_KEY` environment variable.
+署名に使用する秘密鍵を明示的に指定します。`.env` や `$PRIVATE_KEY` に設定された値より優先されます。
 
 
 #### `--private-key-file <PRIVATE_KEY_FILE>`
-Alternative way to explicity specifies the private key by reading from a text file at path `<PRIVATE_KEY_FILE>` Overrides any private key in `.env` file or `$PRIVATE_KEY` environment variable.
+`<PRIVATE_KEY_FILE>` で指定したテキストファイルから秘密鍵を読み取ります。`.env` や `$PRIVATE_KEY` に設定された値より優先されます。
 
 
 #### `--raw `
 #### `-r`
-Parses the message as bytes instead of Aleo literals.
+メッセージを Aleo リテラルではなくバイト列として解釈します。
+
 
 &nbsp;
 
@@ -136,48 +130,47 @@ Parses the message as bytes instead of Aleo literals.
 
 [Back to Top](#subcommands)
 
-Use this command to verify a message and signature from an Aleo address.
+Aleo アドレスから送信されたメッセージと署名を検証します。
 
-To verify a message, run the following command
 ```bash
 leo account verify --address <ADDRESS> --signature <SIGNATURE> --message <MESSAGE>
 ```
-where `<MESSAGE>` is the message, `<SIGNATURE>` is the signature of that message, and `<ADDRESS>` is the address of the account that generated the signature.
+`<MESSAGE>` はメッセージ本文、`<SIGNATURE>` は署名、`<ADDRESS>` は署名を生成したアカウントのアドレスです。
 
 ### Flags:
 #### `--address <ADDRESS>`
 #### `-a <ADDRESS>`
 
 :::info
-This flag is required!
+必須のフラグです。
 :::
 
-Specifies the address of the account that generated the signature.
+署名を生成したアカウントのアドレスを指定します。
 
 
 #### `--signature <SIGNATURE>`
 #### `-s <SIGNATURE>`
 
 :::info
-This flag is required!
+必須のフラグです。
 :::
 
-Specifies the signature of the message.
+メッセージの署名を指定します。
 
 
 #### `--message <MESSAGE>`
 #### `-m <MESSAGE>`
 
 :::info
-This flag is required!
+必須のフラグです。
 :::
 
-Specifies the message that was signed.
+署名されたメッセージ本文を指定します。
 
 
 #### `--raw `
 #### `-r`
-Parses the message as bytes instead of Aleo literals.
+メッセージを Aleo リテラルではなくバイト列として解釈します。
 
 
 
@@ -185,36 +178,35 @@ Parses the message as bytes instead of Aleo literals.
 
 [Back to Top](#subcommands)
 
-Use this command to decrypt a record ciphertext using your Aleo private key or view key.
+Aleo の秘密鍵またはビューキーでレコードの暗号文を復号します。
 
-To decrypt a record ciphertext using your private key, run the following command
+秘密鍵を直接指定する場合:
 ```bash
 leo account decrypt --ciphertext <CIPHERTEXT> -k <KEY>
 ```
-where `<CIPHERTEXT>` is the ciphertext of a record, and `<KEY>` is private key of the record's owner.
+`<CIPHERTEXT>` はレコードの暗号文、`<KEY>` はその所有者の秘密鍵またはビューキーです。
 
-Optionally, you can specify a path to a file containing the key rather than the key itself:
- ```bash
+ファイルに保存した鍵を利用する場合:
+```bash
 leo account decrypt --ciphertext <CIPHERTEXT> -f <PATH_TO_KEYFILE>
 ```
 
-If you do not specify either the key or key file, the CLI will attempt use the `PRIVATE_KEY` and `VIEW_KEY` environment variables.
+鍵や鍵ファイルを指定しない場合、CLI は `PRIVATE_KEY` と `VIEW_KEY` 環境変数の値を利用しようとします。
 
-If the private key does not correspond to the owner of the record, the decryption will fail. 
+秘密鍵がレコードの所有者と一致しない場合、復号に失敗します。
 
 ### Flags:
 #### `-c <CIPHERTEXT>`
 :::info
-This flag is required!
+必須のフラグです。
 :::
-Specifies the record ciphertext to decrypt.
+復号するレコード暗号文を指定します。
 
 #### `-k <KEY>`
-Specifies the private key or view key to use for decryption.  This will raise an error if you also pass the `-f` flag.
+復号に使用する秘密鍵またはビューキーを指定します。`-f` フラグと同時には使用できません。
 
 #### `-f <KEY_FILE>`
-Specifies the path to a file containing the private key or view key.  This will raise an error if you also pass the `-k` flag.
+秘密鍵またはビューキーが記載されたファイルへのパスを指定します。`-k` フラグと同時には使用できません。
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
-
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数の設定より優先されます。`testnet`、`mainnet`、`canary` を指定できます。

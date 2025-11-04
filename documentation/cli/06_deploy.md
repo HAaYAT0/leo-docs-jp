@@ -10,13 +10,13 @@ toc_max_heading_level: 2
 # `leo deploy`
 
 :::note
-This command requires having a funded account. 
+このコマンドを実行するには、残高のあるアカウントが必要です。
 :::
 
-To deploy the project in the current working directory, run the following command:
+カレントディレクトリのプロジェクトをデプロイするには次を実行します。
 
 ```bash
-leo deploy # Defaults to using the private key, network, and endpoint in .env or environment variables
+leo deploy # .env もしくは環境変数に設定された秘密鍵・ネットワーク・エンドポイントを既定で使用
 ```
 
 
@@ -75,22 +75,22 @@ Once it is deployed, it CANNOT be changed.
 ──────────────────────────────────────────────
 ```
 
-See the **[Deploying](./../guides/03_deploying.md)** guide for more details.
+より詳しくは **[Deploying](./../guides/03_deploying.md)** を参照してください。
 
 
 ### Flags:
 
 #### `--private-key <PRIVATE_KEY>`
-Specifies the private key to use for the deployment. Overrides any `$PRIVATE_KEY` environment variable set manually or in a `.env` file.
+デプロイに使用する秘密鍵を指定します。`.env` や `$PRIVATE_KEY` の値より優先されます。
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+デプロイ先のネットワークを指定します。`.env` や `NETWORK` 環境変数の設定より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+デプロイに使用するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数の設定より優先されます。
 
-**Common Endpoints:**
+**よく使われるエンドポイント例:**
 <!-- markdown-link-check-disable -->
 | Network |  Endpoint  |
 |:---------:|:------:|
@@ -100,64 +100,64 @@ The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set man
 <!-- markdown-link-check-enable -->
 
 #### `--devnet`
-Specifies whether the network being deployed to is a devnet. If not set, defaults to the `DEVNET` environment variable.
+対象ネットワークが Devnet であることを示します。指定しない場合は `DEVNET` 環境変数の値が利用されます。
 
 :::info
-This flag requires a devnet to be running locally.  See INSERT DEVNET GUIDE HERE for more information
+ローカルに Devnet が起動している必要があります。詳細は Devnet ガイドをご確認ください。
 :::
 
 
 #### `-print`
-Prints the transaction to the terminal/stdout in JSON format.
+生成されたトランザクションを JSON 形式で端末に出力します。
 
 #### `-broadcast`
-Broadcasts the transaction to the network upon successful execution.  Without passing this flag, the transaction will just be generated locally.
+実行後にトランザクションをネットワークへブロードキャストします。指定しない場合はローカルで生成するのみです。
 
 #### `--save <SAVE>`
-Saves the transaction to the directory located at the `<SAVE>` path.
+生成したトランザクションを `<SAVE>` で指定したディレクトリに保存します。
 
 #### `--skip <SUBSTRING_0> <SUBSTRING_1> ...`
-Skips deployment of any program that contains one of the given substrings, delimited by a space.
+指定した文字列のいずれかを含むプログラムのデプロイをスキップします（スペース区切りで複数指定）。
 
 #### `-y`
 #### `--yes`
-The CLI will ask for manual confirmation on several steps throughout the deployment process.  Setting this flag automatically agrees to all confirmations.
+デプロイ中に表示される確認プロンプトに自動的に同意します。
 
 :::warning
-Do not use this feature unless you know what you are doing!
+用途を理解している場合のみ使用してください。
 :::
 
 #### `--priority-fees <PRIORITY_FEES>`
-Specifes the priority fee for the deployment transaction(s) delimited by `|` and used in order. The fees are in microcredits and must either be valid `u64` or `default`. Defaults to 0.
+トランザクションに設定する優先手数料を `|` 区切りで指定します。単位はマイクロクレジットで、`u64` もしくは `default` を設定できます。既定値は 0 です。
 
 :::tip
-1 Credit == 1,000,000 Microcreditss
+1 Credit = 1,000,000 Microcredits
 :::
 
 
 #### `-f <FEE_RECORDS>`
 #### `--fee-records <FEE_RECORDS>`
 
-Specifes the record(s) to pay for fees privately, delimited by `|` and used in order. The fees must either be valid plaintext, ciphertext, or `default`.  If not specified, then transaction fees will be public.
+手数料をプライベートに支払うためのレコードを `|` 区切りで指定します。平文、暗号文、`default` のいずれかを入力できます。未指定の場合、手数料は公開扱いになります。
 
 
 #### `--consensus-heights <CONSENSUS_HEIGHTS>`
-Specifies the consensus heights to use, delimited by `,`. This should only be set if you are using a custom devnet.
+利用するコンセンサスの切り替えブロック高を `,` 区切りで指定します。カスタム Devnet を使用する場合のみ設定してください。
 
-The following will enable Consensus_V0 at block 0, Consensus_V1 at block 1, etc.:
+例: 次の指定ではブロック 0 で Consensus_V0、ブロック 1 で Consensus_V1…を有効化します。
 ```bash
 --consensus-heights 0,1,2,3....
 ```
 
 
 #### `--consensus-version <CONSENSUS_VERSION>`
-Specifies the consensus version to use. If one is not provided, the CLI will attempt to determine it from the latest block.
+使用するコンセンサスバージョンを指定します。未指定の場合、最新ブロックの情報から自動判定を試みます。
 
 #### `--max-wait <MAX_WAIT>`
-Specifies the number of seconds to wait for a block to appear when searching for a transaction. Defaults to 8 seconds.
+トランザクションを探索する際に、新しいブロックを待機する秒数を指定します（既定値は 8 秒）。
 
 #### `--blocks-to-check <BLOCKS_TO_CHECK>`
-Specifies the number of blocks to look at when searching for a transaction.  Defaults to 12 blocks
+トランザクション探索時に確認するブロック数を指定します（既定値は 12 ブロック）。
 
 ```
 Options:
@@ -188,4 +188,3 @@ Options:
 --no-local
     Don't use the local source code.
 ```
-

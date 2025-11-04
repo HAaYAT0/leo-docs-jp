@@ -1,49 +1,43 @@
 ---
 id: programs
-title: Programs in Practice
-sidebar_label: Programs in Practice
+title: 実践でのプログラム活用
+sidebar_label: 実践でのプログラム
 ---
 [general tags]: # (program, mapping, transition, function, inline, async_transition, async_function)
 
-## Mappings
+## マッピング {#mappings}
 
-### Mapping Operations
+### マッピング操作 {#mapping-operations}
 
-Mappings can be read from and modified by calling one of the following functions.
-
+マッピングに対する読み書きは、以下の関数を呼び出すことで行います。
 
 #### get
 
-A get command, e.g. `current_value = Mapping::get(counter, addr);`
-Gets the value stored at `addr` in `counter` and stores the result in `current_value`
-If the value at `addr` does not exist, then the program will fail to execute.
+`current_value = Mapping::get(counter, addr);` のように `get` を呼び出すと、`counter` 内のキー `addr` に対応する値を `current_value` に読み込みます。  
+もし `addr` に対応する値が存在しなければ、プログラムは失敗します。
 
 #### get_or_use
 
-A get command that uses the provided default if the key is not present in the mapping,  
-e.g. `let current_value: u64 = Mapping::get_or_use(counter, addr, 0u64);`  
-Gets the value stored at `addr` in `counter` and stores the result in `current_value`.
-If the key is not present, `0u64` is stored in `counter` (associated to the key) and in `current_value`.
+キーが存在しない場合に既定値を利用する `get` です。  
+例: `let current_value: u64 = Mapping::get_or_use(counter, addr, 0u64);`  
+`addr` に結び付いた値を `counter` から読み込み `current_value` に格納します。存在しない場合は `0u64` が `counter` と `current_value` の両方に設定されます。
 
 #### set
 
-A set command, e.g. `Mapping::set(counter, addr, current_value + 1u64);`
-Sets the `addr` entry as `current_value + 1u64` in `counter`.
+`Mapping::set(counter, addr, current_value + 1u64);` のように `set` を呼び出すと、`counter` のキー `addr` に `current_value + 1u64` を保存します。
 
 #### contains
 
-A contains command, e.g. `let contains: bool = Mapping::contains(counter, addr);`
-Returns `true` if `addr` is present in `counter`, `false` otherwise.
+`let contains: bool = Mapping::contains(counter, addr);` とすると、`addr` が `counter` に存在するかどうかを真偽値で返します。
 
 #### remove
 
-A remove command, e.g. `Mapping::remove(counter, addr);`
-Removes the entry at `addr` in `counter`.
+`Mapping::remove(counter, addr);` で、`counter` からキー `addr` のエントリを削除します。
 
-#### Usage 
+#### 利用時の注意
 
 :::info
-Mapping operations are only allowed in an [async function](#async-function).
+マッピング操作は [非同期関数](#async-function) 内でのみ使用できます。
 :::
 
 ```leo showLineNumbers
@@ -64,15 +58,13 @@ program test.aleo {
 }
 ```
 
-## Functions
+## 関数 {#functions}
 
-### Transition Function
+### トランジション関数 {#transition-function}
 
-Transition functions in Leo are declared as `transition {name}() {}`.
-Transition functions can be called directly when running a Leo program (via `leo run`).
-Transition functions contain expressions and statements that can compute values.
-Transition functions must be in a program's current scope to be called.
-Transition functions that call [async functions](#async-function) to execute code on-chain must be declared as `async transition`.
+Leo のトランジション関数は `transition {name}() {}` の形式で宣言します。`leo run` で実行するときに直接呼び出せます。  
+トランジション関数は値を計算する式や文を含み、呼び出すには同じプログラムスコープ内に存在している必要があります。  
+オンチェーンで実行する [非同期関数](#async-function) を呼び出すトランジションは `async transition` として宣言しなければなりません。
 
 ```leo showLineNumbers
 program hello.aleo {
@@ -85,38 +77,32 @@ program hello.aleo {
 }
 ```
 
-#### Function Inputs
+#### 関数の引数
 
-A function input is declared as `{visibility} {name}: {type}`.
-Function inputs must be declared just after the function name declaration, in parentheses.
+関数引数は `{visibility} {name}: {type}` の形式で指定し、関数名の直後の括弧内に並べます。
 
 ```leo showLineNumbers
-// The transition function `foo` takes a single input `a` with type `field` and visibility `public`.
+// トランジション関数 `foo` は可視性 `public`、型 `field` の引数 `a` を 1 つ受け取る。
 transition foo(public a: field) { }
 ```
 
-#### Function Outputs
+#### 関数の戻り値
 
-A function output is calculated as `return {expression};`.
-Returning an output ends the execution of the function.
-The return type of the function declaration must match the type of the returned `{expression}`.
+戻り値は `return {expression};` で指定します。`return` を実行すると関数の処理は終了します。  
+宣言した戻り値の型と `expression` の型は一致している必要があります。
 
 ```leo showLineNumbers
 transition foo(public a: field) -> field {
-    // Returns the addition of the public input a and the value `1field`.
+    // 公開入力 a に 1field を足した結果を返す。
     return a + 1field;
 }
 ```
 
-### Helper Function
+### ヘルパー関数 {#helper-function}
 
-A helper function is declared as `function {name}({arguments}) {}`.
-Helper functions contain expressions and statements that can compute values,
-however helper functions cannot produce `records`.
+ヘルパー関数は `function {name}({arguments}) {}` で宣言します。値を計算する式や文を含みますが、`record` を生成することはできません。
 
-Helper functions cannot be called directly. Instead, they must be called by other functions.
-Inputs of helper functions cannot have `{visibility}` modifiers like transition functions,
-since they are used only internally, not as part of a program's external interface.
+ヘルパー関数は直接呼び出せず、他の関数から利用します。トランジション関数と異なり `{visibility}` 修飾子は使えません。外部インターフェースではなく内部処理専用だからです。
 
 ```leo showLineNumbers
 function foo(
@@ -127,15 +113,11 @@ function foo(
 }
 ```
 
-### Inline Function
+### インライン関数 {#inline-function}
 
-An inline function is declared as `inline {name}() {}`.
-Inline functions contain expressions and statements that can compute values.
-Inline functions cannot be executed directly from the outside,
-instead the Leo compiler inlines the body of the function at each call site.
+インライン関数は `inline {name}() {}` で宣言します。処理本体はコンパイル時に各呼び出し箇所へインライン展開されるため、外部から直接実行することはできません。
 
-Inputs of inline functions cannot have `{visibility}` modifiers like transition functions,
-since they are used only internally, not as part of a program's external interface.
+ヘルパー関数と同様に可視性修飾子は使用できません。
 
 ```leo showLineNumbers
 inline foo(
@@ -146,7 +128,7 @@ inline foo(
 }
 ```
 
-As of Leo v3.0.0, inline functions also support **const generics**:
+Leo v3.0.0 以降ではインライン関数でも **const generics** を利用できます。
 ```leo showLineNumbers
 inline sum_first_n_ints::[N: u32]() -> u32 {
     let sum = 0u32;
@@ -160,35 +142,35 @@ transition main() -> u32 {
     return sum_first_n_ints::[5u32]();
 }
 ```
-Acceptable types for const generic parameters include integer types, `bool`, `scalar`, `group`, `field`, and `address`.
+const ジェネリックに指定できる型は整数型・`bool`・`scalar`・`group`・`field`・`address` です。
 
 
-### Async Function
+### 非同期関数 {#async-function}
 
-An async function is used to define computation run on-chain. It is declared as `async function`, and calls to it return a [`Future`](#future) object.  The term asynchronous is used because the code gets executed at a later point in time.  The most common use case is to initiate or change public on chain state within mappings. An async function can only be called by an [`async transition`](#transition-function) and is executed on chain only after the zero-knowledge proof of the execution of the associated transition is verified.
+非同期関数はオンチェーンで実行する処理を記述するためのものです。`async function` として宣言し、呼び出すと [`Future`](#future) オブジェクトを返します。ゼロ知識証明付きで後から実行されるため「非同期」と呼ばれます。公共のマッピングを更新する場合などに用いられます。  
+非同期関数を呼び出せるのは [`async transition`](#transition-function) のみで、対応するトランジションの証明が検証された後にオンチェーンで実行されます。
 
-Async functions are atomic; they either succeed or fail, and the state is reverted if they fail.
+非同期関数はアトミックであり、失敗した場合は状態が元に戻されます。
 
-An example of using an async function to perform on-chain state mutation is in the `transfer_public_to_private` transition below, which updates the public `account` mapping (and thus a user's balance) when called.
+以下は `transfer_public_to_private` トランジション内で非同期関数を使ってマッピングを更新する例です。
 
 ```leo showLineNumbers
 program transfer.aleo {
-    // The function `transfer_public_to_private` turns a specified token amount
-    // from `account` into a token record for the specified receiver.
+    // `transfer_public_to_private` は指定した量のトークンを
+    // 公開マッピング `account` から受領者のトークンレコードへ変換する。
     //
-    // This function preserves privacy for the receiver's record, however
-    // it publicly reveals the sender and the specified token amount.
+    // 受領者のレコードは秘匿されるが、送信者と数量は公開される点に注意。
     async transition transfer_public_to_private(
         receiver: address,
         public amount: u64
     ) -> (token, Future) {
-        // Produce a token record for the token receiver.
+        // 受領者のトークンレコードを生成。
         let new: token = token {
             owner: receiver,
             amount,
         };
 
-        // Return the receiver's record, then decrement the token amount of the caller publicly.
+        // レコードを返し、あわせて公開マッピング上の残高を減らす。
         return (new, update_public_state(self.caller, amount));
     }
 
@@ -196,16 +178,16 @@ program transfer.aleo {
         public sender: address,
         public amount: u64
     ) {
-        // Decrements `account[sender]` by `amount`.
-        // If `account[sender]` does not exist, it will be created.
-        // If `account[sender] - amount` underflows, `transfer_public_to_private` is reverted.
+        // account[sender] から amount を減算。
+        // エントリが無ければ作成される。減算でアンダーフローするとトランジション全体が巻き戻される。
         let current_amount: u64 = Mapping::get_or_use(account, sender, 0u64);
         Mapping::set(account, sender, current_amount - amount);
     }
 }
 ```
 
-Alternatively, you may write async code inside of an `async` block within an `async transition` function.  Below is what that would look like for the same `transfer_public_to_private` transition:
+同様の処理を `async transition` 内の `async` ブロックで記述することもできます。
+
 ```leo showLineNumbers
 program transfer.aleo {
     async transition transfer_public_to_private(
@@ -227,39 +209,40 @@ program transfer.aleo {
 }
 ```
 
-If there is no need to create or alter the public on-chain state, async functions are not required.
+公開状態を操作する必要がない場合、非同期関数を使う必要はありません。
 
-### Function Call Rules
+### 関数呼び出しのルール {#function-call-rules}
 
-- There are three function variants: `transition`, `function`, and `inline`.
-- A `transition` can call: `function`, `inline`, and external `transition`s.
-- A `function` can only call: `inline`s.
-- An `inline` can only call: other `inline`s.
-- Recursive calls (direct or indirect) are not allowed.
+- 利用できる関数の種類は `transition`・`function`・`inline` の 3 種類です。
+- `transition` からは `function`・`inline`・外部の `transition` を呼び出せます。
+- `function` から呼び出せるのは `inline` のみです。
+- `inline` から呼び出せるのは他の `inline` のみです。
+- 直接・間接を問わず再帰呼び出しはできません。
 
-## Limitations
-snarkVM imposes the following limits on Aleo programs:
-- the maximum size of the program 100 KB, by the number of characters.
-- the maximum number of mappings is 31.
-- the maximum number of imports is 64.
-- the maximum import depth is 64.
-- the maximum call depth is 31.
-- the maximum number of functions is 31.
-- the maximum number of structs is 310.
-- the maximum number of records is 310.
-- the maximum number of closures is 62.
+## 制約事項 {#limitations}
 
-**If your *compiled* Leo program exceeds these limits, then consider modularizing or rearchitecting your program.** The only way these limits can be increased is through a formal protocol upgrade via the governance process defined by the Aleo Network Foundation.
+snarkVM では Aleo プログラムに以下の制限があります。
+- プログラムの最大サイズ: 文字数で 100 KB
+- マッピングの最大数: 31
+- インポートの最大数: 64
+- インポートの最大深度: 64
+- 呼び出しスタックの最大深さ: 31
+- 関数の最大数: 31
+- 構造体の最大数: 310
+- レコードの最大数: 310
+- クロージャの最大数: 62
 
+**コンパイル後の Leo プログラムがこれらの制限を超える場合は、モジュール化や設計の見直しを検討してください。** 制限の引き上げは、Aleo Network Foundation が定めるガバナンス手続きを経たプロトコルアップグレードによってのみ可能です。
 
-Some other protocol-level limits to be aware of are:
-- **the maximum transaction size is 128 KB.** If your program exceeds this, perhaps by requiring large inputs or producing large outputs, consider optimizing the data types in your Leo code.
-- **the maxmimum number of micro-credits your transaction can consume for on-chain execution is `100_000_000`.**. If your program exceeds this, consider optimizing on-chain components of your Leo code.
+その他のプロトコルレベルの制限は以下のとおりです。
+- **トランザクションサイズの上限は 128 KB** です。入力や出力が大きすぎる場合は、Leo コードで利用するデータ型を最適化してください。
+- **オンチェーン実行に使用できる手数料の上限は `100_000_000` マイクロクレジット** です。これを超える場合は、オンチェーン部分のロジックを見直してください。
 
-As with the above restructions. these limits can only be increased via the governance process.
+これらの制限についても、引き上げにはガバナンスプロセスが必要です。
 
-## Compiling Conditional On-Chain Code
-Consider the following Leo transition.
+## 条件付きオンチェーンコードのコンパイル {#compiling-conditional-on-chain-code}
+
+次のトランジションを考えます。
 ```leo showLineNumbers
 transition weird_sub(a: u8, b: u8) -> u8 {
     if (a >= b) {
@@ -269,7 +252,7 @@ transition weird_sub(a: u8, b: u8) -> u8 {
     }
 }
 ```
-This is compiled into the following Aleo instructions:
+これは以下の Aleo 命令にコンパイルされます。
 ```aleo showLineNumbers
 function weird_sub:
     input r0 as u8.private;
@@ -280,10 +263,12 @@ function weird_sub:
     ternary r2 r3 r4 into r5;
     output r5 as u8.private;
 ```
-Observe that both branches of the conditional are executed in the transition. The correct output is then selected using a ternary instruction. This compilation method is only possible because operations in transitions are purely functional. [^1].
+この例では、条件分岐の両方の分岐が実行され、`ternary` 命令で最終的な出力が選択されています。トランジション内の演算は純粋関数的であるため、このようなコンパイルが可能になっています。[^1]
 
-On-chain commands are not all purely functional; for example, `get`, `get.or_use`, `contains`, `remove`, and `set`, whose semantics all depend on the state of the program. As a result, the same technique for off-chain code cannot be used. Instead, the on-chain code is compiled using `branch` and `position` commands, which allow the program to define sequences of code that are skipped. However, because destination registers in skipped instructions are not initialized, they cannot be accessed in a following instructions. In other words, depending on the branch taken, some registers are invalid and an attempt to access them will return in an execution error. The only Leo code pattern that produces such an access attempt is code that attempts to assign out to a parent scope from a conditional statement; consequently, they are disallowed.
+一方、オンチェーン命令はすべてが純粋関数的ではありません。たとえば `get`・`get_or_use`・`contains`・`remove`・`set` などはプログラムの状態に依存するため、同様のテクニックを使うことはできません。  
+その代わりに `branch` と `position` 命令を用いて、特定のコードブロックをスキップできるようにコンパイルされます。ただしスキップされた命令の出力レジスタは初期化されないため、後続の命令で参照するとエラーになります。すなわち、分岐によっては未定義のレジスタが存在し、それにアクセスすると実行エラーが発生します。  
+Leo のコードでこの状況が発生するのは、条件分岐内から親スコープの変数へ代入しようとする場合です。そのためこのようなパターンはコンパイル時に禁止されています。
 
-This restriction can be mitigated by future improvements to `snarkVM`, however we table that discussion for later.
+この制約は将来的な `snarkVM` の改善で緩和される可能性がありますが、現時点では上記の制約がある点に注意してください。
 
-[^1]: There are some operations that are not purely functional, e.g `add` which can fail on overflow.
+[^1]: `add` のようにオーバーフローで失敗する演算など、一部の操作は完全な純粋関数ではありません。

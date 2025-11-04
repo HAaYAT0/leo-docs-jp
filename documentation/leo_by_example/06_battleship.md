@@ -6,63 +6,60 @@ title: A Game of Battleship in Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/battleship)**
 
-## Contents
+## 目次
 
-- [Contents](#contents)
-- [Summary](#summary)
-- [How to Run](#how-to-run)
-- [1. Initializing the Players](#1-initializing-the-players)
-- [2. Player 1 Places Ships on the Board](#2-player-1-places-ships-on-the-board)
-- [3: Player 1 Passes The Board To Player 2](#3-player-1-passes-the-board-to-player-2)
-- [4: Player 2 Places Ships On The Board](#4-player-2-places-ships-on-the-board)
-- [5: Passing The Board Back To Player 1](#5-passing-the-board-back-to-player-1)
-- [6: Player 1 Takes The 1st Turn](#6-player-1-takes-the-1st-turn)
-- [7: Player 2 Takes The 2nd Turn](#7-player-2-takes-the-2nd-turn)
-- [8: Player 1 Takes The 3rd Turn](#8-player-1-takes-the-3rd-turn)
-- [9: Player 2 Takes The 4th Turn](#9-player-2-takes-the-4th-turn)
-- [10. Who Wins?](#10-who-wins)
-- [ZK Battleship Privacy](#zk-battleship-privacy)
-- [Modeling the board and ships](#modeling-the-board-and-ships)
-  - [Examples of valid board configurations:](#examples-of-valid-board-configurations)
-  - [Examples of invalid board configurations:](#examples-of-invalid-board-configurations)
-- [Validating a single ship at a time](#validating-a-single-ship-at-a-time)
-  - [Bit Counting](#bit-counting)
-  - [Adjacency Check](#adjacency-check)
-  - [Splitting a row or column](#splitting-a-row-or-column)
-  - [Ensuring a bitstring is a power of 2](#ensuring-a-bitstring-is-a-power-of-2)
-- [Validating all ships together in a single board](#validating-all-ships-together-in-a-single-board)
-- [Ensure that players and boards cannot swap mid-game](#ensure-that-players-and-boards-cannot-swap-mid-game)
-- [Ensure that each player can only move once before the next player can move](#ensure-that-each-player-can-only-move-once-before-the-next-player-can-move)
-- [Enforce constraints on valid moves, and force the player to give their opponent information about their opponent's previous move in order to continue playing](#enforce-constraints-on-valid-moves-and-force-the-player-to-give-their-opponent-information-about-their-opponents-previous-move-in-order-to-continue-playing)
-- [Winning the game](#winning-the-game)
+- [目次](#contents)
+- [概要](#summary)
+- [実行方法](#how-to-run)
+- [1. プレイヤーの初期化](#1-initializing-the-players)
+- [2. プレイヤー 1 がボードに艦船を配置](#2-player-1-places-ships-on-the-board)
+- [3. プレイヤー 1 からプレイヤー 2 へボードを渡す](#3-player-1-passes-the-board-to-player-2)
+- [4. プレイヤー 2 がボードに艦船を配置](#4-player-2-places-ships-on-the-board)
+- [5. プレイヤー 2 からプレイヤー 1 へボードを返す](#5-passing-the-board-back-to-player-1)
+- [6. プレイヤー 1 の 1 手目](#6-player-1-takes-the-1st-turn)
+- [7. プレイヤー 2 の 2 手目](#7-player-2-takes-the-2nd-turn)
+- [8. プレイヤー 1 の 3 手目](#8-player-1-takes-the-3rd-turn)
+- [9. プレイヤー 2 の 4 手目](#9-player-2-takes-the-4th-turn)
+- [10. 勝者の判定](#10-who-wins)
+- [ZK Battleship におけるプライバシー](#zk-battleship-privacy)
+- [ボードと艦船のモデリング](#modeling-the-board-and-ships)
+  - [有効なボード配置の例](#examples-of-valid-board-configurations)
+  - [無効なボード配置の例](#examples-of-invalid-board-configurations)
+- [艦船を 1 隻ずつ検証する](#validating-a-single-ship-at-a-time)
+  - [ビットカウント](#bit-counting)
+  - [隣接チェック](#adjacency-check)
+  - [行・列をまたいでいないかの確認](#splitting-a-row-or-column)
+  - [ビット列が 2 の冪乗かを確認する](#ensuring-a-bitstring-is-a-power-of-2)
+- [全艦船を 1 枚のボードで検証する](#validating-all-ships-together-in-a-single-board)
+- [ゲーム途中でプレイヤーやボードが入れ替わらないようにする](#ensure-that-players-and-boards-cannot-swap-mid-game)
+- [ターン順を強制する](#ensure-that-each-player-can-only-move-once-before-the-next-player-can-move)
+- [有効な手と情報共有を強制する](#enforce-constraints-on-valid-moves-and-force-the-player-to-give-their-opponent-information-about-their-opponents-previous-move-in-order-to-continue-playing)
+- [勝利条件](#winning-the-game)
 
-## Summary
+## 概要
 
-This Battleship implementation showcases a well-designed application within Leo’s current constraints. However, some aspects—especially the bit manipulation—might seem complex at first glance. To set expectations, this is a more advanced example due to the way the board is encoded and manipulated. Planned improvements to Leo could make implementations like this much simpler in the future.
+この Battleship の実装は、現在の Leo が抱える制約の中でも完成度の高いアプリケーション例を示しています。特にビット演算を多用しているため最初は難しく感じられるかもしれませんが、盤面のエンコード方法ゆえに高度なサンプルになっている点をご承知ください。Leo の将来的な改善により、このような実装もさらに簡潔に表現できるようになる見込みです。
 
-Battleship is a game where two players lay their ships into secret configurations on their respective 8x8 grids,
-and then take turns firing upon each other's board.
-The game ends when one player has sunk all of the other player's ships.
+Battleship は 2 人対戦ゲームで、各プレイヤーが 8x8 のグリッドに艦船を秘密裏に配置し、交互に相手のマスを攻撃します。相手の艦船をすべて沈めたプレイヤーが勝利します。
 
-This application was translated into Leo from the [zk-battleship](https://github.com/demox-labs/zk-battleship) example written by the Aleo community - show them some love!
+本アプリケーションは Aleo コミュニティが公開している [zk-battleship](https://github.com/demox-labs/zk-battleship) を Leo へ移植したものです。コミュニティへの感謝を込めて紹介します。
 
-## How to Run
+## 実行方法
 
-Follow the [Leo Installation Instructions](https://docs.leo-lang.org/getting_started/installation).
+[Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を整えてください。
 
-This battleship program can be run using the following bash script. Locally, it will execute Leo program functions to create the board, place ships, and play a game of battleship.
+この Battleship プログラムは次の bash スクリプトで実行できます。ローカル環境では、ボードの生成・艦船の配置・対戦の進行を Leo プログラムで確認できます。
 
 ```bash
 cd battleship
 ./run.sh
 ```
 
-The `.env` file contains a private key and address. This is the account that will be used to sign transactions and is checked for record ownership. When executing programs as different parties, be sure to set the `private_key` field in `.env` to the appropriate value. You can check out how we've set things up in `./run.sh` for a full example of how to run the program as different parties.
+`.env` ファイルには秘密鍵とアドレスが記載されています。これはトランザクション署名やレコード所有権の検証に利用するアカウントです。主体を切り替えて操作する際は、`.env` の `private_key` を適切な値に変更してください。`./run.sh` にも主体切り替えの例が記載されています。
 
-## 1. Initializing the Players
-In order to play battleship, there must be two players with two boards. Players will be represented by their Aleo address.
+## 1. プレイヤーの初期化
 
-We will be playing the role of these two parties:
+Battleship をプレイするには、2 人のプレイヤーとそれぞれのボードが必要です。ここでは次の 2 つのアカウントを用います。
 
 ```bash
 The private key and address of player 1.
@@ -74,10 +71,9 @@ private_key: APrivateKey1zkp86FNGdKxjgAdgQZ967bqBanjuHkAaoRe19RK24ZCGsHH
 address: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry
 ```
 
-## 2. Player 1 Places Ships on the Board
-Now, we need to make a board as Player 1. See the [modeling the boards and ships](#modeling-the-board-and-ships) section for information on valid ship bitstrings and placements on the board.
+## 2. プレイヤー 1 がボードに艦船を配置
 
-With player 1's private key, they initialize the board with the placement of 4 ships and the opponent's public address.
+まずプレイヤー 1 のボードを初期化します。艦船のビット表現については [ボードと艦船のモデリング](#modeling-the-board-and-ships) を参照してください。
 
 ```bash
 echo "
@@ -88,26 +84,8 @@ PRIVATE_KEY=APrivateKey1zkpGKaJY47BXb6knSqmT3JZnBUEGBDFAWz2nMVSsjwYpJmm
 leo run initialize_board 34084860461056u64 551911718912u64 7u64 1157425104234217472u64 aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry
 ```
 
-```bash
-➡️  Output
+出力はプレイヤー 1 が所有する `board_state.record` です。`game_started` フラグは false で、艦船の配置 `ships` は 1157459741006397447u64 になっています。これをビット列にすると次の通りです。
 
- • {
-  owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  hits_and_misses: 0u64.private,
-  played_tiles: 0u64.private,
-  ships: 1157459741006397447u64.private,
-  player_1: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  player_2: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  game_started: false.private,
-  _nonce: 605849623036268790365773177565562473735086364071033205649960161942593750353group.public
-}
-
-Leo ✅ Finished 'battleship.aleo/initialize_board'
-```
-
-The output is a board_state record owned by Player 1.
-Notice that the `game_started` flag is false, as well as the composite ship configuration `ships`. 1157459741006397447u64 to a binary bitstring becomes `0001000000010000000111111000000010000000100000001000000000000111`,
-or laid out in columns and rows:
 ```
 0 0 0 1 0 0 0 0
 0 0 0 1 0 0 0 0
@@ -119,8 +97,9 @@ or laid out in columns and rows:
 0 0 0 0 0 1 1 1
 ```
 
-## 3: Player 1 Passes The Board To Player 2
-Now, we can offer a battleship game to player 2. Run `offer_battleship` with the record you just created:
+## 3. プレイヤー 1 からプレイヤー 2 へボードを渡す
+
+先ほど生成したレコードを用いてプレイヤー 2 に対戦を申し込みます。
 
 ```
 leo run offer_battleship "{
@@ -135,36 +114,11 @@ leo run offer_battleship "{
 }"
 ```
 
-```bash
-➡️  Outputs
+1 つ目の出力は `game_started` が true に更新された `board_state.record` です。このボードは他の対戦には流用できません。2 つ目の出力はプレイヤー 2 の所有となるダミーの `move.record` で、攻撃座標などはまだ含まれていません。プレイヤー 2 はこれを使って対戦を受諾します。
 
- • {
-  owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  hits_and_misses: 0u64.private,
-  played_tiles: 0u64.private,
-  ships: 1157459741006397447u64.private,
-  player_1: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  player_2: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  game_started: true.private,
-  _nonce: 5443521912126792569907060514335205174032013684291524549930033539632156136027group.public
-}
- • {
-  owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  incoming_fire_coordinate: 0u64.private,
-  player_1: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  player_2: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  prev_hit_or_miss: 0u64.private,
-  _nonce: 6986401140057557061321899375524513841643724821230599181456639629979203966487group.public
-}
+## 4. プレイヤー 2 がボードに艦船を配置
 
-Leo ✅ Finished 'battleship.aleo/offer_battleship'
-```
-
-The first output record is the updated `board_state.record`. Notice the `game_started` flag is now true. This board cannot be used to offer any other battleship games or accept any battleship game offers. Player 1 would need to initialize a new board and use that instead. The second output record is a dummy `move.record` - there are no fire coordinates included to play on Player 2's board, and no information about any previous Player 2 moves (Player 2 has not made any moves yet). This `move.record` is owned by Player 2, who must use that in combination with their own `board_state.record` to accept the game. Let's do that now.
-
-## 4: Player 2 Places Ships On The Board
-
-We switch our .env to player 2's private key and similarly run initialize_board to create a new and different board for player two.
+`.env` をプレイヤー 2 の秘密鍵に切り替え、ボードを初期化します。
 
 ```bash
 echo "
@@ -175,27 +129,12 @@ PRIVATE_KEY=APrivateKey1zkp86FNGdKxjgAdgQZ967bqBanjuHkAaoRe19RK24ZCGsHH
 leo run initialize_board 31u64 2207646875648u64 224u64 9042383626829824u64 aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy
 ```
 
-```bash
-➡️  Output
+`ships` が 9044591273705727u64 となり、ビット列は次のようになります。
 
- • {
-  owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  hits_and_misses: 0u64.private,
-  played_tiles: 0u64.private,
-  ships: 9044591273705727u64.private,
-  player_1: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
-  player_2: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
-  game_started: false.private,
-  _nonce: 677929557867990662961068737825412945684193990901139603462104629310061710321group.public
-}
-
-✅ Executed 'battleship.aleo/initialize_board'
-```
-
-Note, the output ships here is 9044591273705727u64, which in a bitstring is:
 ```
 0 0 1 0 0 0 0 0
 0 0 1 0 0 0 1 0
+0 0 0 0 0 0 1 0
 0 0 0 0 0 0 1 0
 0 0 0 0 0 0 1 0
 0 0 0 0 0 0 1 0
@@ -203,9 +142,9 @@ Note, the output ships here is 9044591273705727u64, which in a bitstring is:
 1 1 1 1 1 1 1 1
 ```
 
-## 5: Passing The Board Back To Player 1
+## 5. プレイヤー 2 からプレイヤー 1 へボードを返す
 
-Now, we can accept Player 1's offer. Run `start_battleship`:
+プレイヤー 1 の申し出を受諾するため `start_battleship` を実行します。
 
 ```bash
 leo run start_battleship "{
@@ -227,10 +166,10 @@ leo run start_battleship "{
 }"
 ```
 
-```bash
-➡️  Outputs
+出力例:
 
- • {
+```bash
+• {
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   hits_and_misses: 0u64.private,
   played_tiles: 0u64.private,
@@ -240,7 +179,7 @@ leo run start_battleship "{
   game_started: true.private,
   _nonce: 499506036017893504519951074816367233238764881167148207158107765834843789278group.public
 }
- • {
+• {
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   incoming_fire_coordinate: 0u64.private,
   player_1: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
@@ -248,22 +187,13 @@ leo run start_battleship "{
   prev_hit_or_miss: 0u64.private,
   _nonce: 7551593771072417773015833444631669906818701068612998340960968556531564726874group.public
 }
-
-✅ Executed 'battleship.aleo/start_battleship'
 ```
 
-Notice the outputs here are similar to `offer_battleship`. A dummy `move.record` is owned by Player 1, and Player 2 gets a `board_state.record` with the `game_started` flag updated. However, now that Player 1 has a `move.record` and a started board, they can begin to play.
+プレイヤー 2 の `board_state.record` でも `game_started` が true になり、プレイヤー 1 が所有する `move.record` が生成されます。これでプレイを開始する準備が整いました。
 
-## 6: Player 1 Takes The 1st Turn
-
-We switch the .env back to player 1, and we run the transition function play.
+## 6. プレイヤー 1 の 1 手目
 
 ```bash
-echo "
-NETWORK=testnet
-PRIVATE_KEY=APrivateKey1zkpGKaJY47BXb6knSqmT3JZnBUEGBDFAWz2nMVSsjwYpJmm
-" > .env
-
 leo run play "{
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   hits_and_misses: 0u64.private,
@@ -283,10 +213,10 @@ leo run play "{
 }" 1u64
 ```
 
-```bash
-➡️  Outputs
+出力例:
 
- • {
+```bash
+• {
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   hits_and_misses: 0u64.private,
   played_tiles: 1u64.private,
@@ -296,7 +226,7 @@ leo run play "{
   game_started: true.private,
   _nonce: 5833516448655036599597838063894464861371198938108460526636526325286738488235group.public
 }
- • {
+• {
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   incoming_fire_coordinate: 1u64.private,
   player_1: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
@@ -304,22 +234,13 @@ leo run play "{
   prev_hit_or_miss: 0u64.private,
   _nonce: 4383078917685812690935470339923943658033179718952229417171392956492546325808group.public
 }
-
-✅ Executed 'battleship.aleo/play'
 ```
 
-Player 1 has an updated `board_state.record` - they have a new `played_tiles` bitstring, which corresponds to the fire coordinate they just sent to Player 2. You can see that the `incoming_fire_coordinate` in the `move.record` owned by Player 2 matches exactly the input given by Player 1. Player 2 can now play this move tile and respond with a fire coordinate of their own, and they will also let Player 1 know whether their fire coordinate hit or miss Player 2's ships.
+プレイヤー 1 の `board_state.record` の `played_tiles` に攻撃座標が追加され、プレイヤー 2 の `move.record` には対応する `incoming_fire_coordinate` が格納されます。
 
-## 7: Player 2 Takes The 2nd Turn
-
-We switch the .env back to player 2, and we run the transition function play.
+## 7. プレイヤー 2 の 2 手目
 
 ```bash
-echo "
-NETWORK=testnet
-PRIVATE_KEY=APrivateKey1zkp86FNGdKxjgAdgQZ967bqBanjuHkAaoRe19RK24ZCGsHH
-" > .env
-
 leo run play "{
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   hits_and_misses: 0u64.private,
@@ -339,10 +260,10 @@ leo run play "{
 }" 2048u64
 ```
 
-```bash
-➡️  Outputs
+出力例:
 
- • {
+```bash
+• {
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   hits_and_misses: 0u64.private,
   played_tiles: 2048u64.private,
@@ -352,7 +273,7 @@ leo run play "{
   game_started: true.private,
   _nonce: 6284479302801058138006361960649628992876976428745392660731784830148359328839group.public
 }
- • {
+• {
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   incoming_fire_coordinate: 2048u64.private,
   player_1: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
@@ -360,27 +281,13 @@ leo run play "{
   prev_hit_or_miss: 1u64.private,
   _nonce: 8217837260140600949756911248177622179381338760298068527463640818659709985441group.public
 }
-
-✅ Executed 'battleship.aleo/play'
 ```
 
-Player 2 now has an updated `board_state.record` which includes their newly updated `played_tiles`, only containing the fire coordinate they just sent to Player 1. Player 1 now owns a new `move.record` which includes the `hits_and_misses` field.
-This contains only the result of Player 1's previous fire coordinate they had sent to Player 2. It will always be a single coordinate on the 8x8 grid if it's a hit. A miss is 0u64 (8x8 grid of 0s), whereas a hit is the u64 equivalent of their previous fire coordinate in bitstring form.
+プレイヤー 2 の `board_state.record` にも攻撃座標が記録され、プレイヤー 1 の `move.record` に命中／外れの結果が格納されます。たとえばプレイヤー 2 の最下段は艦船が並んでいるため、1u64 などの座標が命中扱いになります。
 
-If you check Player 2's ships configuration, you'll note their entire bottom row is covered by two ships, so sample valid hits on the bottom row would be: 1u64, 2u64, 4u64, 8u64, 16u64, 32u64, 64u64, and 128u64. Since Player 1's first fire coordinate (1u64) was a hit, the `hits_and_misses` field is also 1u64.
-
-Player 1's next move will consume this `move.record`, which will update Player 1's board with the hit-or-miss, as well as figure out the result of Player 2's fire coordinate. Now that Player 1 has some `played_tiles`, they can no longer choose an alread-played fire coordinate. For example, running `aleo run play 'board_state.record' 'move.record' 1u64` will fail, because 1u64 has already been played.
-
-## 8: Player 1 Takes The 3rd Turn
-
-We switch the .env back to player 1, and we run the transition function play.
+## 8. プレイヤー 1 の 3 手目
 
 ```bash
-echo "
-NETWORK=testnet
-PRIVATE_KEY=APrivateKey1zkpGKaJY47BXb6knSqmT3JZnBUEGBDFAWz2nMVSsjwYpJmm
-" > .env
-
 leo run play "{
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   hits_and_misses: 0u64.private,
@@ -400,10 +307,10 @@ leo run play "{
 }" 2u64
 ```
 
-```bash
-➡️  Outputs
+出力例:
 
- • {
+```bash
+• {
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   hits_and_misses: 1u64.private,
   played_tiles: 3u64.private,
@@ -413,7 +320,7 @@ leo run play "{
   game_started: true.private,
   _nonce: 5338125050531864311985370830280952305688629865354830939402745656578990650505group.public
 }
- • {
+• {
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   incoming_fire_coordinate: 2u64.private,
   player_1: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
@@ -421,34 +328,13 @@ leo run play "{
   prev_hit_or_miss: 0u64.private,
   _nonce: 7971995563631235472540847437984726419106193784727086463494463811056252801811group.public
 }
-
-✅ Executed 'battleship.aleo/play'
 ```
 
-As before, both a `board_state.record` and `move.record` are created. The `board_state.record` now contains 3u64 as the `played_tiles`, which looks like this in bitstring form:
-```
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 1 1
-```
+`played_tiles` が 3u64（最後の 2 ビットが立っている）となり、`hits_and_misses` も前回の結果が反映されます。プレイヤー 2 の `move.record` には新しい攻撃座標が格納されます。
 
-The `board_state.record` `hits_and_misses` field has also been updated with the result of their previous move. The new `move.record` owned by Player 2 now contains information about whether Player 2's previous move was a hit or miss, as well as Player 1's new fire coordinate.
-
-## 9: Player 2 Takes The 4th Turn
-
-We switch the .env back to player 2, and we run the transition function play.
+## 9. プレイヤー 2 の 4 手目
 
 ```bash
-echo "
-NETWORK=testnet
-PRIVATE_KEY=APrivateKey1zkp86FNGdKxjgAdgQZ967bqBanjuHkAaoRe19RK24ZCGsHH
-" > .env
-
 leo run play "{
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   hits_and_misses: 0u64.private,
@@ -468,10 +354,10 @@ leo run play "{
 }" 4u64
 ```
 
-```bash
-➡️  Outputs
+出力例:
 
- • {
+```bash
+• {
   owner: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
   hits_and_misses: 0u64.private,
   played_tiles: 2052u64.private,
@@ -481,7 +367,7 @@ leo run play "{
   game_started: true.private,
   _nonce: 4866144015676673398767235148516158177034901439767024502676546368462039477864group.public
 }
- • {
+• {
   owner: aleo15g9c69urtdhvfml0vjl8px07txmxsy454urhgzk57szmcuttpqgq5cvcdy.private,
   incoming_fire_coordinate: 4u64.private,
   player_1: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry.private,
@@ -489,395 +375,166 @@ leo run play "{
   prev_hit_or_miss: 2u64.private,
   _nonce: 5304512645876453228434639693756897952439730718508628026257897445388710294282group.public
 }
-
-✅ Executed 'battleship.aleo/play'
 ```
 
-## 10. Who Wins?
+以降も双方が `play` を呼び出し、互いの攻撃結果を `move.record` 経由で共有しながらゲームを進めます。
 
-Play continues back and forth between Player 1 and Player 2. When one player has a total of 14 flipped bits in their `hits_and_misses` field on their `board_state.record`, they have won the game.
+## 10. 勝者の判定
 
-## ZK Battleship Privacy
+`board_state.record` の `hits_and_misses` に立っているビット（命中マス）が合計 14 個になったプレイヤーが勝利です。14 という数は長さ 5・4・3・2 の艦船が占めるマス数の合計です。
 
-How can we ensure that the ship configurations of each player remains secret,
-while being able to trustlessly and fairly play with their opponent?
-By taking advantage of selective privacy powered by zero knowledge proofs on Aleo.
+## ZK Battleship におけるプライバシー
 
-Broadly speaking, we can follow this general strategy:
-1. Create mathematical rules for placing the ships on the board, to ensure that neither player can cheat by stacking all their ships in one place, moving them off the board, or laying them across each other.
+艦船の配置を秘匿しつつ、公正で信頼できる対戦を成立させるには、Aleo が提供するゼロ知識証明による選択的プライバシーを活用します。戦略の概要は次の通りです。
 
-2. Ensure that the players and boards that begin a game cannot be swapped out.
+1. 艦船の配置に数学的な制約を設け、不正な配置（重ね置き、ボード外、交差など）を防ぐ。
+2. ゲーム開始後にプレイヤーやボードがすり替わらないようにする。
+3. プレイヤーが相手の手番を待たずに連続で行動できないようにする。
+4. 有効な手のみ受け付け、続けてプレイするには相手の前回結果を必ず伝えるよう強制する。
 
-3. Ensure that each player can only move once before the next player can move.
+## ボードと艦船のモデリング
 
-4. Enforce constraints on valid moves, and force the player to give their opponent information about their opponent's previous move in order to continue playing.
+多くのプログラムでは 64 文字の文字列や 8x8 の配列でボードを表現しますが、Leo では文字列操作やループが得意ではありません。そこで u64 の各ビットを 1 マスに対応させることで盤面を表現します。空のボードは 0u64 で、8 行 x 8 列すべて 0 のグリッドになります。
 
-## Modeling the board and ships
+艦船は長さ 5 / 4 / 3 / 2 の 4 隻を使用します。艦船は縦または横に配置し、斜めは禁止です。隣接は許容されますが、交差はできません。艦船そのものもビット列で表現できます。
 
-Most battleship representations in programs use a 64 character string or an array of arrays (8 arrays of 8 elements each) to model the board state. Unfortunately, Leo language don't represent strings well yet, nor can we use for or while loops. Luckily for us, Aleo has the unsigned 64 bit integer type, or u64. To represent every space on a battleship board, from top left to bottom right, we can use each bit in a u64. For example, an empty board would be:
-0u64 =
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0
-```
+| 長さ | 横向きのビット列 | u64 |
+| --- | --- | --- |
+| 5 | 11111 | 31u64 |
+| 4 | 1111  | 15u64 |
+| 3 | 111   | 7u64  |
+| 2 | 11    | 3u64  |
 
-Battleship is played with 4 different ship types - a ship of length 5, length 4, length 3, and length 2. Some versions of battleship have an extra length 3 ship or another extra ship type, however, we will stick to the most basic version for this project. In order to be a valid ship placement, a ship must be placed vertically or horizontally (no diagonals). On a physical board, a ship cannot break across rows or intersect with another ship, but ships are allowed to touch one another.
+縦向きのビット列はビットの間に 7 個の 0 を挟みます。
 
-Similar to how we represent a board with a u64 bitstring, we can represent a ship horizontally as a bitstring. We "flip" the bits to represent a ship:
-| Length | Bitstring | u64 |
-| ------ | --------- | --- |
-| 5 | 11111 | 31u64|
-| 4 | 1111  | 15u64|
-| 3 | 111   | 7u64 |
-| 2 | 11    | 3u64 |
-
-We can also represent a ship vertically as a bitstring. To show this, we need 7 "unflipped" bits (zeroes) in between the flipped bits so that the bits are adjacent vertically.
-| Length | Bitstring | u64 |
+| 長さ | 縦向きのビット列 | u64 |
 | --- | --- | --- |
 | 5 | 1 00000001 00000001 00000001 00000001 | 4311810305u64 |
-| 4 | 1 00000001 00000001 00000001          | 16843009u64 |
-| 3 | 1 00000001 00000001                   | 65793u64 |
-| 2 | 1 00000001                            | 257u64 |
+| 4 | 1 00000001 00000001 00000001          | 16843009u64   |
+| 3 | 1 00000001 00000001                   | 65793u64      |
+| 2 | 1 00000001                            | 257u64        |
 
-With a board model and ship bitstring models, we can now place ships on a board.
+これらを OR 演算で重ね合わせれば、複数の艦船を 1 枚のボードに配置できます。
 
-### Examples of valid board configurations:
+### 有効なボード配置の例
 
 17870284429256033024u64
 ```
-1 1 1 1 1 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-1 1 1 1 0 0 0 1  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 1 1  
-0 0 0 0 0 0 0 0  
+1 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1
+1 1 1 1 0 0 0 1
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0
 ```
 
 16383u64
 ```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 1 1 1 1 1 1  
-1 1 1 1 1 1 1 1  
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
 ```
 
 2157505700798988545u64
 ```
-0 0 0 1 1 1 0 1  
-1 1 1 1 0 0 0 1  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
+0 0 0 1 1 1 0 1
+1 1 1 1 0 0 0 1
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1
 ```
 
-### Examples of invalid board configurations:
+### 無効なボード配置の例
 
-Ships overlapping the bottom ship:  
-67503903u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 1 0 0  
-0 0 0 0 0 1 1 0  
-0 0 0 0 0 1 1 1  
-0 0 0 1 1 1 1 1  
-```
+最下段の艦船と重なっている例（67503903u64）や、斜めに配置された例（9242549787790754436u64）、行や列をまたいで艦船が分断されている例（1297811850814034450u64）などがあります。こうした配置は無効と判定されます。
 
-Diagonal ships:  
-9242549787790754436u64
-```
-1 0 0 0 0 0 0 0  
-0 1 0 0 0 1 0 0  
-0 0 1 0 0 0 1 0  
-0 0 0 1 0 0 0 0  
-0 0 0 1 1 0 0 0  
-0 0 1 0 0 0 0 1  
-0 1 0 0 0 0 1 0  
-1 0 0 0 0 1 0 0  
-```
+これらのルールに従い、まずは個々の艦船ビット列を検証し、すべてが妥当ならボード全体に合成して重なりがないか確認します。
 
-Ships splitting across rows and columns:  
-1297811850814034450u64
-```
-0 0 0 1 0 0 1 0  
-0 0 0 0 0 0 1 0  
-1 1 0 0 0 0 0 1  
-0 0 0 0 0 0 0 0  
-1 0 0 1 0 0 0 1  
-0 0 0 1 0 0 0 0  
-0 0 0 1 0 0 1 0  
-0 0 0 1 0 0 1 0  
-```
+## 艦船を 1 隻ずつ検証する
 
-Given these rules, our strategy will be to validate each individual ship bitstring placement on a board, and then, if all the ships are valid, compose all the positions onto a board and validate that the board with all ships are valid. If each individual ship's position is valid, then all the ships together should be valid unless any overlapping occurs.
+`verify.aleo` 内で艦船ビット列を検証する処理を確認できます。艦船が有効である条件は以下の通りです。
 
-## Validating a single ship at a time
+*横向きの場合*
+1. 立っているビット数が艦船の長さと一致する。
+2. ビットが連続して並んでいる。
+3. 行をまたいでいない。
 
-To follow along with the code, all verification of ship bitstrings is done in verify.aleo. We know a ship is valid if all these conditions are met:
-If horizontal:
-1. The correct number of bits is flipped (a ship of length 5 should not have 6 flipped bits)
-2. All the bits are adjacent to each other.
-3. The bits do not split a row.
+*縦向きの場合*
+1. 立っているビット数が艦船の長さと一致する。
+2. ビット同士が縦方向に隣接している（各ビット間は 7 個の 0）。
+3. 列をまたいでいない。
 
-If vertical:
-1. The correct number of bits is flipped.
-2. All the bits are adjacent to each other, vertically. This means that each flipped bit should be separated by exactly 7 unflipped bits.
-3. The bits do not split a column.
+ループを使わずにこれらを確認するため、以下のビット演算テクニックを利用します。
 
-If a ship is valid vertically or horizontally, then we know the ship is valid. We just need to check for the bit count, the adjacency of those bits, and make sure those bits do not split a row/column. However, we can't loop through the bit string to count bits, or to make sure those bits don't break across columns. We'll need to turn to special bitwise operations and hacks.
+### ビットカウント
 
-### Bit Counting
-
-See the "c_bitcount" closure to follow along with the code. 50 years ago, MIT AI Laboratory published HAKMEM, which was a series of tricks and hacks to speed up processing for bitwise operations. https://w3.pppl.gov/~hammett/work/2009/AIM-239-ocr.pdf We turned to HAKMEM 169 for bitcounting inspiration, although we've tweaked our implementation to be (hopefully) easier to understand. Before diving into details, let's build some intuition.
-
-Let a,b,c,d be either 0 or 1. Given a polynomial 8a + 4b + 2c + d, how do we find the summation of a + b + c + d? If we subtract subsets of this polynomial, we'll be left with the summation. 
-
-Step 1: 8a + 4b + 2c + d  
-Step 2: -4a - 2b - c  
-Step 3: -2a - b  
-Step 4: - a  
-Step 5: = a + b + c + d 
-
-This polynomial is basically a bitwise representation of a number, so given a 4 bit number, e.g. 1011 or 13u64, we can follow these instructions to get the bit count. Step 2 is just subtracting the starting number but bit shifted to the right (equivalent to dividing by 2). Step 3 bit shifts the starting number to the right twice and is subtracted, and Step 4 bit shifts thrice and is subtracted. Put another way: Start with a 4-digit binary number A. A - (A >> 1) - (A >> 2) - (A >> 3) = B. 
-
-Step 1: 1101 = 13u64  
-Step 2: -0110 = 6u64  
-Step 3: -0011 = 3u64  
-Step 4: -0001 = 1u64  
-Step 5: =0011 = 3u64
-
-To make this process work for any bit-length number, where the sum of the bits is left in groups of 4 bits, we'll need to use some bit-masking, so that the sum of one group of 4 does not interfere with the next group of 4.
-With a larger starting number, like 1111 0001 0111 0110, we will need the following bit maskings:
+`c_bitcount` クロージャを参照してください。MIT AI Laboratory が公開した HAKMEM の 169 番をベースに、理解しやすい形に調整しています。ビット列を数える際、元の値から右シフトした値を順に引いていくことで 4 ビットごとの合計を得られます。たとえば 13u64（1101）であれば、
 
 ```
-For A >> 1, we'll use 0111 0111 0111 .... (in u64, this is 8608480567731124087u64)
-For A >> 2, we'll use 0011 0011 0011 .... (in u64, this is 3689348814741910323u64)
-For A >> 3, we'll use 0001 0001 0001 .... (in u64, this is 1229782938247303441u64)
+1101
+-0110
+-0011
+-0001
+=0011 (3)
 ```
 
-For example, finding the sums of groups of 4 with a 16-bit number we'll call A to yield the bit sum number B:
+この操作を任意のビット長に拡張するため、ビットマスクを組み合わせて 4 ビットごとの合計を求め、さらに 8 ビットごとに集約します。最終的に 255 (2^8 - 1) で剰余を取ると、元のビット列に含まれる 1 の総数が得られます。
+
+まとめると、64 ビット整数 `A` に対し次の式を用います。
 
 ```
-A:    1111 0001 0111 0110  
-A>>1: 0111 1000 1011 1011  
-A>>2: 0011 1100 0101 1101  
-A>>3: 0001 1110 0010 1110  
-
-A>>1: 0111 1000 1011 1011  
-    & 0111 0111 0111 0111:  
-      0111 0000 0011 0011  
-
-A>>2: 0011 1100 0101 1101  
-    & 0011 0011 0011 0011:  
-      0011 0000 0001 0001  
-
-A>>3: 0001 1110 0010 1110  
-    & 0001 0001 0001 0001:  
-      0001 0000 0000 0000  
-
-A - (A>>1 & 0111....) - (A>>2 & 0011....) - (A>>3 & 0001....):
-B:    0100 0001 0011 0010  
-      4    1    3    2
+B = A
+    - (A >> 1  & 0x7777777777777777u64)
+    - (A >> 2  & 0x3333333333333333u64)
+    - (A >> 3  & 0x1111111111111111u64);
+C = (B + (B >> 4)) & 0x0F0F0F0F0F0F0F0Fu64;
+bit_count = C % 255u64;
 ```
 
-The next step is to combine the summation of each of those 4-bit groups into sums of 8-bit groups. To do this, we'll use another bit trick. We will shift this number B to the right by 4 (B >> 4), and add that back to B. Then, we'll apply a bit masking of 0000 1111 0000 1111 .... (in u64, this is 1085102592571150095u64) to yield the sums of bits in groups of 8, a number we'll call C.
+### 隣接チェック
 
-```
-B:    0100 0001 0011 0010  
-B>>4: 0000 0100 0001 0011  
-      0100 0101 0100 0101  
-      4    5    4    5
+艦船のビット列と、盤面上での配置ビット列が与えられたとき、両者の割り算の結果が 2 の冪乗であれば、艦船は隣接して配置されています。割り算の結果が 0 になる場合は明らかに不正なので別途除外します。
 
-apply the bit mask  
-      0000 1111 0000 1111  
+### 行・列をまたいでいないかの確認
 
-C:    0000 0101 0000 0101  
-      0    5    0    5
-```
+縦方向のチェックは割り算結果が 2 の冪乗かどうかで判断できますが、横方向は行を跨いでもビット数や隣接判定をすり抜ける可能性があります。そこで盤面のビット列を 255 (0b11111111) で剰余を取り 8 ビットに圧縮し、そのビット列に対して改めて隣接チェックを行います。
 
-At this point, we've gone from a bit sum in groups of 4 to bit sums in groups of 8. That's great, but ultimately we want the total sum of bits in the original binary number. The final bit trick is to modulo C by 255. This is 2^8 - 1. For a bit of intuition, consider the number 1 0000 0001. If we take 1 0000 0001 mod 256, we're left with 1. If we take 1 0000 0001 mod 255, we're left with 2. Modding by 255 gives us the amount of bits _beyond_ the first 255 numbers, as 255 is the largest number that can be represented with 8 bits.
+### ビット列が 2 の冪乗かを確認する
 
-A full summary of abbreviated steps to get the bit count, starting with a 64 bit integer A (closely following the c_bitcount closure in the verify.aleo code):
+2 の冪乗はビットが 1 つだけ立っているため、`x & (x - 1)` が 0 になれば 2 の冪乗と判定できます。これを各所で利用します。
 
-```
-let A = 64 unsigned bit integer
-let B = A - (A>>1 & 8608480567731124087u64) - (A>>2 & 3689348814741910323u64) - (A>>3 & 1229782938247303441u64)
-let C = (B - B>>4) & 1085102592571150095u64
-bit count = C mod 255u64
-```
+## 全艦船を 1 枚のボードで検証する
 
-### Adjacency Check
+個々の艦船ビット列が妥当であれば、それらを OR で合成し 14 ビット立っているか（5 + 4 + 3 + 2 = 14）を確認します。これにより艦船が重なっていないことを保証します。
 
-Given a ship's placement on the board and its bitstring representation (horizontally or vertically), we can determine if the bits are adjacent. Follow the c_adjacency_check closure in verify.aleo. Given the ship of length 2, we know it's horizontal bitstring is 11 (3u64) and it's vertical bitstring is 100000001 (257u64). If on the board, the ship starts at the bottom right corner, its horizontal ship placement string would be:  
-3u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 1 1  
-```
+## ゲーム途中でプレイヤーやボードが入れ替わらないようにする
 
-Vertical ship placement:  
-257u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-```
+ボードは `board_state` レコードで管理され、ゲーム開始後は `game_started` フラグが true になります。このレコードは他の対戦には利用できません。`move` レコードは以下のときに生成されます。
 
-If we move the ship to the left one column:  
-Horizontal 6u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 1 1 0  
-```
+1. 対戦を申し込む際、ダミーの `move` レコードが生成され、プレイヤー情報が設定される。
+2. 対戦を受諾するとき、ダミーの `move` レコードを消費し、プレイヤー情報をチェックしてから新しい `move` レコードを生成する。
+3. `play` を呼ぶ際、前の `move` レコードを必ず消費し、新しい `move` レコードを作成する。
 
-Vertical 514u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 1 0  
-0 0 0 0 0 0 1 0  
-```
+この仕組みにより、ゲーム途中で別のボードやプレイヤーに差し替えることはできません。
 
-If we move the ship up one row:  
-Horizontal 768u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 1 1  
-0 0 0 0 0 0 0 0  
-```
+## ターン順を強制する
 
-Vertical 65792u64
-```
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 1  
-0 0 0 0 0 0 0 0  
-```
+`move` レコードを消費しなければ次の `move` レコードを生成できないため、プレイヤーは交互に行動するしかありません。`move` レコードの所有者は手番のたびに相手へ移るようになっています。
 
-We can make the observation that the original bitstring is always shifted by a power of 2 to get to a new valid position on the board. Therefore, if we take the ship placement bitstring and divide by the ship bitstring (either horizontal or vertical), as long as the remaining number is a power of 2 (2^0, 2^1, 2^2, 2^3...), we know the ship's bits are adjacent.
+## 有効な手と情報共有を強制する
 
-To ensure that the remaining number is a power of 2, we can use a bit trick. See the bit trick for ensuring a bitstring is a power of 2 section.
+有効な攻撃は単一ビットが立った u64（すなわち 8x8 グリッド上の 1 マス）です。すでに攻撃済みのマスは `played_tiles` に記録され、再度選択すると検証で弾かれます。また `play` を呼ぶと、相手の攻撃結果（命中／外れ）を `move` レコードに含めることが義務付けられており、これを渡さないと次のターンへ進めません。
 
-In the code, you'll notice one extra step. Dividing a ship placement bitstring by a ship bitstring representation could result in 0, and then subtracting by 1 will result in an underflow. In that case, we know the ship placement is not valid, so we can set a number which is gauranteed to not be a power of 2.
+## 勝利条件
 
-
-### Splitting a row or column
-
-Follow the c_horizontal_check closure in verify.aleo to follow the code. Assume all the bits are adjacent (see the adjacency check section). The column case is trivial. We can be certain that if a ship bitstring splits columns, the division of that ship placement bitstring by its ship bitstring representation will not yield a power of 2, and it would have failed the adjacency check.
-
-The horizontal case must be checked because a split row bitstring could still contain a ship with adjacent bits. To make this check easier, we will condense the 64 bitstring into an 8 bitstring by taking it modulo 255. If we assume that a bitstring is not splitting a row, then taking the ship placement bitstring modulo 255 will yield an 8 bit valid bitstring. If the original ship placement bitstring is not valid, then we will have an invalid 8 bit bitstring. E.g.:
-
-```
-1 1 1 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-```
-mod 255 = 11100000 (valid)
-
-```
-0 0 0 0 0 0 0 1  
-1 1 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-0 0 0 0 0 0 0 0  
-```
-mod 255 = 11000001 (invalid)
-
-How do we know the 8 bit bitstring is valid or not? We can simply do an adjacency check, as before.
-
-### Ensuring a bitstring is a power of 2
-
-Any power of 2 will have a single bit flipped. If we subtract 1 from that number, it will result in a complementary bitstring that, bitwise-anded with the original, will always result in 0.
-
-E.g.
-```
-8:   1000
-8-1: 0111
-8&7: 0000 == 0
-
-7:   0111
-7-1: 0110
-7&6: 0110 != 0
-```
-
-## Validating all ships together in a single board
-
-Give individual valid ship position bitstrings, we can combine all these together into a single board using bitwise or operators. See the create_board function in verify.aleo to follow the code. Once all ships are on the board, we can count the total number of bits, which should be 14 exactly for a ship of length 5, 4, 3, and 2.
-
-## Ensure that players and boards cannot swap mid-game
-
-Board states are represented with the board_state record. Each board has a flag indicating whether a game has been started with the board. This flag is set when offering a battleship game to an opponent, or accepting a battleship game from an opponent. Move records are created only in 3 ways:
-1. Offering a battleship game creates a dummy move record that sets the two players to the addresses set in the board state record.
-2. Accepting a battleship game consumes the first dummy move record and checks that the move record contains the same two players as the board of the player accepting the game. Then, a new dummy move record is created and keeps the same two players.
-2. A move record must be consumed in order to play and create the next move record. There's a check to ensure the players in the move record matches the players in the board, and the players in the next move record are automatically set.
-
-The only way moves _not_ matching a board can be combined is if the players begin multiple games with each other. As long as one player is honest and only accepts a single game with a particular opponent, only one set of moves can be played on one board between them.
-
-## Ensure that each player can only move once before the next player can move
-
-A move record must be consumed in order to create the next move record. The owner of the move record changes with each play. Player A must spend a move record in order to create a move record containing their fire coordinate, and that move record will be owned by Player B. Player B must spend that move record in order to create the next move record, which will belong to Player A.
-
-## Enforce constraints on valid moves, and force the player to give their opponent information about their opponent's previous move in order to continue playing
-
-A valid move for a player is a fire coordinate that has only one flipped bit in a u64. We can make sure only one bit is flipped with the powers of 2 bit trick. That single bit must be a coordinate that has not been played by that player before, which we check in board.aleo/update_played_tiles.
-
-In order to give their next move to their opponent, a player must call the main.aleo/play function, which checks the opponent's fire coordinate on the current player's board. The move record being created is updated with whether that fire coordinate was a hit or a miss for the opponent.
-
-## Winning the game
-
-Right now, the way to check when a game has been won is to count the number of hits on your hits_and_misses field on your board_state record. Once you have 14 hits, you've won the game.
+勝利判定はシンプルで、`board_state.record` の `hits_and_misses` に立っているビットが 14 個に達したプレイヤーが勝ちです。これにより、全艦船が撃沈されたことを確認できます。

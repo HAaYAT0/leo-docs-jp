@@ -1,0 +1,36 @@
+.heroBanner {
+  text-align: center;
+  padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-color-emphasis-contrast);
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2.5rem 0;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.section {
+  padding: 3rem 0;
+}
+
+.cardCol {
+  margin-bottom: 2rem;
+}
+
+.card {
+  height: 100%;
+}
+
+.ctaSection {
+  background-color: var(--ifm-background-surface-color);
+  text-align: center;
+}

@@ -7,7 +7,7 @@ sidebar_label: Debug
 
 # `leo debug`
 
-To start the interactive debugger, run `leo debug` in a Leo project.
+Leo プロジェクトで対話型デバッガーを起動するには `leo debug` を実行します。
 
 ```bash
 > leo debug
@@ -17,62 +17,58 @@ This is the Leo Interpreter. Try the command `#help`.
 ? Command? › 
 ```
 
-### Cheatsheet
+### チートシート
 
 <!--TODO: Rewrite this cheatsheet to present the information in a more condensed form.-->
 
 ```
-You probably want to start by running a function or transition.
-For instance
+まずは関数または transition を実行するところから始めましょう。
+例:
 #into program.aleo/main()
-Once a function is running, commands include
-#into    to evaluate into the next expression or statement;
-#step    to take one step towards evaluating the current expression or statement;
-#over    to complete evaluating the current expression or statement;
-#run     to finish evaluating
-#quit    to quit the interpreter.
 
-You can set a breakpoint with
+関数を実行中に利用できる主なコマンドは以下のとおりです。
+#into    次の式や文に入ります
+#step    現在の式や文を 1 ステップだけ進めます
+#over    現在の式や文の評価を完了させます
+#run     評価を最後まで進めます
+#quit    インタープリタを終了します
+
+ブレークポイントは次のように設定します。
 #break program_name line_number
 
-When executing Aleo VM code, you can print the value of a register like this:
+Aleo VM のコードを実行しているとき、レジスタの値を表示するには:
 #print 2
 
-Some of the commands may be run with one letter abbreviations, such as #i.
+多くのコマンドは 1 文字の省略形でも実行できます。例: #i
 
-Note that this interpreter is not line oriented as in many common debuggers;
-rather it is oriented around expressions and statements.
-As you step into code, individual expressions or statements will
-be evaluated one by one, including arguments of function calls.
+このインタープリタは行単位ではなく、式と文の単位で動作します。
+コードをステップ実行すると、関数呼び出しの引数も含めて、個々の式や文が順番に評価されます。
 
-You may simply enter Leo expressions or statements on the command line
-to evaluate. For instance, if you want to see the value of a variable w:
+コマンドラインで Leo の式や文をそのまま入力して評価できます。
+例として、変数 w の値を確認したい場合:
 w
-If you want to set w to a new value:
+値を更新したい場合:
 w = z + 2u8;
 
-Note that statements (like the assignment above) must end with a semicolon.
+代入のような文は必ずセミコロンで終える必要があります。
 
-If there are futures available to be executed, they will be listed by
-numerical index, and you may run them using `#future` (or `#f`); for instance
+実行可能な future がある場合は番号付きで表示され、`#future`（または `#f`）で実行できます。
+例:
 #future 0
 
-The interpreter begins in a global context, not in any Leo program. You can set
-the current program with
-
+インタープリタはグローバルコンテキストで開始され、Leo プログラム内ではありません。
+現在のプログラムを指定するには:
 #set_program program_name
 
-This allows you to refer to structs and other items in the indicated program.
+これにより、指定したプログラム内の構造体などを参照できます。
 
-The interpreter may enter an invalid state, often due to Leo code entered at the
-REPL. In this case, you may use the command
-
+インタープリタが不正な状態に陥ることがあります（主に REPL で入力した Leo コードが原因です）。
+その場合は次のコマンドで最後に保存された状態に戻せます。
 #restore
 
-Which will restore to the last saved state of the interpreter. Any time you
-enter Leo code at the prompt, interpreter state is saved.
+プロンプトで Leo コードを実行するたびに、インタープリタの状態は自動的に保存されます。
 
-Input history is available - use the up and down arrow keys.
+入力履歴も利用可能です。上下の矢印キーで辿れます。
 ```
 
-See [Debugging](./../guides/09_debugging.md) for more details.
+詳細は [Debugging](./../guides/09_debugging.md) を参照してください。

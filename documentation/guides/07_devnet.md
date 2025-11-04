@@ -1,47 +1,47 @@
 ---
 id: devnet 
-title: Running a Devnet
+title: Devnet を動かす
 sidebar_label: Devnet
 ---
 [general tags]: # (guides, devnet local_devnet, snarkos)
 
-A local devnet can be a heavyweight but reliable way to test your application on Aleo.
+ローカル Devnet は構築に手間はかかりますが、Aleo 上でアプリケーションを確実にテストできる手段です。
 
-## Setup
+## セットアップ
 
-The Leo CLI provides a helpful command to help startup a local devnet:
+Leo CLI にはローカル Devnet を起動するためのコマンドがあります。
 ```bash
 leo devnet --snarkos <SNARKOS>
 ```
-The `<SNARKOS>` is the path to an installed binary of [**snarkOS**](https://github.com/ProvableHQ/snarkOS), the decentralized operating system that forms the backbone of the Aleo network.  
+`<SNARKOS>` には [**snarkOS**](https://github.com/ProvableHQ/snarkOS)（Aleo ネットワークを支える分散 OS）のバイナリへのパスを指定します。
 
-If you don't have snarkOS installed, you can pass the `--install` flag and the CLI will automatically download, compile, and store the binary at the path specified by `<SNARKOS>`.
+snarkOS をまだインストールしていない場合は `--install` フラグを付けると、指定した `<SNARKOS>` のパスにバイナリを自動でダウンロード・ビルド・保存します。
 ```bash
 leo devnet --snarkos <SNARKOS> --install
 ```
 :::info
 
-Windows users will need to perform some additional steps in order for snarkOS to install properly:
-1. Upon initially installing Rust, you should have been automatically been prompted to install Visual Studio with the MSVC 2022 C++ build tools. 
-2. Open the Visual Studio Installer and install the C++ Clang Compiler for Windows and either the Windows 10 SDK or Windows 11 SDK (depending on your OS). Make a note of the installation path of the installed tool.  It should be of the form `{PATH}\Microsoft Visual Studio\2022\BuildTools`.
-3. Within the aforementioned build tools directory, you should find the location of a file called `libclang.dll`.  For `x86`-based systems, this should be in the `VC\Tools\Llvm\bin` subdirectory.  For `x64`-based systems, this should be in the `VC\Tools\Llvm\x64\bin` subdirectory.
-4. Once you have the full path of `libclang.dll`, create the `LIBCLANG_PATH` environment variable for your system and set it to this path.
-5. snarkOS should now compile and run properly.
+Windows ユーザーが snarkOS を正しくインストールするには、追加の手順が必要です。
+1. Rust をインストールするときに、MSVC 2022 C++ ビルドツール付きの Visual Studio のインストールが自動的に提案されたはずです。
+2. Visual Studio Installer を開き、Windows 向け C++ Clang Compiler と Windows 10 SDK または Windows 11 SDK（OS に応じて）をインストールします。インストールパスは `{PATH}\Microsoft Visual Studio\2022\BuildTools` のようになります。
+3. 上記ビルドツールのディレクトリ内にある `libclang.dll` の場所を確認します。`x86` システムでは `VC\Tools\Llvm\bin`、`x64` システムでは `VC\Tools\Llvm\x64\bin` に配置されています。
+4. `libclang.dll` のフルパスが分かったら、システム環境変数 `LIBCLANG_PATH` を作成し、そのパスを設定します。
+5. これで snarkOS をコンパイル・実行できるようになります。
 
 :::
 
 
 
 
-The `tmux` command will allow you to toggle between nodes in your local devnet.  You can enable this by passing the `--tmux` flag upon startup:
+`tmux` を使用すると、ローカル Devnet 内のノードを切り替えながら操作できます。起動時に `--tmux` フラグを付けて有効化してください。
 ```bash
 leo devnet --snarkos <SNARKOS> --tmux
 ```
 :::info
-This feature is only available on Unix-based systems.
-::
+この機能は Unix 系 OS でのみ利用できます。
+:::
 
-You'll need to install the `tmux` package first:
+あらかじめ `tmux` パッケージをインストールしておきましょう。
 
 <Tabs defaultValue="cargo"
 values={[
@@ -50,13 +50,13 @@ values={[
 ]}>
 <TabItem value="macos">
 
-To install `tmux` on macOS, you can use the Homebrew package manager. If you haven't installed Homebrew yet, you can find instructions at their [website](https://brew.sh/). Once Homebrew is installed, run:
+macOS では Homebrew パッケージマネージャーを使って `tmux` をインストールできます。Homebrew をインストールしていない場合は [公式サイト](https://brew.sh/) を参照してください。Homebrew が入ったら以下を実行します。
 ```bash
 brew install tmux
 ```
 </TabItem>
-<TabItem value="prebuilt">
-On Ubuntu and other Debian-based systems, you can use the apt package manager:
+<TabItem value="ubuntu">
+Ubuntu などの Debian 系ディストリビューションでは、apt パッケージマネージャーを利用します。
 
 ```bash
 sudo apt update
@@ -65,41 +65,41 @@ sudo apt install tmux
 </TabItem>
 </Tabs>
 
-Here are some useful (default) commands in `tmux`:
+`tmux` で Devnet を操作する際によく使うコマンドは次のとおりです。
 ```bash
-# To toggle to the next node in a local devnet
+# 次のノードへ切り替える
 Ctrl+b n 
-# To toggle to the previous node in a local devnet
+# 前のノードへ切り替える
 Ctrl+b p 
-# To scroll easily, press q to quit
+# スクロールを開始（q で終了）
 Ctrl+b q
-# To select a node in a local devnet
+# ノード一覧から選択する
 Ctrl+b w 
-# To select a node manually in a local devnet
+# 指定したノードを選択する
 Ctrl+b :select-window -t {NODE_ID}
-# To stop a local devnet
+# Devnet を停止する
 Ctrl+b :kill-session
 ```
 
-See the full `leo devnet` CLI documentation [here](./../cli/07_devnet.md)
+`leo devnet` コマンドの詳細は [こちら](./../cli/07_devnet.md) を参照してください。
 
 
 
-## Usage
+## 利用方法
 
-Each time you stop and restart the chain, the prior state and history will be saved.  You can clear any prior history by passing the `--clear-storage` flag:
+チェーンを停止して再起動すると、既存の状態や履歴が保持されます。履歴を消去したい場合は `--clear-storage` フラグを付けて起動します。
 ```bash
 leo devnet --snarkos <SNARKOS> --clear-storage
 ```
-Clearing the ledger history may be useful if you wish to redeploy your program without changing the name.  However, this will erase all transaction history and start a new instance of the Aleo blockchain from genesis.
+レジャーをクリアすると、プログラム名を変えずに再度デプロイしたい場合に便利ですが、トランザクション履歴はすべて消去され、ジェネシスから新しいチェーンが開始されます。
 
 
 
-## Deploying and Executing
+## デプロイと実行
 
-When deploying or executing programs on a local devnet, make sure that endpoint is set to `http://localhost:3030` rather than any external API endpoints.  You can do this either by manually setting the `ENDPOINT` environment variable, by passing the `--endpoint http://localhost:3030` flag in the CLI, or by setting the `ENDPOINT` variable in a `.env` file within the root directory of your Leo project.
+ローカル Devnet 上でプログラムをデプロイ／実行する際は、エンドポイントを外部 API ではなく `http://localhost:3030` に設定してください。これは `ENDPOINT` 環境変数を設定するか、CLI で `--endpoint http://localhost:3030` フラグを指定するか、Leo プロジェクトの `.env` に `ENDPOINT` を記載することで設定できます。
 
-You will also need credits to fund transactions on the devnet.  snarkOS automatically initializes four development accounts funded with Aleo credits that can be used for testing purposes.
+Devnet でトランザクションを実行するにはクレジットが必要です。snarkOS はテスト用の Aleo クレジットが入った開発者アカウントを 4 つ自動で作成します。
 ```bash
 # Account 0
 APrivateKey1zkp8CZNn3yeCseEtxuVPbDCwSyhGW6yZKUYKfgXmcpoGPWH
@@ -121,38 +121,38 @@ APrivateKey1zkpBjpEgLo4arVUkQmcLdKQMiAKGaHAQVVwmF8HQby8vdYs
 AViewKey1iKKSsdnatHcm27goNC7SJxhqQrma1zkq91dfwBdxiADq
 aleo12ux3gdauck0v60westgcpqj7v8rrcr3v346e4jtq04q7kkt22czsh808v2
 ```
-You can specify the private key to use by manually setting the `PRIVATE_KEY` environment variable, by passing the `--private-key http://localhost:3030` flag in the CLI, or by setting the `PRIVATE_KEY` variable in a `.env` file within the root directory of your Leo project.
+使用する秘密鍵は、`PRIVATE_KEY` 環境変数を手動で設定するか、CLI に `--private-key` フラグで直接渡すか、プロジェクトの `.env` に `PRIVATE_KEY` を記載することで指定できます。
 
-Once your private key and endpoint have been correctly set, deploying and executing largely function the same as they would on Testnet or Mainnet.  For more details on either of those processes, check out the [**Deploying**](./03_deploying.md) and [**Executing**](./04_executing.md) guides.
+秘密鍵とエンドポイントを正しく設定すれば、デプロイや実行の流れは Testnet や Mainnet とほぼ同じです。詳細は [**デプロイ**](./03_deploying.md) と [**実行**](./04_executing.md) の各ガイドを参照してください。
 
 
 
-## Querying Transaction Status
+## トランザクションステータスの確認
 
-You can check your transactions by using the following API endpoint:
+トランザクションの状況は次の API エンドポイントで確認できます。
 
 ```bash
 GET http://localhost:3030/testnet/transaction/{TRANSACTION_ID}
 ```
 
-or by using `leo query` from the CLI:
+または CLI から `leo query` を使って確認することも可能です。
 
 ```bash
 leo query transaction {TRANSACTION_ID}
 ```
 
-The transaction API endpoint is instructive in verifying whether a transaction succeeded or failed.  Since both successful and failed transaction execute a fee transaction, if only the fee transaction appears, that is a clear indication that the transaction has failed.  Note that on the Testnet and on Mainnet, failed transactions still require a fee since the network is performing a computation.
+トランザクション API は成功・失敗を確認するのに便利です。成功・失敗のどちらでも手数料トランザクションが生成されるため、手数料のみが表示される場合はトランザクションが失敗したことを意味します。なお Testnet と Mainnet では、失敗したトランザクションでもネットワークが計算を行うため手数料が必要です。
 
-A full list of API endpoints is available [here](https://developer.aleo.org/apis/provable-api)
+利用可能な API エンドポイントの一覧は [こちら](https://developer.aleo.org/apis/provable-api)。
 
-## Record Scanning
+## レコードスキャン
 
-You can use the CLI from your installed snarkOS binary to view your records.  First, navigate to the directory where you installed the binary.  The use the following command syntax:
+インストール済み snarkOS のバイナリを使って、保有レコードをスキャンできます。まずはバイナリをインストールしたディレクトリへ移動し、次の形式でコマンドを実行してください。
 ```bash
 ./snarkos developer scan --endpoint http://localhost:3030 --private-key {YOUR_PRIVATE_KEY} --start <block_number> --network 1
 ```
 
-Setting `block_number` to `0` will list all of the records created starting from the genesis block, including your test credit records. 
+`block_number` に `0` を指定すると、ジェネシスブロック以降に作成されたすべてのレコード（テストクレジットのレコードを含む）が表示されます。
 
 ```bash title="sample output:"
 ⚠️  Attention - Scanning the entire chain. This may take a while...
@@ -167,6 +167,4 @@ Scanning 3 blocks for records (100% complete)...
 ]
 ```
 
-Setting `block_number` to `1` or higher will exclude the above credit records from the scan.
-
-
+`block_number` を `1` 以上にすると、上記のクレジットレコードはスキャン対象から除外されます。

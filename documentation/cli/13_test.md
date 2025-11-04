@@ -9,15 +9,15 @@ toc_max_heading_level: 2
 
 # `leo test`
 
-This command runs all the test cases specified in the Leo file in `tests/`.  
+このコマンドは `tests/` ディレクトリ内に定義されたすべてのテストケースを実行します。
 
-If you want to run a specific set of tests, run the following command:
+特定のテストだけを実行したい場合は次を利用します。
 ```bash
 leo test <TEST_NAME>
 ```
-where `<TEST_NAME>` is the string to match against the qualified name of each test.
+`<TEST_NAME>` はテストの完全修飾名に対してマッチングを行う文字列です。
 
-Check out the [**Testing**](./../guides/08_testing.md) guide for more information.
+詳しくは [**Testing**](./../guides/08_testing.md) を参照してください。
 
 
 ### Flags:
@@ -45,4 +45,3 @@ Check out the [**Testing**](./../guides/08_testing.md) guide for more informatio
 --no-local
     Don't use the local source code.
 ```
-

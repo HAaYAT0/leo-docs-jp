@@ -1,12 +1,12 @@
 ---
 id: dependencies 
-title: Dependency Management
-sidebar_label: Dependency Management
+title: 依存関係の管理
+sidebar_label: 依存関係の管理
 ---
 [general tags]: # (guides, dependency, dependency_management, imports, program)
 
-## Leo Imports
-In your `main.leo` file, specify any imported dependencies using the `import` keyword before the program declaration:
+## Leo のインポート
+`main.leo` では、プログラム定義より前に `import` キーワードを使って依存関係を宣言します。
 ```leo
 import credits.aleo;
 
@@ -15,26 +15,26 @@ program test.aleo {
 }
 ```
 
-From the root of your Leo program directory, use the `leo add` command to update the `program.json` manifest to add dependencies.
+Leo プログラムのルートディレクトリで `leo add` コマンドを実行すると、`program.json` マニフェストに依存関係が追加されます。
 
-## Deployed Programs
-When adding a deployed program as a dependency to your program, such as the `credits.aleo`, use the following command::
+## デプロイ済みプログラム
+`credits.aleo` のようなデプロイ済みプログラムを依存関係として追加する場合は、次のコマンドを使用します。
 
 ```
 leo add credits.aleo
 ```
-or
+または
 ```
 leo add credits
 ```
 
-If you are deploying to mainnet, you will need to specify mainnet imports using the `--network` flag as follows:
+Mainnet 向けにデプロイする場合は、以下のように `--network` フラグで対象ネットワークを指定してください。
 
 ```
 leo add credits --network mainnet
 ```
 
-For the first imported dependency, a new `dependencies` field will be added to the 'package.json` manifest:
+最初の依存関係を追加すると、`program.json` マニフェストに `dependencies` フィールドが新たに作成されます。
 
 ```json
 {
@@ -53,18 +53,18 @@ For the first imported dependency, a new `dependencies` field will be added to t
 }
 ```
 
-Dependencies can be removed using the `leo remove` command:
+依存関係を削除するには `leo remove` コマンドを使用します。
 ```bash
 leo remove credits.aleo
 ```
 
-## Local Development
-When deploying to a local devnet, specify the path for the local dependency as follows:
+## ローカル開発
+ローカル Devnet 向けにデプロイする場合は、依存関係のパスを次のように指定します。
 
 ```
 leo add program_name.aleo --local ./path_to_dependency
 ```
-The dependencies section in the `program.json` manifest should include the path:
+この場合、`program.json` の `dependencies` セクションにはパス情報が含まれます。
 ```json
 {
   "program": "your_program.aleo",
@@ -82,9 +82,9 @@ The dependencies section in the `program.json` manifest should include the path:
 } 
 ```
 
-## Recursive Deployment
-When deploying a program that uses local dependencies, use the following command:
+## 再帰的なデプロイ
+ローカル依存を含むプログラムをデプロイする場合は、次のコマンドを使用します。
 ```bash
 leo deploy --recursive
 ```
-All local dependency will be deployed in order, followed by the main program.  Deployed dependencies will be skipped.
+すべてのローカル依存が順番にデプロイされ、その後にメインプログラムが続きます。すでにデプロイ済みの依存関係はスキップされます。

@@ -1,22 +1,22 @@
 ---
 id: execute
-title: Executing Your Programs
-sidebar_label: Executing
+title: プログラムを実行する
+sidebar_label: 実行
 ---
 
 [general tags]: # (guides,execute, execution, transaction, transition, transaction_status, async_transition)
 
-The `leo execute` command executes the Leo program and outputs a transaction object
+`leo execute` コマンドは Leo プログラムを実行し、トランザクションオブジェクトを出力します。
 ```bash
 leo execute <FUNCTION_NAME> <INPUT_1> <INPUT_2> ...
 ```
 
-Optionally, you can execute a function in a remote Leo program by using
+リモートにデプロイされた Leo プログラムの関数を実行することもできます。
 ```bash
 leo execute <PROGRAM_NAME>.aleo/<FUNCTION_NAME> <INPUT_1> <INPUT_2> ...
 ```
 
-If executing a function from a local program, the `leo execute` command will first build/compile that program:
+ローカルプロジェクトの関数を実行する場合、`leo execute` はまずプログラムをビルド／コンパイルします。
 
 ```bash title="console output:"
        Leo     2 statements before dead code elimination.
@@ -25,7 +25,7 @@ If executing a function from a local program, the `leo execute` command will fir
        Leo ✅ Compiled 'hello.aleo' into Aleo instructions.
 
 ```
-It will then print out the summary of the execution plan with 
+その後、実行計画の概要が表示されます。
 ```bash
 🚀 Execution Plan Summary
 ──────────────────────────────────────────────
@@ -51,7 +51,7 @@ It will then print out the summary of the execution plan with
   - Transaction will NOT be broadcast to the network.
 ```
 
-Finally, an execution cost breakdown will be printed alongside any outputs from the function itself.
+最後に、実行コストの内訳と関数の出力が表示されます。
 ```bash
 📊 Execution Summary for <PROGRAM_NAME>
 ──────────────────────────────────────────────
@@ -69,7 +69,4 @@ Finally, an execution cost breakdown will be printed alongside any outputs from 
   ...
 ```
 
-Under the hood, `leo execute` produces a JSON object. This is a [`Transaction`](https://developer.aleo.org/concepts/fundamentals/transactions) that can be broadcast to the Aleo network.  You can view this JSON by passing the `--print` flag to `leo execute`.
-
-
-
+内部的には、`leo execute` は JSON オブジェクトを生成します。これは Aleo ネットワークへブロードキャスト可能な [`Transaction`](https://developer.aleo.org/concepts/fundamentals/transactions) です。`--print` フラグを付けると、この JSON の内容を確認できます。

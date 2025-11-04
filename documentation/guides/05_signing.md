@@ -1,49 +1,49 @@
 ---
 id: sign 
-title: Signing and Verifying
-sidebar_label: Signing and Verifying
+title: 署名と検証
+sidebar_label: 署名と検証
 ---
 [general tags]: # (guides, sign, verify, signature, private_key, address)
 
-In addition to creating accounts, `leo account` can be used to sign data and verify signatures. This can be useful for a particular class of applications that rely on signed data as input.
+`leo account` はアカウント作成だけでなく、データへの署名や署名の検証にも利用できます。署名済みデータを入力として扱うタイプのアプリケーションでは特に役立ちます。
 
-## Signing
+## 署名
 
-The `leo account sign` command enables developers and users to create cryptographic signatures using an Aleo private key. These signatures can be verified within leo using the [`signature::verify`](../language/04_operators.md#signatureverify) function or with the `leo account verify` command.
+`leo account sign` コマンドを使うと、Aleo の秘密鍵で暗号学的な署名を生成できます。この署名は、Leo 内の [`signature::verify`](../language/04_operators.md#signatureverify) 関数や `leo account verify` コマンドで検証できます。
 
-To generate a signature for Leo and Aleo values, run the following:
+Leo/Aleo の値に対して署名を生成するには次を実行します。
 
 ```bash
-# replace `5field` with any aleo value
+# `5field` を任意の Aleo 値に置き換えてください
 leo account sign --private-key {$PRIVATE_KEY} -m 5field
 
 # Output:
 sign1...
 ```
 
-To generate a signature for any plaintext, use the `--raw` flag:
+平文に対して署名を生成する場合は `--raw` フラグを使用します。
 
 ```bash
-# replace "Hello, Aleo" with any plaintext message
+# "Hello, Aleo" を任意の平文メッセージに置き換えてください
 leo account sign --private-key {$PRIVATE_KEY} -raw -m "Hello, Aleo"
 
 # Output:
 sign1...
 ```
 
-There are a few alternatives to using the `--private-key` flag:
+`--private-key` フラグ以外にも以下の指定方法があります。
 
-- `--private-key-file <path/to/file>` - read a private key from a text file
-- no flags - read a private key from environment, or `.env`
+- `--private-key-file <path/to/file>` — テキストファイルから秘密鍵を読み込む
+- フラグなし — 環境変数または `.env` から秘密鍵を読み込む
 
-## Verifying
+## 検証
 
-To complement with the [`leo account sign`](#leo-account-sign) command, the `leo account verify` command verifies the signatures of Aleo values and plaintext messages.
+[`leo account sign`](#署名) と対になる `leo account verify` コマンドを使うと、Aleo の値や平文メッセージに対する署名を検証できます。
 
-To verify signed aleo values, run:
+Aleo 値に対する署名を検証するには次を実行します。
 
 ```bash
-# replace `5field` with the message and `sign1signaturehere` with the signature
+# `5field` をメッセージに、`sign1signaturehere` を署名に置き換えてください
 leo account verify -a {$ADDRESS} -m 5field -s sign1signaturehere
 
 # Output:
@@ -53,10 +53,10 @@ leo account verify -a {$ADDRESS} -m 5field -s sign1signaturehere
 Error [ECLI0377002]: cli error: ❌ The signature is invalid
 ```
 
-To verify signatures of signed plaintext values, run:
+平文に対する署名を検証する場合は次のようにします。
 
 ```bash
-# replace "Hello, Aleo" with the message and `sign1signaturehere` with the signature
+# "Hello, Aleo" をメッセージに、`sign1signaturehere` を署名に置き換えてください
 leo account verify -a {$ADDRESS} --raw -m "Hello, Aleo" -s sign1signaturehere
 
 # Output:

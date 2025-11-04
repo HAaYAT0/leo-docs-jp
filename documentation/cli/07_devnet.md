@@ -9,54 +9,54 @@ toc_max_heading_level: 2
 
 # `leo devnet`
 
-To intialize a local devnet, run the following command:
+ローカル Devnet を初期化するには次を実行します。
 ```bash
 leo devnet --snarkos <SNARKOS>
 ```
-where `<SNARKOS>` should be the path to an installed binary of snarkOS.
+`<SNARKOS>` にはインストール済み snarkOS バイナリへのパスを指定します。
 
-If you don't have snarkOS installed, you can do so by passing the `--install` flag, which will install the binary at the path specified above.
+snarkOS が未インストールの場合は `--install` フラグを付けることで、上記パスにバイナリをインストールできます。
 
 <!-- markdown-link-check-disable -->
 :::info
-The default ENDPOINT for a local devnet is `http://localhost:3030`
+ローカル Devnet の既定の ENDPOINT は `http://localhost:3030` です。
 :::
 <!-- markdown-link-check-enable -->
 
 ### Flags:
 #### `--snarkos <SNARKOS>`
-Specifies the path to the installed snarkOS binary.
+使用する snarkOS バイナリへのパスを指定します。
 
 :::info
-This flag is required!
+必須のフラグです。
 :::
 
 #### `--snarkos-features <FEATURES>`
-Specifies which features of snarkOS to use (e.g. `test_network`)
+有効化する snarkOS の機能を指定します（例: `test_network`）。
 
 #### `--install`
-Installs (or reinstalls) snarkOS at the provided `--snarkos` path with the given `--snarkos-features`.
+指定した `--snarkos` パスに snarkOS をインストール（または再インストール）します。`--snarkos-features` で機能も合わせて指定できます。
 <!-- markdown-link-check-disable -->
 #### `--snarkos-version <SNARKOS_VERSION>`
-Specifies which version of snarkOS to use or install.  Defaults to latest version on [crates.io](https://crates.io/crates/snarkos)
+利用またはインストールする snarkOS のバージョンを指定します。既定では [crates.io](https://crates.io/crates/snarkos) 上の最新バージョンが選択されます。
 <!-- markdown-link-check-enable -->
 #### `--consensus-heights <CONSENSUS_HEIGHTS> `
-Optional blocks heights to use for each successive consensus upgrade.  Must have `--snarkos-features test_network` enabled as well.
+各コンセンサスアップグレードを適用するブロック高を任意で指定します。このオプションを使う場合は `--snarkos-features test_network` も有効化してください。
 
-The following will enable Consensus_V0 at block 0, Consensus_V1 at block 1, etc.:
 ```bash
 --consensus-heights 0,1,2,3....
 ```
+上記例ではブロック 0 で Consensus_V0、ブロック 1 で Consensus_V1…を有効化します。
 
 #### `--storage <STORAGE>`
-Root directory path for snarkOS ledgers and logs.  Defaults to `./`
+snarkOS の台帳やログを保存するルートディレクトリを指定します（既定は `./`）。
 
 #### `--clear-storage`
-Clear existing snarkOS ledgers before starting the devnet
+Devnet を起動する前に既存の snarkOS 台帳を削除します。
 
 
 #### `--network <NETWORK_ID>`
-Specifies what the network ID of the devnet will be.
+Devnet のネットワーク ID を指定します。
 
 | ID |  Network  |
 |:---------:|:------:|
@@ -65,14 +65,13 @@ Specifies what the network ID of the devnet will be.
 | 2  | Canary | 
 
 #### `--tmux`
-Run devnet nodes in tmux (only available on Unix-based systems)
+tmux 上で Devnet ノードを起動します（Unix 系 OS のみ利用可）。
 
 #### `--num-validators <NUM_VALIDATORS>`
-Number of validators to use in snarkOS.  Defaults to 4.
+snarkOS で起動するバリデータ数を指定します（既定は 4）。
 
 #### `--num-clients <NUM_CLIENTS>`
-Number of clients to use in snarkOS. Defaults to 2.
+snarkOS で起動するクライアント数を指定します（既定は 2）。
 
 #### `--verbosity <VERBOSITY>`
-Specifies the verbository of snarkOS (0-4).  Defaults to 1.
-
+snarkOS のログ詳細度を 0〜4 の範囲で指定します（既定は 1）。

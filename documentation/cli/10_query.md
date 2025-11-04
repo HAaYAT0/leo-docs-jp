@@ -9,17 +9,17 @@ toc_max_heading_level: 2
 
 # `leo query`
 
-The `leo query` command is used to get data from a network supporting the canonical `snarkOS` endpoints.
+`leo query` コマンドは、標準的な `snarkOS` エンドポイントを提供するネットワークからデータを取得します。
 
 
 # Subcommands
-* [`block`](#leo-query-block) - Query block information.
-* [`transaction`](#leo-query-transaction) - Query transaction information.
-* [`program`](#leo-query-program) - Query program source code and live mapping values.
-* [`stateroot`](#leo-query-stateroot) - Query the latest stateroot. 
-* [`committee`](#leo-query-committee) - Query the current committee.
-* [`mempool`](#leo-query-mempool) - Query transactions and transmissions from the memory pool.
-* [`peers`](#leo-query-peers) - Query peer information.
+* [`block`](#leo-query-block) - ブロック情報を取得します。
+* [`transaction`](#leo-query-transaction) - トランザクション情報を取得します。
+* [`program`](#leo-query-program) - プログラムのソースコードやマッピング値を取得します。
+* [`stateroot`](#leo-query-stateroot) - 最新のステートルートを取得します。
+* [`committee`](#leo-query-committee) - 現在のバリデータ委員会を取得します。
+* [`mempool`](#leo-query-mempool) - メモリプール内のトランザクションや送信情報を取得します。
+* [`peers`](#leo-query-peers) - ピア情報を取得します。
 
 &nbsp;
 
@@ -28,13 +28,13 @@ The `leo query` command is used to get data from a network supporting the canoni
 
 ## `leo query block`
 
-To fetch blocks from a given network, run the following command
+ネットワークからブロックを取得するには次を実行します。
 ```bash
-leo query <ID>
+leo query block <ID>
 ```
-where `<ID>` is either a specific block height or block hash.  The block will be returned in JSON format.
+`<ID>` にはブロック高またはブロックハッシュを指定します。結果は JSON 形式で返されます。
 
-For example, you can fetch the Mainnet genesis block by running either of the following commands:
+たとえば Mainnet のジェネシスブロックは次のいずれかで取得できます。
 ```bash
 leo query block 0 --network mainnet --endpoint https://api.explorer.provable.com/v1
 ```
@@ -47,16 +47,16 @@ leo query block ab1sm6kyqle2ftg4z8gegafqrjy0jwjhzu6fmy73726dgszrtxhxvfqha0eee --
 ### Flags:
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 
 #### `--latest`
 #### `-l`
-Queries the latest block.
+最新ブロックを取得します。
 
 ```bash title="Example:"
 leo query block --latest
@@ -64,7 +64,7 @@ leo query block --latest
 
 
 #### `--latest-hash`
-Queries the hash of the latest block.
+最新ブロックのハッシュだけを取得します。
 
 ```bash title="Example:"
 leo query block --latest-hash
@@ -72,7 +72,7 @@ leo query block --latest-hash
 
 
 #### `--latest-height`
-Queries the height of the latest block
+最新ブロックの高さを取得します。
 
 ```bash title="Example:"
 leo query block --latest-height
@@ -80,7 +80,7 @@ leo query block --latest-height
 
 #### `--range <START_HEIGHT> <END_HEIGHT>`
 #### `-r <START_HEIGHT> <END_HEIGHT>`
-Queries up to 50 consecutive blocks.
+最大 50 個までの連続したブロックを取得します。
 
 ```bash title="Example:"
 leo query block --range <START_HEIGHT> <END_HEIGHT>
@@ -89,14 +89,14 @@ leo query block --range <START_HEIGHT> <END_HEIGHT>
 
 #### `--transactions`
 #### `-t`
-Queries all transactions at the specified block height
+指定したブロック高に含まれるトランザクションを取得します。
 ```bash title="Example:"
 leo query block <BLOCK_HEIGHT> --transactions
 ```
 
 
 #### `--to-height`
-Queries the block height corresponding to a hash value
+指定したブロックハッシュに対応するブロック高を取得します。
 ```bash title="Example:"
 leo query block <BLOCK_HASH> --to-height
 ```
@@ -105,42 +105,42 @@ leo query block <BLOCK_HASH> --to-height
 
 ## `leo query transaction`
 
-To fetch a specific transaction from a given network, run the following command:
+特定のトランザクションを取得するには次を実行します。
 
 ```bash
 leo query transaction <ID>
 ```
-where `<ID>` is the ID of the transaction.  The transaction will be returned in JSON format.
+`<ID>` はトランザクション ID です。結果は JSON 形式で返されます。
 
 ### Flags:
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 
 #### `--confirmed`
 #### `-c`
-Returns information (including details about onchain execution) about the queried transaction if it was confirmed.
+トランザクションが確定している場合、オンチェーン実行結果を含む詳細を返します。
 
 
 #### `--unconfirmed`
 #### `-u`
-Queries the original (unconfirmed) transaction.
+未確定（オリジナル）トランザクションを取得します。
 
 
 #### `--from-io <INPUT_OR_OUTPUT_ID>`
-Get the ID of the transaction that an input or output ID occurred in.
+指定した入出力 ID が含まれるトランザクション ID を取得します。
 ```bash title="Example:"
 leo query transaction --from-io <INPUT_OR_OUTPUT_ID>
 ```
 
 
 #### `--from-transition <TRANSITION_ID>`
-Get the ID of the transaction containing the specified transition.
+指定したトランジションを含むトランザクション ID を取得します。
 
 ```bash title="Example:"
 leo query transaction --from-transition <TRANSITION_ID>
@@ -148,7 +148,7 @@ leo query transaction --from-transition <TRANSITION_ID>
 
 
 #### `--from-program <PROGRAM_NAME>`
-Get the ID of the transaction that the specified program was deployed in.
+指定したプログラムがデプロイされたトランザクション ID を取得します。
 ```bash title="Example:"
 leo query transaction --from-program <PROGRAM_NAME>
 ```
@@ -157,13 +157,13 @@ leo query transaction --from-program <PROGRAM_NAME>
 
 ## `leo query program`
 
-To fetch a specific program from a given network, run the following command:
+特定のプログラム情報を取得するには次を実行します。
 
 ```bash
 leo query program <PROGRAM_NAME>
 ```
 
-You can also use this to query specific mappings and mapping values from a given program.  For example, if you wanted to query your public balance of Aleo credits:
+マッピングやその値を問い合わせることも可能です。例えば Aleo クレジットの公開残高を確認する場合:
 
 ```bash
 leo query program credits.aleo --mapping-value account <YOUR_ADDRESS>
@@ -173,72 +173,72 @@ leo query program credits.aleo --mapping-value account <YOUR_ADDRESS>
 ### Flags:
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 
 #### `--mappings`
-Lists all mappings defined in the latest deployed edition of the program.
+最新エディションのプログラムに定義されているマッピング一覧を表示します。
 
 
 #### `--mapping-value <MAPPING> <KEY> `
-Get the value corresponding to the specified mapping and key.  Will return `null` if key is not present in mapping.
+指定したマッピングとキーに対応する値を取得します。存在しない場合は `null` を返します。
 
 #### `--edition <EDITION>`
-An optional edition to query for when fetching the program source. If not specified, the latest edition will be used.
+プログラムのソース取得時に使用するエディションを指定します。省略した場合は最新エディションが利用されます。
 
-The edition of the program is set to `0` upon initial deployment and is incremented by `1` each time the program is upgraded.  See the **[Upgrading Programs](./../guides/10_program_upgradability.md)** guide for more details.
+プログラムは初回デプロイ時にエディション `0` が付与され、アップグレードのたびに `1` ずつ増加します。詳細は **[Upgrading Programs](./../guides/10_program_upgradability.md)** を参照してください。
 
 
 ---
 
 ## `leo query stateroot`
 
-This command queries the latest stateroot of a given network. 
+指定したネットワークの最新ステートルートを取得します。
 
 ### Flags:
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 ---
 
 ## `leo query committee`
 
-This command queries the current validator committee for a given network. 
+指定したネットワークの現在のバリデータ委員会を取得します。
 
 ### Flags:
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 ---
 
 ## `leo query mempool`
 
-This command queries transactions and transmissions from the memory pool for a node on a given network.
+指定したネットワーク上のノードで、メモリプールのトランザクションや送信情報を取得します。
 
 :::note
-This command can only be run with a custom endpoint.  Using the official Provable API endpoint will fail.
+このコマンドはカスタムエンドポイントでのみ実行できます。Provable 公式 API エンドポイントでは動作しません。
 :::
 
-To query transactions:
+トランザクションを問い合わせる場合:
 ```bash
 leo query mempool --transactions
 ```
 
-To query transmissions:
+送信情報を問い合わせる場合:
 ```bash
 leo query mempool --transmissions
 ```
@@ -247,48 +247,44 @@ leo query mempool --transmissions
 ### Flags:
 
 #### `--transactions`
-Queries the transactions in the memory pool.
+メモリプール内のトランザクション一覧を取得します。
 
 
 #### `--transmissions`
-Queries the transactions in the memory pool.
-
+メモリプール内の送信（transmission）情報を取得します。
 
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。
 
 ---
 
 ## `leo query peers`
 
-This command queries peer information for a node on a given network.
+指定したネットワーク上のノードからピア情報を取得します。
 
 :::note
-This command can only be run with a custom endpoint. Using the official Provable API endpoint will fail.
+このコマンドもカスタムエンドポイントでのみ実行できます。Provable 公式 API エンドポイントでは動作しません。
 :::
 
 ### Flags:
 
 #### `--metrics`
 #### `-m`          
-Queries all peer metrics
+参加ピアのメトリクスを取得します。
 
 
 #### `--count`
 #### `-c`             
-Queries the count of all participating peers
+参加ピアの総数を取得します。
 
 #### `--network <NETWORK>`
-Specifies the network to deploy to. Overrides any `NETWORK` environment variable set manually or in a `.env` file.  Valid network names are `testnet`, `mainnet`, and `canary`.
+対象ネットワークを指定します。`.env` や `NETWORK` 環境変数より優先されます。`testnet`、`mainnet`、`canary` が指定可能です。
 
 
 #### `--endpoint <ENDPOINT>`
-The endpoint to deploy to. Overrides any `ENDPOINT` environment variable set manually or in a `.env` file.
-
-
-
+接続するエンドポイントを指定します。`.env` や `ENDPOINT` 環境変数より優先されます。

@@ -2,3 +2,17 @@
 .idea/
 **.DS_Store
 **/node_modules/
+
+# Docusaurus generated output
+.docusaurus/
+build/
+
+# Local environment metadata
+.vscode/
+.vercel/
+.env
+.env.local
+
+# Logs
+npm-debug.log*
+yarn-error.log*

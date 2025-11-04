@@ -6,9 +6,9 @@ title: A Game of Tic-Tac-Toe in Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/tictactoe)**
 
-## Summary
+## 概要
 
-We can play a standard game of Tic-Tac-Toe in Leo. I think we all know what a tictactoe board looks like:
+Leo で三目並べ（Tic-Tac-Toe）の基本的なゲームをプレイできます。おなじみの盤面は次のようなものです。
 
 ⭕ ❕ ⭕ ❕ ❌
 
@@ -20,71 +20,70 @@ We can play a standard game of Tic-Tac-Toe in Leo. I think we all know what a ti
 
 ❌ ❕ ❌ ❕ ⭕
 
-## Representing State
-Leo allows users to define composite data types with the `struct` keyword. 
-The game board is represented by a struct called `Board`, which contains three `Row`s. An alternative representation would be to use an array, however, these are not yet supported in Leo.
+## 状態の表現方法
+Leo では `struct` キーワードを使って複合データ型を定義できます。ゲームボードは `Row` を 3 つ含む `Board` という構造体で表現します。配列で表現する方法も考えられますが、現状の Leo では配列が未サポートのため構造体を利用しています。
 
-## Language Features
-- `struct` declarations
-- conditional statements
-- early termination. Leo allows users to return from a function early using the `return` keyword.
+## 登場する言語機能
+- `struct` 宣言
+- 条件分岐
+- 早期リターン（`return` キーワードで途中終了が可能）
 
-## How to Run
+## 実行方法
 
-Follow the [Leo Installation Instructions](https://docs.leo-lang.org/getting_started/installation).
+[Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を整えてください。
 
-This tictactoe program can be run using the following bash script. Locally, it will execute Leo program functions to create and play a game of Tic Tac Toe.
+この三目並べプログラムは次の bash スクリプトで実行できます。ローカル環境で実行すると、盤面の生成からプレイ進行までを Leo プログラムで確認できます。
 
 ```bash
 cd tictactoe
 ./run.sh
 ```
 
-## Walkthrough
+## チュートリアルの流れ
 
-* [Step 0: Create a new board.](#step0)
-* [Step 1: Player 1 makes the first move.](#step1)
-* [Step 2: Player 2 makes the second move.](#step2)
-* [Step 3: Player 1 makes the third move.](#step3)
-* [Step 4: and so on...](#step4)
+* [ステップ 0: 新しいボードを作成](#step0)
+* [ステップ 1: プレイヤー 1 の初手](#step1)
+* [ステップ 2: プレイヤー 2 の 2 手目](#step2)
+* [ステップ 3: プレイヤー 1 の 3 手目](#step3)
+* [ステップ 4: 以下同様に進行](#step4)
 
-## <a id="step0"></a> Create a new board.
+## <a id="step0"></a> 新しいボードを作成
 
-We generate the board, and then the players take turns executing the transition function make_move.
+まずボードを生成し、その後プレイヤーが交互に `make_move` トランジション関数を実行していきます。
 
-The inputs to the function are the player number, row position, column position, and the previous state of the board.
+関数への入力は、プレイヤー番号・行位置・列位置・直前のボード状態です。
 
-The output provided is the new state of the board and an evaluation of who won the game. 0u8 as the evaluation output means a draw if the board is complete or that the game is not yet over.
+出力として、新しいボード状態と勝敗評価が返されます。評価が `0u8` の場合は、盤面が埋まって引き分けになるか、ゲームがまだ続いていることを意味します。
 
 ```bash
 leo run new
 ```
-## <a id="step1"></a> Player 1 makes a move.
+## <a id="step1"></a> プレイヤー 1 の手番
 
-Have player 1 make the first move.
+プレイヤー 1 が初手を打ちます。
 
 ```bash
 leo run make_move 1u8 1u8 1u8 "{ r1: { c1: 0u8, c2: 0u8, c3: 0u8 }, r2: { c1: 0u8, c2: 0u8, c3: 0u8 }, r3: { c1: 0u8, c2: 0u8, c3: 0u8 } }"
 ```
 
-## <a id="step2"></a> Player 2 makes a move.
+## <a id="step2"></a> プレイヤー 2 の手番
 
-Have player 2 make the second move.
+プレイヤー 2 が 2 手目を打ちます。
 
 ```bash
 leo run make_move 2u8 2u8 2u8 "{ r1: { c1: 1u8, c2: 0u8, c3: 0u8 }, r2: { c1: 0u8, c2: 0u8, c3: 0u8 }, r3: { c1: 0u8, c2: 0u8, c3: 0u8 } }"
 ```
 
-## <a id="step3"></a> Player 1 makes a move.
+## <a id="step3"></a> プレイヤー 1 の手番
 
-Have player 1 make the third move.
+プレイヤー 1 が 3 手目を打ちます。
 
 ```bash
 leo run make_move 1u8 3u8 1u8 "{ r1: { c1: 1u8, c2: 0u8, c3: 0u8 }, r2: { c1: 0u8, c2: 2u8, c3: 0u8 }, r3: { c1: 0u8, c2: 0u8, c3: 0u8 } }"
 ```
 
-## <a id="step4"></a> and so on...
+## <a id="step4"></a> 以降の手順
 
-If you follow the run script till the end, you'll see the players make a draw, with an output of `0u64`.
+スクリプトの手順を最後まで追うと、出力が `0u64` となり引き分けになる様子が確認できます。
 
-This example does not utilize records, as it is primarily designed to demonstrate Leo language features rather than serve as a fully realistic example of a ZK game. A more complete implementation would involve passing records between players to maintain game state securely.
+このサンプルではレコードを使用していません。Leo の言語機能を紹介することが主目的であり、実際のゼロ知識ゲームの完全な実装例ではないためです。より本格的な実装では、プレイヤー間でレコードを受け渡してゲーム状態を安全に維持する必要があります。

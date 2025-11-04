@@ -9,7 +9,7 @@ toc_max_heading_level: 2
 
 # `leo update`
 
-To download and install the latest Leo version run:
+最新の Leo をダウンロード・インストールするには次を実行します。
 
 ```bash
 leo update
@@ -23,7 +23,7 @@ Checking latest released version... v3.1.0
 Leo is already on the latest version
 ```
 
-If you'd like to install a specific version of Leo, you can do so by passing the `--name` flag:
+特定のバージョンをインストールしたい場合は `--name` フラグで指定します。
 
 ```bash
 leo update --name v3.0.0
@@ -32,9 +32,8 @@ leo update --name v3.0.0
 ### Flags:
 #### `-l`
 #### `--list`
-Lists all available versions of Leo.
+利用可能な Leo のバージョン一覧を表示します。
 
 #### `-n`
 #### `--name`
-An optional release name if you wish to install a specific version of Leo.  By default, the command will look for the latest release.
-
+インストールしたい特定のリリース名を指定します。省略した場合は最新リリースが選択されます。

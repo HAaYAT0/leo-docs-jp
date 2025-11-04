@@ -6,15 +6,15 @@ title: A Custom Token in Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/token)**
 
-## Summary
+## 概要
 
-A transparent & shielded custom token in Leo.
+Leo で実装した透明（公開）トランザクションと秘匿トランザクションを兼ね備えたカスタムトークンの例です。
 
-## How to Run
+## 実行方法
 
-Follow the [Leo Installation Instructions](https://docs.leo-lang.org/getting_started/installation).
+[Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を準備してください。
 
-This token program can be run using the following bash script. Locally, it will execute Leo program functions to mint and transfer tokens publicly and privately.
+このトークンプログラムは次の bash スクリプトで実行できます。ローカル環境で実行すると、公開・非公開のトークン発行および送金を Leo プログラムで体験できます。
 
 
 ```bash
@@ -22,18 +22,18 @@ cd leo/examples/token
 ./run.sh
 ```
 
-The `.env` file contains a private key and network type. This is the account that will be used to sign transactions and is checked for record ownership. When executing programs as different parties, be sure to set the `private_key` field in `.env` to the appropriate value. You can check out how we've set things up in `./run.sh` for a full example of how to run the program as different parties.
+`.env` ファイルには秘密鍵とネットワーク種別が記載されています。これはトランザクションの署名やレコード所有権の検証に用いるアカウントです。主体を切り替えて操作する場合は、`.env` の `private_key` を適切な値に変更してください。主体の切り替え例は `./run.sh` にも記載されています。
 
-## Walkthrough
+## チュートリアルの流れ
 
-* [Step 0: Public Mint](#step0)
-* [Step 1: Private Mint](#step1)
-* [Step 2: Public Transfer](#step2)
-* [Step 3: Private Transfer](#step3)
-* [Step 4: Public to Private Transfer](#step4)
-* [Step 5: Private to Public Transfer](#step5)
+* [ステップ 0: 公開ミント](#step0)
+* [ステップ 1: 秘匿ミント](#step1)
+* [ステップ 2: 公開送金](#step2)
+* [ステップ 3: 秘匿送金](#step3)
+* [ステップ 4: 公開 → 秘匿の変換](#step4)
+* [ステップ 5: 秘匿 → 公開の変換](#step5)
 
-We'll be conducting a transfer between two parties.
+以降の操作では 2 人の主体間で移転を行います。
 
 ```bash
 The private key and address of Alice.
@@ -45,9 +45,9 @@ private_key: APrivateKey1zkpFo72g7N9iFt3JzzeG8CqsS5doAiXyFvNCgk2oHvjRCzF
 address: aleo17vy26rpdhqx4598y5gp7nvaa9rk7tnvl6ufhvvf4calsrrqdaqyshdsf5z
 ```
 
-## <a id="step0"></a> Public Mint
+## <a id="step0"></a> 公開ミント
 
-Let's play Alice. Swap in her private key and publicly mint 100 tokens.
+まずはアリス役になり、公開で 100 トークンをミントします。
 
 ```bash
 echo "
@@ -69,11 +69,11 @@ Output
 }
 ```
 
-You can see the output of `mint_public`, which takes the arguments Alice's address and the amount of tokens to mint publicly. This information is shown on-chain and can be queried on a network.
+`mint_public` の出力から、公開ミントではアリスのアドレスと発行量が引数として利用されていることがわかります。この情報はオンチェーンに公開され、ネットワークから参照可能です。
 
-## <a id="step1"></a> Private Mint
+## <a id="step1"></a> 秘匿ミント
 
-Now let's privately mint 100 tokens for Bob. Switch to Bob's private key and privately mint 100 tokens for Bob.
+次にボブのために 100 トークンを秘匿ミントします。ボブの秘密鍵に切り替えて `mint_private` を実行します。
 
 ```bash
 echo "
@@ -92,11 +92,11 @@ Output
 }
 ```
 
-The output is a private record.
+出力はボブが所有するプライベートレコードです。
 
-## <a id="step2"></a> Public Transfer
+## <a id="step2"></a> 公開送金
 
-Let's publicly transfer 10 tokens from Alice to Bob. Swap the private key back to Alice and call the public transfer transition.
+アリスからボブへ公開で 10 トークンを送金します。アリスの秘密鍵に戻し、公開送金のトランジションを呼び出します。
 
 ```bash
 echo "
@@ -119,11 +119,11 @@ Output
 }
 ```
 
-Again, we see the arguments used for the finalize function of `transfer_public` - Alice's address, Bob's address, and the amount to transfer. The public mapping will be queryable on-chain.
+`transfer_public` の finalize にはアリスとボブのアドレス、送金額が引数として渡されていることがわかります。公開マッピングはオンチェーンで参照できます。
 
-## <a id="step3"></a> Private Transfer
+## <a id="step3"></a> 秘匿送金
 
-Let's privately transfer 20 tokens from Bob to Alice. Switch to Bob's private key and call the private transfer transition.
+ボブからアリスに 20 トークンを秘匿送金します。ボブの秘密鍵に切り替え、秘匿送金トランジションを呼び出します。
 
 ```bash
 echo "
@@ -151,11 +151,11 @@ Output
 }
 ```
 
-The output of `transfer_private` is a record owned by Bob less the 20 tokens he privately transferred to Alice, and a record owned by Alice with the 20 tokens Bob transferred to Alice.
+`transfer_private` の出力は、ボブの保有量から 20 トークンを差し引いたレコードと、アリスに 20 トークンを渡したレコードの 2 つです。
 
-## <a id="step4"></a> Public to Private Transfer
+## <a id="step4"></a> 公開 → 秘匿の変換
 
-Let's convert 30 of Alice's public tokens into 30 private tokens for Bob. Switch the private key back to Alice.
+アリスが保有する公開トークン 30 枚を、ボブのプライベートトークン 30 枚に変換してみます。アリスの秘密鍵に戻します。
 
 ```bash
 echo "
@@ -182,11 +182,11 @@ Output
 }
 ```
 
-Calling `transfer_public_to_private`, outputs a `Future`, which indicates code to be run on-chain, along with its associated inputs.
+`transfer_public_to_private` を呼び出すと、オンチェーンで実行されるコードとその入力を表す `Future` が出力されます。
 
-## <a id="step5"></a> Private to Public Transfer
+## <a id="step5"></a> 秘匿 → 公開の変換
 
-Let's convert 40 of Bob's private tokens into 40 public tokens for Alice. Switch the private key back to Bob.
+最後に、ボブのプライベートトークン 40 枚をアリスの公開トークン 40 枚に変換します。ボブの秘密鍵に切り替えます。
 
 ```bash
 echo "
@@ -217,4 +217,4 @@ Output
 }
 ```
 
-When we call `transfer_private_to_public`, we take Bob's private record that contains 110 tokens, and outputs a record owned by Bob with 70 tokens, and then outputs a `Future` which will be run on-chain.
+`transfer_private_to_public` を呼び出すと、ボブが持っていた 110 トークンのレコードから 40 トークン分を公開転換し、ボブの残高 70 トークンを保持したレコードと、オンチェーンで実行される `Future` が出力されます。

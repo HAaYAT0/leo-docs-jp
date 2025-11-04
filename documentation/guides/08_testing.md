@@ -1,23 +1,23 @@
 ---
 id: test 
 title: Testing, Testing, 123
-sidebar_label: Testing
+sidebar_label: テスト
 ---
 [general tags]: # (guides, tests, testing, unit_testing, integration_testing, devnet, testnet)
 
-Once deployed, an application lives on the ledger forever. Consequently, it's important to consider every edge case and rigorously test your code. There are number of tools and techniques you can use. 
+一度デプロイされたアプリケーションはレジャーに永続的に残るため、あらゆるケースを想定して厳密にテストすることが重要です。Leo では以下のようなツールや手法を活用できます。
 
-- [**Unit and Integration Testing**](#test-framework) - Validate Leo program logic through test cases.
+- [**ユニット／結合テスト**](#test-framework) — テストケースを通じて Leo プログラムのロジックを検証します。
 
-- [**Running a Devnet**](#running-a-devnet) - Deploy and execute on a local devnet.
+- [**Devnet の実行**](#running-a-devnet) — ローカル Devnet でデプロイや実行を行います。
 
-- [**Deploying/Executing on Testnet**](#deployingexecuting-on-testnet) - Deploy and execute on the Aleo Testnet.
+- [**Testnet でデプロイ／実行**](#deployingexecuting-on-testnet) — Aleo Testnet 上でデプロイと実行を行います。
 
-- [**Other Tools**](#other-tools) - Tools and methodologies developed by the open-source Aleo community.
+- [**その他のツール**](#other-tools) — オープンソースコミュニティが開発したツールや手法を紹介します。
 
 
-## Unit and Integration Testing
-The Leo testing framework enables developers to validate their Leo program logic by writing unit and integration tests. Tests are written in Leo and are located in a `tests/` subdirectory of the main Leo project directory.
+## ユニットと結合テスト {#test-framework}
+Leo のテストフレームワークでは、ユニットテストや結合テストを記述してプログラムロジックを検証できます。テストは Leo で記述し、プロジェクトルートの `tests/` サブディレクトリに配置します。
 
 ```bash
 example_program
@@ -33,28 +33,28 @@ example_program
 │   └── test_example_program.leo
 └── program.json
 ```
-The test file is a Leo program that imports the program in `main.leo`.  The test functions will all be annotated with `@test` above the function declaration. 
+テストファイルは `main.leo` のプログラムをインポートする Leo プログラムです。各テスト関数の宣言には `@test` アノテーションを付けます。
 
-This tutorial will use an example program which can be found in the [example's repository](https://github.com/ProvableHQ/leo-examples/tree/main/example_with_test).  
+ここでは [サンプルリポジトリ](https://github.com/ProvableHQ/leo-examples/tree/main/example_with_test) にあるプログラムを例に説明します。
 
 :::info
-Developers can add multiple `leo` files to the test directory but must ensure that the name of the test file matches the program name within that test file.  For example, if the name of the test file is `test_example_program.leo`, the program name in that file must be `test_example_program.aleo`.
+`tests/` ディレクトリには複数の Leo ファイルを追加できますが、テストファイル名とそのファイル内で宣言するプログラム名は一致している必要があります。例えば `test_example_program.leo` というファイル名であれば、プログラム名も `test_example_program.aleo` でなければなりません。
 :::
 
 
-### Testing `transition` Functions
+### `transition` 関数をテストする
 
-The `example_program.leo` program contains a transition function which returns the sum of two `u32` inputs.
+`example_program.leo` には 2 つの `u32` 入力の和を返すトランジションが定義されています。
 
-```Leo
+```leo
 transition simple_addition(public a: u32, b: u32) -> u32 {
     let c: u32 = a + b;
     return c;
 }
 ```
 
-The `test_example_program.leo` contains two tests to ensure that the transition logic returns a correct output and fails when the output does not match the sum of the input values.
-```Leo
+`test_example_program.leo` では、トランジションが正しい出力を返すことと、誤った結果のときに失敗することを確認するテストを 2 本用意しています。
+```leo
 @test
 transition test_simple_addition() {
     let result: u32 = example_program.aleo/simple_addition(2u32, 3u32);
@@ -62,8 +62,8 @@ transition test_simple_addition() {
 }
 ```
 
-The `@should_fail` annotation should be added after the `@test` annotation for tests that are expected to fail.
-```Leo
+失敗を期待するテストには、`@test` の直後に `@should_fail` アノテーションを追加します。
+```leo
 @test
 @should_fail
 transition test_simple_addition_fail() {
@@ -72,11 +72,11 @@ transition test_simple_addition_fail() {
 }
 ```
 
-### Testing Leo Types
+### Leo の型をテストする
 
-Developers can test that record and struct fields match their expected values.  In `example_program.leo`, a record is minted transition function shown here:
+レコードや構造体のフィールドが想定通りかどうかもテストできます。`example_program.leo` では次のようにレコードをミントするトランジションが定義されています。
 
-```Leo
+```leo
 record Example {
     owner: address,
     x: field,
@@ -90,9 +90,9 @@ transition mint_record(x: field) -> Example {
 }
 ```
 
-The corresponding test in `test_example_program.leo` checks that the Record field contains the correct value:
+対応するテストでは、生成されたレコードのフィールドに正しい値が入っているか確認します。
 
-```Leo
+```leo
 @test
 transition test_record_maker() {
     let r: example_program.aleo/Example = example_program.aleo/mint_record(0field);
@@ -101,14 +101,14 @@ transition test_record_maker() {
 ```
 
 :::info
-Each test file is required to have at least one `transition` function.
+各テストファイルには少なくとも 1 つの `transition` 関数が必要です。
 :::
 
 
-### Modeling Onchain State
-While the testing framework cannot access on-chain state from either `testnet` or `mainnet`, developers can simulate on-chain state in `script`s. A script is interpreted Leo code in which developers are able to await `Future`s and update mappings using interpreted tests. When using interpreted tests, the `transition` or `function` keyword is replaced with the `script` keyword.
+### オンチェーン状態のモデル化
+テストフレームワークは `testnet` や `mainnet` のオンチェーン状態にはアクセスできませんが、`script` を使ってオンチェーンの振る舞いを模倣できます。スクリプトは解釈実行される Leo コードで、`Future` の待機やマッピングの更新を行えます。解釈実行テストを使う場合、`transition` や `function` の代わりに `script` キーワードを使用します。
 
-```Leo
+```leo
 @test
 script test_async() {
     const VAL: field = 12field;
@@ -124,51 +124,48 @@ script test_async() {
 ```
 
 :::info
-External `transition`s -- `async` or not -- may be called from test `transition`s or scripts, but external `async function`s may only be called directly from scripts.
+外部トランジション（`async` を含む）はテスト用の `transition` やスクリプトから呼び出せますが、外部の `async function` を直接呼び出せるのはスクリプトのみです。
 :::
 
 
-### Running Tests
-Invoking the `leo test` command will run all of the compiled and interpreted tests. Developer may optionally select an individual tests by supplying a a test function name or a string that is contained within a test function name.  For instance, to run the test for `test_async`, developers would use the following command:
+### テストの実行
+`leo test` を実行すると、コンパイル済みテストと解釈実行テストの両方が実行されます。特定のテストだけを走らせたい場合は、関数名または関数名に含まれる文字列を指定します。例えば `test_async` を実行するには次のコマンドを使います。
 ```bash
 leo test test_async
 ```
-Either of the following commands will run both of the addition function tests:
+次のどちらかのコマンドでも、加算関数に関するテスト 2 本を実行できます。
 ```bash
 leo test simple
 ```
-or
+または
 ```bash
 leo test addition
 ```
 
-See the `leo test` CLI documentation [here](./../cli/13_test.md)
+`leo test` コマンドの詳細は [こちら](./../cli/13_test.md) を参照してください。
 
 
-## Running a Devnet
+## Devnet を動かす {#running-a-devnet}
 
-A local devnet can be a heavyweight but reliable way to test your application on Aleo.
+ローカル Devnet は手間こそかかりますが、Aleo 上でアプリケーションをテストする確実な方法です。詳しくは [Devnet ガイド](./07_devnet.md) を参照してください。
 
-For more information, refer the to [Devnet](./07_devnet.md) guide
+## Testnet でのデプロイと実行 {#deployingexecuting-on-testnet}
+Testnet でデプロイ・実行するには、エンドポイントを公開されている API に戻す必要があります。また、以下のファウセットから Testnet クレジットを取得する必要があります。
 
-## Deploying/Executing on Testnet
-To deploy and execute on Testnet, you'll need to set your endpoint back to one of the public facing options. Additionally, you'll need to obtain Testnet credits from one of the faucets below:
-
-### Faucets
+### ファウセット
 
 <!--TODO: Update this information once the new faucet becomes public.-->
 
-At some point you'll need testnet credits. There are a few community-supported faucets to choose from:
-- [**Puzzle**](https://dev.puzzle.online/faucet) - 15 credits / 4 hours
+テストネットクレジットが必要になったら、コミュニティが提供する以下のファウセットを利用できます。
+- [**Puzzle**](https://dev.puzzle.online/faucet) — 15 credits / 4 hours
 
-- [**Demox**](https://discord.com/channels/913160862670397510/1202322326230937640/1203135682873266207) - 10 credits / 12 hours
+- [**Demox**](https://discord.com/channels/913160862670397510/1202322326230937640/1203135682873266207) — 10 credits / 12 hours
 
-The faucets are periodically refreshed.
+ファウセットの残高は定期的に補充されます。
 
 
-## Other Tools
+## その他のツール {#other-tools}
 
-The Aleo community has developed some neat tools to aid in testing.
+Aleo コミュニティではテストを支援する便利なツールも開発されています。
 
 - [**doko.js**](https://github.com/venture23-aleo/doko-js)
-

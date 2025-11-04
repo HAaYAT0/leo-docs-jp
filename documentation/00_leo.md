@@ -1,41 +1,40 @@
 ---
 id: leo
-title: The Leo Programming Language
+title: Leo プログラミング言語
 sidebar_label: Leo
 ---
 [general tags]: # (overview, leo)
 
-Leo is an open-source, statically-typed, imperative programming language designed for building private applications on the Aleo blockchain. 
-It abstracts the complexities of zero-knowledge cryptography, enabling developers to create secure, privacy-preserving applications while abstracting technical complexities.
+Leo は、Aleo ブロックチェーン上でプライベートアプリケーションを構築するために設計された、オープンソースの静的型付け命令型プログラミング言語です。  
+ゼロ知識暗号の複雑さを抽象化し、開発者が高度な技術的知識なしに、安全でプライバシーを重視したアプリケーションを作成できるようにします。
 
-### Key Features 
-- **Intuitive Syntax.** Influenced by languages like JavaScript and Rust, Leo offers a familiar and readable syntax, making it accessible to a wide range of developers.
-- **Seamless Aleo Integration.** Specifically designed for the Aleo blockchain, Leo ensures smooth deployment and management of applications within Aleo's zero-knowledge ecosystem.
-- **Robust Tooling.** Leo provides a comprehensive suite of tools, including a command-line interface and integrated development environment (IDE) plugins for Visual Studio Code, Sublime Text 3, and IntelliJ, enhancing the developer experience.
-- **Formal Verification.** With a formally defined language structure, Leo enables developers to perform formal verification of their programs, ensuring correctness and security in application logic.
-
-
-## Overview
-
-- **Getting Started.** Install, set up your development environment, and get familiar with Leo.
-
-- **Language.** The syntax and semantics.
-
-- **CLI.** Utilities that will help you build, deploy, and execute Leo programs. Includes other helpful utilities.
-
-- **Testing.** The testing ecosystem for Leo programs.
-
-- **Guides.** Deepen your understanding of Leo and Aleo.
-
-- **Resources.** How to get involved with the community and supplemental material.
-
-- **SDK.** Productionize your Leo program.
-
-- **Provable API.** Endpoints to query and interact with `mainnet` and `testnet`.
+### 主な特徴
+- **直感的な構文。** JavaScript や Rust などの言語から影響を受けた親しみやすい構文で、幅広い開発者が読み書きしやすくなっています。
+- **Aleo とのシームレスな統合。** Aleo ブロックチェーン向けに特化して設計されており、Aleo のゼロ知識エコシステム内でのアプリケーションのデプロイと運用を円滑にします。
+- **充実したツール群。** コマンドラインインターフェースや Visual Studio Code、Sublime Text 3、IntelliJ 向けの IDE プラグインなど、開発体験を高めるための包括的なツールセットを提供します。
+- **形式検証。** 厳密に定義された言語仕様により、プログラムの形式的検証が可能で、アプリケーションロジックの正確性と安全性を担保できます。
 
 
-## Contributing
+## ドキュメント全体像
 
-Found a bug? Have an idea for a feature? File an issue or PR on the [**Leo GitHub**](https://github.com/ProvableHQ/leo/issues/new/choose) or the [**Documentation Source**](https://github.com/ProvableHQ/leo-docs-source).
+- **Getting Started。** Leo のインストールから開発環境のセットアップ、基本的な使い方までを紹介します。
 
+- **Language。** 構文と意味論を解説します。
+
+- **CLI。** Leo プログラムのビルド・デプロイ・実行に役立つツール群をまとめています。
+
+- **Testing。** Leo プログラムをテストするための仕組みを説明します。
+
+- **Guides。** Leo と Aleo の理解を深めるチュートリアルです。
+
+- **Resources。** コミュニティへの参加方法や補足資料を紹介します。
+
+- **SDK。** Leo プログラムをプロダクションで活用するための情報です。
+
+- **Provable API。** `mainnet` と `testnet` に問い合わせるためのエンドポイントをまとめています。
+
+
+## コントリビューション
+
+バグの報告や機能の提案がある場合は、[**Leo GitHub**](https://github.com/ProvableHQ/leo/issues/new/choose) もしくは [**ドキュメント原文リポジトリ**](https://github.com/ProvableHQ/leo-docs-source) で Issue や PR を送ってください。
 

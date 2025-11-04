@@ -1,14 +1,13 @@
 ---
 id: new
-title: What's new on Leo?
-sidebar_label: What's new?
+title: Leo の最新情報
+sidebar_label: 最新情報
 ---
 [general tags]: # (whats_new, leo)
 
 :::tip
-### [**📦 Releases**](https://github.com/ProvableHQ/leo/releases) - Stay up to date with the latest Leo releases.
-### [**🚀 Upgrade Guide**](./guides/10_program_upgradability.md) - Learn how to upgrade your Leo programs.
-### [**🤝 Core Developers Call**]( https://developer.aleo.org/guides/how_to_get_help) - Collaborate with the Leo development team and ecosystem on the future of Leo.
-### [**⚛️ Create Leo App**](https://developer.aleo.org/category/create-leo-app) - A full stack application written in Typescript using Leo and React.
+### [**📦 リリース情報**](https://github.com/ProvableHQ/leo/releases) - 最新の Leo リリースをチェックしましょう。
+### [**🚀 アップグレードガイド**](./guides/10_program_upgradability.md) - Leo プログラムをアップグレードする方法を解説します。
+### [**🤝 コア開発者コール**]( https://developer.aleo.org/guides/how_to_get_help) - Leo チームやエコシステムと連携しながら将来像を議論できます。
+### [**⚛️ Create Leo App**](https://developer.aleo.org/category/create-leo-app) - Leo と React を使った TypeScript 製フルスタックアプリのサンプルです。
 :::
-

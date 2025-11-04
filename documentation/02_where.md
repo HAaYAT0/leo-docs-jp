@@ -1,20 +1,19 @@
 ---
 id: where
-title: Where to go? 
-sidebar_label: Where to go?
+title: 次はどこへ進む？
+sidebar_label: 次はどこへ進む？
 ---
 [general tags]: # (roadmap, leo)
 
-While a deep dive through the Leo documentation is a useful exercise, we realize that it may not be very practical. To help you along your journey, we've provided a "map" to help you find your way.
+Leo ドキュメントを最初から最後まで読み込むのは有意義ですが、実際のワークフローでは少し非効率かもしれません。そこで今いる場所から次に進むべき道筋が分かるよう、「地図」を用意しました。
 
-## Roadmap
+## ロードマップ
 
-- If you're brand new to Leo, go to **Getting Started** and make your way through [**Hello, Leo**](./getting_started/03_hello.md).
+- Leo を初めて触るなら、まず **Getting Started** を読み進め、[**Hello, Leo**](./getting_started/03_hello.md) に挑戦しましょう。
 
-- If you're designing a dApp, we recommend checking out **Leo By Example** for a reference.
+- dApp を設計している場合は、リファレンスとして **Leo By Example** を参照するのがおすすめです。
 
-- If you're interested in tutorials, check out [**Guides**](./guides/00_overview.md). Also be sure to check out the [**Core Aleo Concepts**](https://developer.aleo.org/guides/faqs).
+- チュートリアルを探しているなら [**Guides**](./guides/00_overview.md) を確認してください。併せて [**Core Aleo Concepts**](https://developer.aleo.org/guides/faqs) も必見です。
 
-- If you're deploying or running your programs, [**CLI**](./cli/00_overview.md) will be helpful.
-
+- プログラムのデプロイや実行に取り組む際は、[**CLI**](./cli/00_overview.md) が役立ちます。
 

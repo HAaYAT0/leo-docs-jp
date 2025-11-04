@@ -6,61 +6,61 @@ title: A Basic Bank using Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/basic_bank)**
 
-## Summary
+## 概要
 
-This program implements a bank that issues tokens to users and allows users to deposit tokens to accrue simple interest on their deposits.
+このプログラムは、利用者にトークンを発行し、預入によって単利で利息を得られる銀行を実装しています。
 
-### User Flow
-1. The bank issues users tokens via the `issue` function.
-2. A user deposits tokens via the `deposit` function.
-3. Upon a user's request to withdraw, the bank calculates the appropriate amount of compound interest and pays the user the principal and interest via the `withdraw` function.
+### ユーザーフロー
+1. 銀行が `issue` 関数で利用者にトークンを発行する。
+2. 利用者が `deposit` 関数を通じてトークンを預け入れる。
+3. 利用者が引き出しを要求すると、銀行が複利で利息額を計算し、`withdraw` 関数で元本と利息を支払う。
 
-Note that the program can be easily extended to include additional features such as a `transfer` function, which would allow users to transfer tokens to other users.
+このプログラムは簡単に拡張でき、たとえば `transfer` 関数を追加すれば利用者同士でトークンを送金する機能も実装できます。
 
-## Bugs
+## 既知の不具合
 
-You may have already guessed that this program has a few bugs. We list some of them below:
-- `withdraw` can only be invoked by the bank. A malicious bank could lock users' tokens by not invoking `withdraw`.
-- `withdraw` fails if the sum of the interest and principal is greater than the user's balance. 
-- Users can increase their principal by depositing tokens multiple times, including immediately before withdrawal.
-- Integer division rounds down; if the calculated interest is too small, then it will be rounded down to zero.
+すでにお気づきかもしれませんが、このプログラムにはいくつか不具合があります。代表的なものを挙げます。
+- `withdraw` は銀行からしか呼び出せません。不正な銀行であればユーザーのトークンをロックしてしまう可能性があります。
+- 利息と元本の合計がユーザーの残高を超えると `withdraw` が失敗します。
+- 利用者は引き出し直前を含めて何度でも預入できるため、元本を意図的に増やせてしまいます。
+- 整数除算では小数点以下が切り捨てられるため、計算結果が小さすぎると利息が 0 になってしまいます。
 
-Can you find any others?
+ほかにも問題点がないか探してみてください。
 
-There are, of course, ways to write a version of this application without these bugs. This could be a good exercise for the reader.
+もちろん、ここで挙げた問題を解消したバージョンを書くことも可能です。読者が取り組む練習課題としておすすめです。
 
-## Language Features and Concepts
-- `record` declarations
+## 登場する言語機能・概念
+- `record` 宣言
 - `assert_eq`
-- core functions, e.g. `BHP256::hash`
-- record ownership
-- loops and bounded iteration
-- mappings
+- `BHP256::hash` などのコア関数
+- レコードの所有権
+- ループと有界反復
+- マッピング
 - async/await
 
-## How to Run
+## 実行方法
 
-Follow the [Leo Installation Instructions](https://docs.leo-lang.org/getting_started/installation).
+[Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を整えます。
 
-This basic bank program can be run using the following bash script. Locally, it will execute Leo program functions to issue, deposit, and withdraw tokens between a bank and a user.
+この基本的な銀行プログラムは次の bash スクリプトで実行できます。ローカル環境で実行すると、銀行とユーザーの間でトークンを発行・預入・引き出しする一連のフローを Leo プログラムで再現します。
 
 ```bash
 cd leo/examples/basic_bank
 ./run.sh
 ```
 
-The `.env` file contains a private key and address. This is the account that will be used to sign transactions and is checked for record ownership. When executing programs as different parties, be sure to set the `private_key` field in `.env` to the appropriate value. You can check out how we've set things up in `./run.sh` for a full example of how to run the program as different parties.
+`.env` ファイルには秘密鍵とアドレスが含まれています。これはトランザクションの署名やレコード所有権の検証に使用するアカウントです。主体を切り替えてプログラムを実行する場合は、`.env` の `private_key` を適切な値に変更してください。`./run.sh` には主体を切り替えて実行する完全な例が書かれているので参考になります。
 
-## Walkthrough
+## チュートリアルの流れ
 
-* [Step 0: Issue Tokens](#issue)
-* [Step 1: Deposit Tokens](#deposit)
-* [Step 2: Wait](#wait)
-* [Step 3: Withdraw Tokens](#withdraw)
+* [ステップ 0: トークンの発行](#issue)
+* [ステップ 1: トークンの預入](#deposit)
+* [ステップ 2: 時間経過](#wait)
+* [ステップ 3: トークンの引き出し](#withdraw)
 
-## <a id="issue"></a> Issue Tokens
+## <a id="issue"></a> トークンの発行
 
-We will be playing the role of two parties.
+ここでは 2 つの主体を使い分けます。
 
 ```bash
 The private key and address of the bank.
@@ -72,7 +72,7 @@ private_key: APrivateKey1zkp75cpr5NNQpVWc5mfsD9Uf2wg6XvHknf82iwB636q3rtc
 address: aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg
 ```
 
-Let's make some bank transactions. We'll take the role of the bank and issue 100 tokens to the user. We swap the private key into `.env` and run the `issue` transition function. The inputs are simply the recipient of the issuance and the amount.
+銀行役として処理を進め、ユーザーに 100 トークンを発行してみます。`.env` に銀行の秘密鍵を設定し、`issue` トランジション関数を呼び出します。引数は発行先のアドレスと発行量です。
 
 ```bash
 echo "
@@ -82,7 +82,7 @@ PRIVATE_KEY=APrivateKey1zkpHtqVWT6fSHgUMNxsuVf7eaR6id2cj7TieKY1Z8CP5rCD
 
 leo run issue aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg 100u64
 ```
-Output
+出力
 ```bash
  • {
   owner: aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg.private,
@@ -91,9 +91,9 @@ Output
 }
 ```
 
-## <a id="deposit"></a> Deposit Tokens
+## <a id="deposit"></a> トークンの預入
 
-Now, let's have the user deposit 50 of their tokens with the bank. We'll take the role of the user and call the deposit function, having the user use the output record that was issued to them by the bank. The inputs are the output record from the `issue` transition and the amount the user wishes to deposit.
+次に、ユーザーが 50 トークンを銀行に預ける操作を行います。ユーザー役になり、銀行から発行されたレコードを入力として `deposit` 関数を呼び出します。引数は `issue` で得た出力レコードと、預け入れたいトークン量です。
 
 ```bash
 echo "
@@ -107,7 +107,7 @@ leo run deposit "{
     _nonce: 4668394794828730542675887906815309351994017139223602571716627453741502624516group.public
 }"  50u64
 ```
-Output
+出力
 ```bash
  • {
   owner: aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg.private,
@@ -124,17 +124,17 @@ Output
 }
 ```
 
-You'll see that the output contains a new private record belonging to the user with 50 credits, and a `Future` indicating code to be run on-chain and its associated inputs.
+出力には、ユーザーが所有する 50 クレジットの新しいプライベートレコードと、オンチェーンで実行されるコードとその入力を表す `Future` が含まれていることがわかります。
 
-## <a id="wait"></a> Wait
+## <a id="wait"></a> 時間経過
 
-With the 50 token deposit, let's say 15 periods of time pass with compounding interest at a rate of 12.34% on the principal amount.
+50 トークンの預入に対し、年率 12.34% の複利で 15 期間経過したと仮定します。
 
-You can run the calculation yourself, it comes out to 266 tokens accrued using those numbers.
+計算してみると、これらの数値では 266 トークンが利息として増えることになります。
 
-## <a id="withdraw"></a> Withdraw Tokens
+## <a id="withdraw"></a> トークンの引き出し
 
-Now, let's have the bank withdraw all tokens after 15 periods. Let's switch to the bank role, and call the `withdraw` transition function. The inputs are the recipient's address, amount, rate, and periods.
+15 期間経過後、銀行がトークンを引き出す処理を行います。銀行役に戻り、`withdraw` トランジション関数を呼び出します。引数は受取人のアドレス、元本、金利、期間です。
 
 ```bash
 echo "
@@ -144,7 +144,7 @@ PRIVATE_KEY=APrivateKey1zkpHtqVWT6fSHgUMNxsuVf7eaR6id2cj7TieKY1Z8CP5rCD
 
 leo run withdraw aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg 50u64 1234u64 15u64
 ```
-Output
+出力
 ```bash
  • {
   owner: aleo1zeklp6dd8e764spe74xez6f8w27dlua3w7hl4z2uln03re52egpsv46ngg.private,
@@ -160,6 +160,6 @@ Output
   ]
 }
 ```
-You'll see here the withdrawal function creates a new private record for the user containing all 266 withdrawn tokens, and then outputs a `Future` which will be run on-chain.
+この結果、ユーザーには 266 トークンを含む新しいプライベートレコードが作成され、オンチェーンで実行される `Future` が出力されることが確認できます。
 
 ```

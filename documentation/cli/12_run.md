@@ -9,16 +9,16 @@ toc_max_heading_level: 2
 
 # `leo run`
 
-You can run a transition function by using the `leo run` command.  This will simply run the specified transition function with the provided inputs and show what the produced output will be.  It will NOT generate the zero-knowledge proof of execution or the transaction, and nothing will be run onchain.  For that, please see the [`leo execute`](08_execute.md) command.
+`leo run` は `transition` または `async transition` 関数を実行し、指定した入力に対してどのような出力が得られるかを確認するためのコマンドです。ゼロ知識証明やトランザクションは生成されず、オンチェーンでも実行されません。証明付きで実行する場合は [`leo execute`](08_execute.md) を使用してください。
 
-To run a Leo transition function with inputs from the command line, run the following command:
+コマンドラインから入力を与えて実行するには次を実行します。
 ```bash
 leo run <TRANSITION_NAME> <INPUTS>
 ```
 
-where `<TRANSITION_NAME>` is the name of the `transition` or `async transition` function to run and `<INPUTS>` is a list of inputs to the program separated by spaces.
+`<TRANSITION_NAME>` には実行する `transition`／`async transition` 名、`<INPUTS>` にはスペース区切りで並べた入力値を指定します。
 
-This command does not synthesize the program circuit or generate proving and verifying keys.
+このコマンドは回路の合成や証明鍵・検証鍵の生成は行いません。
 
 ```bash title="sample output:"
        Leo     ... statements before dead code elimination.
@@ -37,9 +37,7 @@ This command does not synthesize the program circuit or generate proving and ver
  ...
 ```
 
-If one or more of your inputs are negatives, and consequently begin with a `-`,
-you may separate the inputs with a `--` so that the command line parser
-won't attempt to parse them as options:
+入力に負の値（`-` で始まる値）が含まれる場合、コマンドライン引数として誤認されないよう `--` で区切ってください。
 ```bash
 leo run <TRANSITION_NAME> -- <INPUT_0> -- <INPUT_1> ...
 ```
@@ -79,5 +77,3 @@ leo run <TRANSITION_NAME> -- <INPUT_0> -- <INPUT_1> ...
 --consensus-heights <CONSENSUS_HEIGHTS>
     Optional consensus heights to use. This should only be set if you are using a custom devnet.
 ```
-
-

@@ -5,34 +5,33 @@ sidebar_label: Hello, Leo
 ---
 [general tags]: # (hello_leo, starter_project)
 
-## Initialize the project
+## プロジェクトの初期化
 
-Use the Leo Command Line Interface (CLI) to create a new project.
-In your terminal, run:
+Leo コマンドラインインターフェース (CLI) を使って新しいプロジェクトを作成します。ターミナルで次を実行してください。
 ```bash
 leo new hello
 cd hello
 ```
 
-This creates a directory with the following structure:
+すると、以下のようなディレクトリ構成が作成されます。
 
 ```bash
 hello/
-├── .gitignore # A default `.gitignore` file for Leo projects
-├── .env # The environment, containing the `NETWORK` and `PRIVATE_KEY` variables.
-├── program.json # The manifest for the Leo project
+├── .gitignore # Leo プロジェクト向けの標準 `.gitignore`
+├── .env # `NETWORK` と `PRIVATE_KEY` を含む環境変数ファイル
+├── program.json # Leo プロジェクトのマニフェスト
 ├── tests/
-  └── test_hello.leo # The Leo source code for unit tests
+  └── test_hello.leo # ユニットテスト用の Leo ソースコード
 └── src/
-  └── main.leo # The Leo source code
+  └── main.leo # メインとなる Leo ソースコード
 ```
 
 
-## Unpacking the Project
+## プロジェクトを読み解く
 
-### The Manifest
+### マニフェスト
 
-**program.json** is the Leo manifest file that configures the package.
+**program.json** はパッケージ設定を記述する Leo のマニフェストファイルです。
 ```json title="program.json"
 {
   "program": "hello.aleo",
@@ -44,14 +43,12 @@ hello/
 }
 ```
 
-The program ID in `program` is the official name that other developers will be able to look up after the program has been deployed to a network.  This must be the same as the name of your program in `main.leo`, or compilation will fail.
+`program` の値は、プログラムをネットワークへデプロイした後に他の開発者が参照する正式名称です。`main.leo` 内で宣言するプログラム名と一致していないと、コンパイルは失敗します。
 
+依存関係を追加すると `dependencies` フィールドに、開発時のみ使用する依存関係は `dev_dependencies` フィールドに追記されます。
 
-Dependencies will be added to the field of the same name, as they are imported.  Dependencies that are only used during development and not in production will be added to the `dev_dependencies` field.
-
-### The Code
-The `src/main.leo` file is the entry point of a Leo project. It initially contains a function named `main`.
-Let's break down the structure of a Leo file.
+### コード
+`src/main.leo` が Leo プロジェクトのエントリーポイントです。初期状態では `main` という名前の関数が含まれています。Leo ファイルの構造を見てみましょう。
 ```leo title="src/main.leo" showLineNumbers
 // The 'hello' program.
 program hello.aleo {
@@ -65,64 +62,57 @@ program hello.aleo {
 }
 ```
 
-The keyword `program` indicates the name of the [program](./../language/02_structure.md#program-scope) inside the Leo file.  In this case, it is `hello.aleo`.  As mentioned before, this program name must match the one in the  `program.json` manifest file.
+`program` キーワードは Leo ファイル内での[プログラム](./../language/02_structure.md#program-scope)名を示します。この例では `hello.aleo` です。前述のとおり、マニフェスト `program.json` の値と一致している必要があります。
 
-The keyword `transition` indicates a [transition](./../language/02_structure.md#transition-function) function definition in Leo.
-The `main` transition takes an input `a` with type `u32` and `public` visibility, and an input `b` with type `u32` and `private` visibility (by default).
-The transition returns one result with type `u32`.
-The transition body is enclosed in curly braces `{ }`. 
+`transition` キーワードは Leo における[トランジション](./../language/02_structure.md#transition-function)関数の定義を示します。`main` トランジションは `u32` 型で `public` 可視性の引数 `a` と、同じく `u32` 型で（既定では）`private` 可視性の引数 `b` を受け取ります。戻り値は `u32` が 1 つです。関数本体は波括弧 `{ }` で囲まれています。
 ```leo
 transition main(public a: u32, b: u32) -> u32 {
 ```
 
-Inside the `main` function we declare a variable `c` with type `u32` and set it equal to the addition of variables `a` and `b`.
-Leo's compiler will check that the types of `a` and `b` are equal and that the result of the addition is type `u32`.
+`main` 関数内では、`u32` 型の変数 `c` を宣言し、`a` と `b` の足し算結果を代入しています。Leo のコンパイラは `a` と `b` の型が一致していること、加算結果が `u32` 型であることをチェックします。
 ```leo
 let c: u32 = a + b;
 ```
 
 :::note
-Leo is designed to detect many errors at compile time, via statically checked strong types.
-Try changing the type of any variable and seeing what Leo recommends with helpful error messages.
+Leo は静的で強力な型チェックにより、多くのエラーをコンパイル時に検出できるよう設計されています。変数の型を変更して、どのようなエラーメッセージが表示されるか試してみましょう。
 :::
 
-Last, we return the variable `c`.
-Leo will check that `c`'s type matches the function return type `u32`.
+最後に変数 `c` を返します。Leo は `c` の型が関数の戻り値である `u32` と一致しているか確認します。
 ```leo
 return c;
 ```
 
-There is an additional function called a `constructor`.  This is a special function that helps enable program upgradability, which allows you to modify some of the logic and contents of a program after you've already deployed it onchain.  
+また、`constructor` と呼ばれる特別な関数があります。これはプログラムのアップグレード機能を有効にするためのもので、デプロイ後に一部のロジックや内容を更新できるようにします。
 
 ```leo
 @noupgrade
 async constructor() {}
 ```
 
-The constructor acts as a gatekeeper for your program; the logic in the function gets run before every deployment and upgrade, and governs who and how this program can be deployed and modified.  
+コンストラクタはプログラムの門番として機能し、デプロイやアップグレードのたびに実行され、誰がどのようにこのプログラムをデプロイ・更新できるかを制御します。
 
 
 :::note
-All programs must have an explicitly declared constructor function.
+すべてのプログラムはコンストラクタ関数を明示的に定義する必要があります。
 :::
 
-For now, we'll leave it as is, which will prevent upgrades from occurring. For more details on how program upgradability works, and different patterns for upgrading your programs, check out [Upgrading Programs](./../guides/10_program_upgradability.md).
+ここでは何も処理を入れず、そのままにしておきます（アップグレードを防ぐ設定です）。アップグレードの仕組みやパターンについて詳しく知りたい場合は、[Upgrading Programs](./../guides/10_program_upgradability.md) を参照してください。
 
 
-Now let's compile and run the program.
+それではプログラムをコンパイルして実行してみましょう。
 
-## Build and Run 
+## ビルドと実行
 
-To compile the program, run:
+プログラムをコンパイルするには次を実行します。
 ```
 leo build
 ```
  
-On invoking the build command, Leo automatically creates a `build/⁠` and `output/`⁠ folder in the project directory. The compiled code is contained in the `build` directory. The `output` directory is used to stored intermediate artifacts from compilation. 
+`leo build` を実行すると、プロジェクト内に `build/` と `output/` フォルダが自動生成されます。コンパイル済みコードは `build` ディレクトリに、中間成果物は `output` ディレクトリに保存されます。
 
 
-The `leo run` command will both compile and run the specified function program.
-In your terminal, run:
+`leo run` コマンドは、指定した関数をコンパイルして実行します。ターミナルで次を実行してください。
 ```bash
 leo run main 1u32 2u32
 ```
@@ -144,14 +134,14 @@ leo run main 1u32 2u32
        Leo ✅ Finished 'hello.aleo/main' (in "./hello/build")
 ```
 
-## Deploying and Executing
-Running programs locally is great, but you'll likely want to actually deploy your programs and execute functions onchain.  To do this, you'll need to use `leo deploy` for deployment and `leo execute` to execute functions and generate the transaction containing the requisite metadata and zero-knowledge proofs.
+## デプロイと実行
+ローカルでプログラムを動かせるだけでなく、実際にデプロイしてオンチェーンで関数を実行したくなるでしょう。その場合は `leo deploy` でデプロイし、`leo execute` で関数を実行してトランザクション（必要なメタデータとゼロ知識証明を含む）を生成します。
 
-We have dedicated guides for both [Deploying](./../guides/03_deploying.md) and [Executing](./../guides/04_executing.md), so please check those out for more information!
+詳しくは [Deploying](./../guides/03_deploying.md) と [Executing](./../guides/04_executing.md) のガイドをご覧ください。
 
 
-## Clean
-Finally, you can remove all build files and outputs with:
+## クリーンアップ
+作成されたビルドファイルや出力を削除するには、次を実行します。
 ```bash
 leo clean
 ```
@@ -162,11 +152,10 @@ Leo 🧹 Cleaned the build directory ./hello/build
 ```
 
 
-## Next Steps
+## 次のステップ
 
-To learn more about the Leo language and its syntax, start [here](./../language/00_overview.md).
+Leo 言語と構文について詳しく学ぶには、[こちら](./../language/00_overview.md) から始めてください。
 
-To learn more about how to use the Leo CLI, start [here](./../cli/00_overview.md).
+Leo CLI の使い方をさらに知りたい場合は、[こちら](./../cli/00_overview.md) を参照してください。
 
-To get started with some sample projects, check out the **Leo By Example** section.
-
+サンプルプロジェクトを試したい場合は **Leo By Example** セクションをチェックしましょう。

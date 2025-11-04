@@ -7,7 +7,6 @@ sidebar_label: Built on Leo
 
 <!--TODO:-->
 
-Coming soon!
+まもなく公開予定です！
 
-**Please fill out [this](https://forms.gle/6bt7a65hFBV9MpqN6) form if you're building on Leo.
-The Leo team will ensure that submitted projects retain backwards compatibility and receive developer support.**
+**Leo でプロジェクトを開発している方は、[こちらのフォーム](https://forms.gle/6bt7a65hFBV9MpqN6) を記入してください。送信いただいたプロジェクトが後方互換性を維持し、開発者支援を受けられるよう Leo チームがサポートします。**

@@ -46,7 +46,7 @@ leo devnet --snarkos <SNARKOS> --tmux
 
 あらかじめ `tmux` パッケージをインストールしておきましょう。
 
-<Tabs defaultValue="cargo"
+<Tabs defaultValue="macos"
 values={[
   { label: 'MacOS', value: 'macos' },
   { label: 'Ubuntu', value: 'ubuntu' },

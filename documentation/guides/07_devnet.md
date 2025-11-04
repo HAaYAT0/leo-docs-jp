@@ -5,6 +5,9 @@ sidebar_label: Devnet
 ---
 [general tags]: # (guides, devnet local_devnet, snarkos)
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ローカル Devnet は構築に手間はかかりますが、Aleo 上でアプリケーションを確実にテストできる手段です。
 
 ## セットアップ

@@ -62,7 +62,7 @@ program hello.aleo {
 }
 ```
 
-`program` キーワードは Leo ファイル内での[プログラム](./../language/02_structure.md#program-scope)名を示します。この例では `hello.aleo` です。前述のとおり、マニフェスト `program.json` の値と一致している必要があります。
+`program` キーワードは Leo ファイル内での[プログラム](./../language/02_structure.md#program)名を示します。この例では `hello.aleo` です。前述のとおり、マニフェスト `program.json` の値と一致している必要があります。
 
 `transition` キーワードは Leo における[トランジション](./../language/02_structure.md#transition-function)関数の定義を示します。`main` トランジションは `u32` 型で `public` 可視性の引数 `a` と、同じく `u32` 型で（既定では）`private` 可視性の引数 `b` を受け取ります。戻り値は `u32` が 1 つです。関数本体は波括弧 `{ }` で囲まれています。
 ```leo

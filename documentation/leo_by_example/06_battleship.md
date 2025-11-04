@@ -6,7 +6,7 @@ title: A Game of Battleship in Leo
 
 **[Source Code](https://github.com/ProvableHQ/leo-examples/tree/main/battleship)**
 
-## 目次
+## 目次 {#contents}
 
 - [目次](#contents)
 - [概要](#summary)
@@ -36,7 +36,7 @@ title: A Game of Battleship in Leo
 - [有効な手と情報共有を強制する](#enforce-constraints-on-valid-moves-and-force-the-player-to-give-their-opponent-information-about-their-opponents-previous-move-in-order-to-continue-playing)
 - [勝利条件](#winning-the-game)
 
-## 概要
+## 概要 {#summary}
 
 この Battleship の実装は、現在の Leo が抱える制約の中でも完成度の高いアプリケーション例を示しています。特にビット演算を多用しているため最初は難しく感じられるかもしれませんが、盤面のエンコード方法ゆえに高度なサンプルになっている点をご承知ください。Leo の将来的な改善により、このような実装もさらに簡潔に表現できるようになる見込みです。
 
@@ -44,7 +44,7 @@ Battleship は 2 人対戦ゲームで、各プレイヤーが 8x8 のグリッ�
 
 本アプリケーションは Aleo コミュニティが公開している [zk-battleship](https://github.com/demox-labs/zk-battleship) を Leo へ移植したものです。コミュニティへの感謝を込めて紹介します。
 
-## 実行方法
+## 実行方法 {#how-to-run}
 
 [Leo のインストール手順](https://docs.leo-lang.org/getting_started/installation) に従って環境を整えてください。
 
@@ -57,7 +57,7 @@ cd battleship
 
 `.env` ファイルには秘密鍵とアドレスが記載されています。これはトランザクション署名やレコード所有権の検証に利用するアカウントです。主体を切り替えて操作する際は、`.env` の `private_key` を適切な値に変更してください。`./run.sh` にも主体切り替えの例が記載されています。
 
-## 1. プレイヤーの初期化
+## 1. プレイヤーの初期化 {#1-initializing-the-players}
 
 Battleship をプレイするには、2 人のプレイヤーとそれぞれのボードが必要です。ここでは次の 2 つのアカウントを用います。
 
@@ -71,7 +71,7 @@ private_key: APrivateKey1zkp86FNGdKxjgAdgQZ967bqBanjuHkAaoRe19RK24ZCGsHH
 address: aleo1wyvu96dvv0auq9e4qme54kjuhzglyfcf576h0g3nrrmrmr0505pqd6wnry
 ```
 
-## 2. プレイヤー 1 がボードに艦船を配置
+## 2. プレイヤー 1 がボードに艦船を配置 {#2-player-1-places-ships-on-the-board}
 
 まずプレイヤー 1 のボードを初期化します。艦船のビット表現については [ボードと艦船のモデリング](#modeling-the-board-and-ships) を参照してください。
 
@@ -97,7 +97,7 @@ leo run initialize_board 34084860461056u64 551911718912u64 7u64 1157425104234217
 0 0 0 0 0 1 1 1
 ```
 
-## 3. プレイヤー 1 からプレイヤー 2 へボードを渡す
+## 3. プレイヤー 1 からプレイヤー 2 へボードを渡す {#3-player-1-passes-the-board-to-player-2}
 
 先ほど生成したレコードを用いてプレイヤー 2 に対戦を申し込みます。
 
@@ -116,7 +116,7 @@ leo run offer_battleship "{
 
 1 つ目の出力は `game_started` が true に更新された `board_state.record` です。このボードは他の対戦には流用できません。2 つ目の出力はプレイヤー 2 の所有となるダミーの `move.record` で、攻撃座標などはまだ含まれていません。プレイヤー 2 はこれを使って対戦を受諾します。
 
-## 4. プレイヤー 2 がボードに艦船を配置
+## 4. プレイヤー 2 がボードに艦船を配置 {#4-player-2-places-ships-on-the-board}
 
 `.env` をプレイヤー 2 の秘密鍵に切り替え、ボードを初期化します。
 
@@ -142,7 +142,7 @@ leo run initialize_board 31u64 2207646875648u64 224u64 9042383626829824u64 aleo1
 1 1 1 1 1 1 1 1
 ```
 
-## 5. プレイヤー 2 からプレイヤー 1 へボードを返す
+## 5. プレイヤー 2 からプレイヤー 1 へボードを返す {#5-passing-the-board-back-to-player-1}
 
 プレイヤー 1 の申し出を受諾するため `start_battleship` を実行します。
 
@@ -191,7 +191,7 @@ leo run start_battleship "{
 
 プレイヤー 2 の `board_state.record` でも `game_started` が true になり、プレイヤー 1 が所有する `move.record` が生成されます。これでプレイを開始する準備が整いました。
 
-## 6. プレイヤー 1 の 1 手目
+## 6. プレイヤー 1 の 1 手目 {#6-player-1-takes-the-1st-turn}
 
 ```bash
 leo run play "{
@@ -238,7 +238,7 @@ leo run play "{
 
 プレイヤー 1 の `board_state.record` の `played_tiles` に攻撃座標が追加され、プレイヤー 2 の `move.record` には対応する `incoming_fire_coordinate` が格納されます。
 
-## 7. プレイヤー 2 の 2 手目
+## 7. プレイヤー 2 の 2 手目 {#7-player-2-takes-the-2nd-turn}
 
 ```bash
 leo run play "{
@@ -285,7 +285,7 @@ leo run play "{
 
 プレイヤー 2 の `board_state.record` にも攻撃座標が記録され、プレイヤー 1 の `move.record` に命中／外れの結果が格納されます。たとえばプレイヤー 2 の最下段は艦船が並んでいるため、1u64 などの座標が命中扱いになります。
 
-## 8. プレイヤー 1 の 3 手目
+## 8. プレイヤー 1 の 3 手目 {#8-player-1-takes-the-3rd-turn}
 
 ```bash
 leo run play "{
@@ -332,7 +332,7 @@ leo run play "{
 
 `played_tiles` が 3u64（最後の 2 ビットが立っている）となり、`hits_and_misses` も前回の結果が反映されます。プレイヤー 2 の `move.record` には新しい攻撃座標が格納されます。
 
-## 9. プレイヤー 2 の 4 手目
+## 9. プレイヤー 2 の 4 手目 {#9-player-2-takes-the-4th-turn}
 
 ```bash
 leo run play "{
@@ -379,11 +379,11 @@ leo run play "{
 
 以降も双方が `play` を呼び出し、互いの攻撃結果を `move.record` 経由で共有しながらゲームを進めます。
 
-## 10. 勝者の判定
+## 10. 勝者の判定 {#10-who-wins}
 
 `board_state.record` の `hits_and_misses` に立っているビット（命中マス）が合計 14 個になったプレイヤーが勝利です。14 という数は長さ 5・4・3・2 の艦船が占めるマス数の合計です。
 
-## ZK Battleship におけるプライバシー
+## ZK Battleship におけるプライバシー {#zk-battleship-privacy}
 
 艦船の配置を秘匿しつつ、公正で信頼できる対戦を成立させるには、Aleo が提供するゼロ知識証明による選択的プライバシーを活用します。戦略の概要は次の通りです。
 
@@ -392,7 +392,7 @@ leo run play "{
 3. プレイヤーが相手の手番を待たずに連続で行動できないようにする。
 4. 有効な手のみ受け付け、続けてプレイするには相手の前回結果を必ず伝えるよう強制する。
 
-## ボードと艦船のモデリング
+## ボードと艦船のモデリング {#modeling-the-board-and-ships}
 
 多くのプログラムでは 64 文字の文字列や 8x8 の配列でボードを表現しますが、Leo では文字列操作やループが得意ではありません。そこで u64 の各ビットを 1 マスに対応させることで盤面を表現します。空のボードは 0u64 で、8 行 x 8 列すべて 0 のグリッドになります。
 
@@ -416,7 +416,7 @@ leo run play "{
 
 これらを OR 演算で重ね合わせれば、複数の艦船を 1 枚のボードに配置できます。
 
-### 有効なボード配置の例
+### 有効なボード配置の例 {#examples-of-valid-board-configurations}
 
 17870284429256033024u64
 ```
@@ -454,13 +454,13 @@ leo run play "{
 0 0 0 0 0 0 0 1
 ```
 
-### 無効なボード配置の例
+### 無効なボード配置の例 {#examples-of-invalid-board-configurations}
 
 最下段の艦船と重なっている例（67503903u64）や、斜めに配置された例（9242549787790754436u64）、行や列をまたいで艦船が分断されている例（1297811850814034450u64）などがあります。こうした配置は無効と判定されます。
 
 これらのルールに従い、まずは個々の艦船ビット列を検証し、すべてが妥当ならボード全体に合成して重なりがないか確認します。
 
-## 艦船を 1 隻ずつ検証する
+## 艦船を 1 隻ずつ検証する {#validating-a-single-ship-at-a-time}
 
 `verify.aleo` 内で艦船ビット列を検証する処理を確認できます。艦船が有効である条件は以下の通りです。
 
@@ -476,7 +476,7 @@ leo run play "{
 
 ループを使わずにこれらを確認するため、以下のビット演算テクニックを利用します。
 
-### ビットカウント
+### ビットカウント {#bit-counting}
 
 `c_bitcount` クロージャを参照してください。MIT AI Laboratory が公開した HAKMEM の 169 番をベースに、理解しやすい形に調整しています。ビット列を数える際、元の値から右シフトした値を順に引いていくことで 4 ビットごとの合計を得られます。たとえば 13u64（1101）であれば、
 
@@ -501,23 +501,23 @@ C = (B + (B >> 4)) & 0x0F0F0F0F0F0F0F0Fu64;
 bit_count = C % 255u64;
 ```
 
-### 隣接チェック
+### 隣接チェック {#adjacency-check}
 
 艦船のビット列と、盤面上での配置ビット列が与えられたとき、両者の割り算の結果が 2 の冪乗であれば、艦船は隣接して配置されています。割り算の結果が 0 になる場合は明らかに不正なので別途除外します。
 
-### 行・列をまたいでいないかの確認
+### 行・列をまたいでいないかの確認 {#splitting-a-row-or-column}
 
 縦方向のチェックは割り算結果が 2 の冪乗かどうかで判断できますが、横方向は行を跨いでもビット数や隣接判定をすり抜ける可能性があります。そこで盤面のビット列を 255 (0b11111111) で剰余を取り 8 ビットに圧縮し、そのビット列に対して改めて隣接チェックを行います。
 
-### ビット列が 2 の冪乗かを確認する
+### ビット列が 2 の冪乗かを確認する {#ensuring-a-bitstring-is-a-power-of-2}
 
 2 の冪乗はビットが 1 つだけ立っているため、`x & (x - 1)` が 0 になれば 2 の冪乗と判定できます。これを各所で利用します。
 
-## 全艦船を 1 枚のボードで検証する
+## 全艦船を 1 枚のボードで検証する {#validating-all-ships-together-in-a-single-board}
 
 個々の艦船ビット列が妥当であれば、それらを OR で合成し 14 ビット立っているか（5 + 4 + 3 + 2 = 14）を確認します。これにより艦船が重なっていないことを保証します。
 
-## ゲーム途中でプレイヤーやボードが入れ替わらないようにする
+## ゲーム途中でプレイヤーやボードが入れ替わらないようにする {#ensure-that-players-and-boards-cannot-swap-mid-game}
 
 ボードは `board_state` レコードで管理され、ゲーム開始後は `game_started` フラグが true になります。このレコードは他の対戦には利用できません。`move` レコードは以下のときに生成されます。
 
@@ -527,14 +527,14 @@ bit_count = C % 255u64;
 
 この仕組みにより、ゲーム途中で別のボードやプレイヤーに差し替えることはできません。
 
-## ターン順を強制する
+## ターン順を強制する {#ensure-that-each-player-can-only-move-once-before-the-next-player-can-move}
 
 `move` レコードを消費しなければ次の `move` レコードを生成できないため、プレイヤーは交互に行動するしかありません。`move` レコードの所有者は手番のたびに相手へ移るようになっています。
 
-## 有効な手と情報共有を強制する
+## 有効な手と情報共有を強制する {#enforce-constraints-on-valid-moves-and-force-the-player-to-give-their-opponent-information-about-their-opponents-previous-move-in-order-to-continue-playing}
 
 有効な攻撃は単一ビットが立った u64（すなわち 8x8 グリッド上の 1 マス）です。すでに攻撃済みのマスは `played_tiles` に記録され、再度選択すると検証で弾かれます。また `play` を呼ぶと、相手の攻撃結果（命中／外れ）を `move` レコードに含めることが義務付けられており、これを渡さないと次のターンへ進めません。
 
-## 勝利条件
+## 勝利条件 {#winning-the-game}
 
 勝利判定はシンプルで、`board_state.record` の `hits_and_misses` に立っているビットが 14 個に達したプレイヤーが勝ちです。これにより、全艦船が撃沈されたことを確認できます。

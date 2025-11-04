@@ -16,7 +16,7 @@ toc_max_heading_level: 2
 :::
 
 
-# Subcommands
+## Subcommands {#subcommands}
 * [`new`](#leo-account-new) - 新しい Aleo アカウントを生成します。
 * [`import`](#leo-account-import) - 秘密鍵から Aleo アカウント情報を導出します。
 * [`sign`](#leo-account-sign) - Aleo 秘密鍵でメッセージに署名します。

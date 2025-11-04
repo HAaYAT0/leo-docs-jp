@@ -10,7 +10,7 @@ sidebar_label: プログラム構造
 Leo プログラムは、[プログラム本体](#program)・[定数](#constant)・[インポート](#import)・[トランジション関数](#transition-function)・[非同期関数](#async-function)・[補助関数](#helper-function)・[構造体](#struct)・[レコード](#record)・[マッピング](#mapping) の宣言で構成されます。
 宣言は同じファイル内で参照できますが、別ファイルの宣言を利用する場合はインポートが必要です。
 
-### プログラム 
+### プログラム {#program}
 
 プログラムは Aleo ブロックチェーン上の [プログラム ID](#program-id) に配置される、関数などのコードと型定義をまとめたものです。宣言は `program {name}.{network} { ... }` の形式で、本文は波括弧 `{}` で囲みます。
 
@@ -69,7 +69,7 @@ Leo ファイル内でプログラムスコープに含める必要があるも�
 
 - imports
 
-#### プログラム ID
+#### プログラム ID {#program-id}
 
 プログラム ID は `{name}.{network}` の形式です。
 
@@ -87,7 +87,7 @@ program 0_foo.aleo; // invalid
 program _foo.aleo;  // invalid
 ```
 
-### 定数
+### 定数 {#constant}
 
 定数は `const {name}: {type} = {expression};` の形で宣言します。  
 定数は不変であり、宣言時に必ず値を代入する必要があります。  
@@ -104,7 +104,7 @@ program foo.aleo {
 }
 ```
 
-### インポート
+### インポート {#import}
 
 `imports` ディレクトリにダウンロードした依存プログラムをインポートできます。
 宣言は `import {filename}.aleo;` の形式です。
@@ -116,7 +116,7 @@ import foo.aleo; // Import all `foo.aleo` declarations into the `hello.aleo` pro
 program hello.aleo { }
 ```
 
-### マッピング
+### マッピング {#mapping}
 
 マッピングは `mapping {name}: {key-type} => {value-type}` の書式で宣言します。
 キーと値のペアを保持し、オンチェーンで保存されます。
@@ -128,7 +128,7 @@ program hello.aleo { }
 mapping account: address => u64;
 ```
 
-### 構造体
+### 構造体 {#struct}
 
 構造体は `struct {name} {}` で宣言し、`{name}: {type},` の形式でフィールドを列挙します。
 
@@ -140,7 +140,7 @@ struct Array3 {
 }
 ```
 
-### レコード
+### レコード {#record}
 
 [レコード](https://developer.aleo.org/concepts/fundamentals/records) は `record {name} {}` で宣言します。レコード名には `aleo` を含めてはならず、他のレコード名の接頭辞になってもいけません。
 
@@ -158,3 +158,15 @@ record Token {
     amount: u64,
 }
 ```
+
+### トランジション関数 {#transition-function}
+
+`transition` 関数はゼロ知識証明を生成し、Aleo ネットワークへ送信する公開インターフェースです。`transition {name}({inputs}) -> {outputs}` の形式で宣言し、ブロックチェーンとやり取りする際の入り口になります。
+
+### 非同期関数 {#async-function}
+
+`async function` はオンチェーンで遅延実行されるロジックをまとめるための構成要素です。`transition` から呼び出され、`Future` を返すことで finalize フェーズで状態を更新できます。
+
+### 補助関数 {#helper-function}
+
+`function` として宣言する通常の関数は、再利用したいロジックをまとめるために利用します。状態変更は行えませんが、同一プログラム内の他の関数やトランジションから参照できます。

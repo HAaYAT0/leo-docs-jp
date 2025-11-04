@@ -1,6 +1,7 @@
 ---
 id: auction
 title: A Private Auction using Leo
+slug: /auction
 ---
 [general tags]: # (example, auction, record, program, transition, assert)
 
@@ -55,7 +56,7 @@ cd leo/examples/auction
 * [ステップ 3: 勝者の決定](#step3)
 * [ステップ 4: オークションの終了](#step4)
 
-## <a id="step0"></a> ステップ 0: オークションの初期化
+## ステップ 0: オークションの初期化 {#step0}
 
 ここでは次の 3 つの主体をエミュレートします。
 
@@ -76,7 +77,7 @@ Auctioneer Address:
 aleo1fxs9s0w97lmkwlcmgn0z3nuxufdee5yck9wqrs0umevp7qs0sg9q5xxxzh
 ```
 
-## <a id="step1"></a> ステップ 1: 1 人目の入札
+## ステップ 1: 1 人目の入札 {#step1}
 
 1 人目の入札者が 10 を入札するシナリオです。
 
@@ -105,7 +106,7 @@ leo run place_bid aleo1yzlta2q5h8t0fqe0v6dyh9mtv4aggd53fgzr068jvplqhvqsnvzq7pj2k
   _nonce: 4668394794828730542675887906815309351994017139223602571716627453741502624516group.public
 }
 ```
-## <a id="step2"></a> ステップ 2: 2 人目の入札
+## ステップ 2: 2 人目の入札 {#step2}
 
 続いて 2 人目の入札者が 90 を入札します。
 
@@ -134,7 +135,7 @@ leo run place_bid aleo1esqchvevwn7n5p84e735w4dtwt2hdtu4dpguwgwy94tsxm2p7qpqmlrta
   _nonce: 5952811863753971450641238938606857357746712138665944763541786901326522216736group.public
 }
 ```
-## <a id="step3"></a> ステップ 3: 勝者の決定
+## ステップ 3: 勝者の決定 {#step3}
 
 主催者が勝者を決定します。
 
@@ -166,7 +167,7 @@ leo run resolve "{
 }"
 ```
 
-## <a id="step4"></a> ステップ 4: オークションの終了
+## ステップ 4: オークションの終了 {#step4}
 
 勝者の `Bid` レコードを渡して `finish` トランジション関数を呼び出します。
 

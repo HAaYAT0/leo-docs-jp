@@ -97,7 +97,7 @@ program test.aleo {
 }
 ```
 
-### block.height
+### block.height {#block.height}
 
 現在のブロックの高さを返します。
 
@@ -116,6 +116,10 @@ program test.aleo {
     }
 }
 ```
+
+### async function {#async-function}
+
+`async` 関数はオンチェーンの finalize 実行など非同期処理を含む文脈で利用する関数定義です。`async transition` や `async function` は、`Future` を返して状態を更新する操作を伴うため、特定の演算子（例: `block.height` や乱数生成など）を使用する際に必要となります。
 
 ## コア関数 {#core-functions}
 

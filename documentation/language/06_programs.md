@@ -58,6 +58,10 @@ program test.aleo {
 }
 ```
 
+### Future {#future}
+
+`Future` は非同期処理の完了時にオンチェーンで実行されるコードブロックを表す型です。`async transition` や `async function` から返され、トランジションの証明が検証された後に順次処理されます。マッピングの更新やイベント発行など、チェーン上の状態を書き換える操作をまとめて遅延実行する際に利用します。
+
 ## 関数 {#functions}
 
 ### トランジション関数 {#transition-function}
